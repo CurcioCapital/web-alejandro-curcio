@@ -42,6 +42,7 @@
 	const expected = new WeakMap(); // estado de muted que fijó el director
 	const fades = new WeakMap();
 	const gens = new WeakMap(); // cada fundido nuevo invalida al anterior
+	const toPause = new WeakSet(); // videos manuales que se pausan al terminar de bajar
 
 	const videos = () => [...document.querySelectorAll('video')];
 	const hasAudioMark = () => document.querySelector('video[data-audio]');
@@ -58,12 +59,15 @@
 		return Math.abs(r.top + r.height / 2 - innerHeight / 2);
 	};
 
+	const outGen = new WeakMap();
+	const fadingOut = (v) => outGen.get(v) === gens.get(v);
 	const setMuted = (v, m) => { expected.set(v, m); v.muted = m; };
 
 	function fadeTo(v, target, done) {
 		cancelAnimationFrame(fades.get(v));
 		const g = (gens.get(v) || 0) + 1;
 		gens.set(v, g);
+		if (target === 0) outGen.set(v, g); else outGen.delete(v);
 		if (target > 0) setMuted(v, false);
 		const from = v.muted ? 0 : v.volume;
 		const t0 = performance.now();
@@ -73,7 +77,7 @@
 			if (k < 1) fades.set(v, requestAnimationFrame(step));
 			else {
 				gens.set(v, g + 0.5); // ya terminó: el respaldo no repite
-				if (target === 0) { setMuted(v, true); try { v.volume = 1; } catch {} }
+				if (target === 0) { setMuted(v, true); try { v.volume = 1; } catch {} finishOut(v); }
 				done && done();
 			}
 		};
@@ -84,19 +88,27 @@
 			cancelAnimationFrame(fades.get(v));
 			if (target === 0) {
 				if (!v.muted) { setMuted(v, true); try { v.volume = 1; } catch {} done && done(); }
+				finishOut(v);
 			} else { try { v.volume = target; } catch {} }
 		}, FADE_MS + 80);
 	}
 
+	function finishOut(v) {
+		if (toPause.has(v)) { toPause.delete(v); v.pause(); }
+	}
+
 	function silence(v) {
 		if (v === manual) {
-			fadeTo(v, 0, () => v.pause());
+			toPause.add(v);
 			manual = null;
+			v.muted ? finishOut(v) : fadeTo(v, 0);
 		} else if (!v.muted) fadeTo(v, 0);
+		else finishOut(v);
 		syncPm(v);
 	}
 
 	function speak(v) {
+		toPause.delete(v);
 		if (v.muted) { try { v.volume = 0; } catch {} }
 		fadeTo(v, 1);
 		if (v.paused) {
@@ -120,7 +132,7 @@
 		if (manual) {
 			const r = ratio(manual);
 			if (manual.ended || (manual.paused && pausedAt.get(manual) && performance.now() - pausedAt.get(manual) > 900)) manual = null;
-			else if (r < PAUSE_BELOW) { const m = manual; manual = null; fadeTo(m, 0, () => m.pause()); }
+			else if (r < PAUSE_BELOW) { const m = manual; manual = null; toPause.add(m); fadeTo(m, 0); }
 			else if (r >= KEEP_MIN) return manual;
 		}
 		if (!enabled || !unlocked) return null;
@@ -147,7 +159,7 @@
 			if (focus) speak(focus);
 		}
 		// Ningún otro video puede sonar en simultáneo.
-		for (const v of videos()) if (v !== focus && !v.muted && !v.paused && v !== manual) silence(v);
+		for (const v of videos()) if (v !== focus && !v.muted && !v.paused && v !== manual && !fadingOut(v)) silence(v);
 		paint();
 	}
 	const schedule = () => { raf || (raf = requestAnimationFrame(tick)); };
@@ -156,6 +168,7 @@
 	function onUserSound(v) {
 		if (v.muted || expected.get(v) === v.muted) return;
 		expected.set(v, false);
+		toPause.delete(v);
 		delete v.dataset.userMuted;
 		if (!enabled) { enabled = true; save('on'); }
 		unlocked = true;

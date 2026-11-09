@@ -37,6 +37,7 @@
 	let unlocked = false;
 	let manual = null; // video que el usuario puso a sonar
 	let manualAt = 0;
+	const pausedAt = new WeakMap(); // momento de la última pausa real (play la borra)
 	let focus = null; // video que suena ahora
 	const expected = new WeakMap(); // estado de muted que fijó el director
 	const fades = new WeakMap();
@@ -118,7 +119,7 @@
 	function pick() {
 		if (manual) {
 			const r = ratio(manual);
-			if (manual.ended || (manual.paused && performance.now() - manualAt > 900)) manual = null;
+			if (manual.ended || (manual.paused && pausedAt.get(manual) && performance.now() - pausedAt.get(manual) > 900)) manual = null;
 			else if (r < PAUSE_BELOW) { const m = manual; manual = null; fadeTo(m, 0, () => m.pause()); }
 			else if (r >= KEEP_MIN) return manual;
 		}
@@ -182,10 +183,15 @@
 
 	document.addEventListener('play', (e) => {
 		const v = e.target;
+		if (v instanceof HTMLVideoElement) pausedAt.delete(v);
 		if (v instanceof HTMLVideoElement && !v.muted && expected.get(v) !== false) onUserSound(v);
 		schedule();
 	}, true);
-	document.addEventListener('pause', () => { schedule(); setTimeout(schedule, 1000); }, true);
+	document.addEventListener('pause', (e) => {
+		if (e.target instanceof HTMLVideoElement) pausedAt.set(e.target, performance.now());
+		schedule();
+		setTimeout(schedule, 1000);
+	}, true);
 	document.addEventListener('ended', schedule, true);
 
 	const unlock = (e) => {

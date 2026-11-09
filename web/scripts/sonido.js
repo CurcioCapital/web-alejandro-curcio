@@ -1,5 +1,5 @@
 /*
- * Versión: 2026-11-09 b (ambiente de drift).
+ * Versión: 2026-11-09 c (arranque + ambiente de drift).
  * Director de sonido — web de Alejandro Curcio.
  *
  * Regla: suena UN solo video a la vez, y solo si está en pantalla.
@@ -21,6 +21,8 @@
  * Cualquier video que el usuario active con sonido entra como «manual».
  *
  * Sonido ambiente por sección: <section data-ambient="…m4a" data-ambient-vol="0.45">
+ * Opcional data-ambient-intro="…m4a": suena una sola vez (p. ej. el arranque del motor)
+ * y al terminar engancha el loop sin corte.
  * Suena en loop mientras la sección ocupe ≥ 35 % de la pantalla, con fundidos
  * largos, y se apaga si un video con audio toma el turno (los videos mandan).
  * No usa IntersectionObserver (ver CLAUDE.md): scroll + getBoundingClientRect.
@@ -64,7 +66,28 @@
 			audio.loop = true;
 			audio.preload = 'none';
 			audio.volume = 0;
-			ambients.push({ sec, audio, vol: Math.min(1, +sec.dataset.ambientVol || 0.4), cur: 0, timer: 0 });
+			const a = { sec, audio, intro: null, vol: Math.min(1, +sec.dataset.ambientVol || 0.4), cur: 0, timer: 0 };
+			a.el = () => (a.intro && !a.introDone ? a.intro : a.audio);
+			if (sec.dataset.ambientIntro) {
+				a.intro = new Audio();
+				a.intro.src = sec.dataset.ambientIntro;
+				a.intro.preload = 'auto';
+				a.intro.volume = 0;
+				// Empalme: arranca el loop apenas antes de que termine el arranque.
+				const handoff = () => {
+					if (a.introDone) return;
+					a.introDone = true;
+					a.audio.currentTime = 0;
+					try { a.audio.volume = a.cur; } catch {}
+					if (a.target > 0) a.audio.play().catch(() => {});
+					setTimeout(() => a.intro.pause(), 150);
+				};
+				a.intro.addEventListener('timeupdate', () => {
+					if (a.intro.duration && a.intro.duration - a.intro.currentTime < 0.12) handoff();
+				});
+				a.intro.addEventListener('ended', handoff);
+			}
+			ambients.push(a);
 		}
 	}
 	const screenShare = (el) => {
@@ -72,23 +95,25 @@
 		return Math.max(0, Math.min(r.bottom, innerHeight) - Math.max(r.top, 0)) / innerHeight;
 	};
 	function rampAmbient(a, target) {
+		const el = a.el();
 		if (a.target === target) { // fundido en curso o terminado: no reiniciarlo
-			if (target > 0 && a.audio.paused) a.audio.play().catch(() => {});
+			if (target > 0 && el.paused) el.play().catch(() => {});
 			return;
 		}
 		a.target = target;
 		clearInterval(a.timer);
-		if (target > 0 && a.audio.paused) a.audio.play().catch(() => {});
-		const dur = target > a.cur ? 1600 : 900; // entra lento, sale más rápido
+		if (target > 0 && el.paused) el.play().catch(() => {});
+		// El arranque entra casi de golpe (es el gancho); el loop, lento. La salida, más rápida.
+		const dur = target > a.cur ? (a.intro && !a.introDone ? 250 : 1600) : 900;
 		const from = a.cur, t0 = performance.now();
 		// setInterval y no rAF: sigue funcionando con la pestaña en segundo plano.
 		a.timer = setInterval(() => {
 			const k = Math.min(1, (performance.now() - t0) / dur);
 			a.cur = from + (target - from) * (k * k * (3 - 2 * k));
-			try { a.audio.volume = a.cur; } catch {}
+			try { a.el().volume = a.cur; } catch {}
 			if (k >= 1) {
 				clearInterval(a.timer);
-				if (target === 0) a.audio.pause();
+				if (target === 0) a.el().pause();
 				paint();
 			}
 		}, 40);
@@ -99,7 +124,7 @@
 			rampAmbient(a, want && !videoSounding ? a.vol : 0);
 		}
 	}
-	const ambientPlaying = () => ambients.some((a) => !a.audio.paused && a.target > 0);
+	const ambientPlaying = () => ambients.some((a) => !a.el().paused && a.target > 0);
 
 	const ratio = (v) => {
 		const r = v.getBoundingClientRect();
@@ -337,5 +362,5 @@ color:var(--ed-bone,#f4f1ea);background:rgb(12 10 6 / .62);border:1px solid rgb(
 	if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start);
 	else start();
 	// Transiciones de página de Astro (si están activas).
-	document.addEventListener('astro:page-load', () => { manual = focus = null; for (const a of ambients) { clearInterval(a.timer); a.audio.pause(); } ambients = []; btn = btn && btn.isConnected ? btn : null; start(); });
+	document.addEventListener('astro:page-load', () => { manual = focus = null; for (const a of ambients) { clearInterval(a.timer); a.audio.pause(); a.intro && a.intro.pause(); } ambients = []; btn = btn && btn.isConnected ? btn : null; start(); });
 })();

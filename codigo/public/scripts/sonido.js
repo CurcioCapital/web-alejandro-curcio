@@ -1,4 +1,5 @@
 /*
+ * Versión: 2026-11-09.
  * Director de sonido — web de Alejandro Curcio.
  *
  * Regla: suena UN solo video a la vez, y solo si está en pantalla.

@@ -92,46 +92,11 @@ seg(23.2, L + XF, 1300, IDLE, 0.08)
 rpm = smooth(rpm, 18)
 thr = smooth(thr, 30)
 
-# ── 2. Explosiones (6 cil., 4 tiempos: rpm/20 Hz) ───────────────────
-fire_hz = rpm / 20.0
-ph = np.cumsum(fire_hz) / SR
-events = np.nonzero(np.diff(np.floor(ph)) > 0)[0] + 1
-cyl_gain = np.array([1.0, 0.9, 1.07, 0.95, 1.03, 0.88])
-soft = np.zeros((6, N)); hard = np.zeros((6, N))
-for n, i in enumerate(events):
-    if cut[i]:
-        continue
-    c = n % 6
-    j = min(N - 1, i + int(rng.normal(0, 0.0001) * SR))
-    a = cyl_gain[c] * (1 + rng.normal(0, 0.08))
-    load = thr[i]
-    soft[c, j] += a * (0.35 + 0.25 * load) * (1 - load)
-    hard[c, j] += a * (0.55 + 0.6 * load) * load
-
-# un pulso propio por cilindro (si no, el motor suena a tono puro / turbina)
-kn = np.arange(int(0.014 * SR)) / SR
-pulses = np.zeros(N)
-for c in range(6):
-    f1 = rng.uniform(105, 140); f2 = rng.uniform(170, 230)
-    k_soft = lp(rng.standard_normal(len(kn)), 1000) * np.exp(-kn / 0.0035) + np.sin(2*np.pi*f1*kn) * np.exp(-kn / 0.004)
-    k_hard = (lp(rng.standard_normal(len(kn)), 4000) * np.exp(-kn / rng.uniform(0.0014, 0.0022))
-              + 0.6*np.sin(2*np.pi*f2*kn + rng.uniform(0, 6.3)) * np.exp(-kn / 0.0025))
-    pulses += fftconvolve(soft[c], k_soft)[:N] + fftconvolve(hard[c], k_hard)[:N]
-# ruido de combustión: áspero, sigue a las explosiones y a la carga
-env = smooth(np.abs(pulses), 4)
-pulses += bp(rng.standard_normal(N), 250, 2600) * env * (0.22 + 0.5 * thr)
-
-# Escape: resonancias en paralelo + tubo (filtro peine corto)
-exh = (1.0 * bp(pulses, 70, 160) + 0.9 * bp(pulses, 160, 380) + 0.55 * bp(pulses, 380, 900)
-       + 0.25 * bp(pulses, 900, 2200) + 0.08 * hp(pulses, 2200))
-d = int(0.0021 * SR)
-exh = exh + 0.45 * np.concatenate([np.zeros(d), exh[:-d]])
-# brillo según carga y vueltas
-bright = 0.25 + 0.75 * thr * np.clip(rpm / 7000, 0, 1)
-exh = exh * (1 - 0.5 * bright) + lp(hp(exh, 700), 4500) * 1.2 * bright
-# saturación del escape: más agresivo con carga
-drive = 1.4 + 2.4 * thr
-eng = np.tanh(exh / np.abs(exh).max() * drive) / np.tanh(drive)
+# ── 2. Motor (módulo compartido con el arranque) ────────────────
+import os; sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from engine_core import engine
+eng, ENG_PEAK, n_events = engine(rpm, thr, cut, rng)
+np.save(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'eng_peak.npy'), ENG_PEAK)
 
 # ── 3. Turbo, caja secuencial, petardeo ─────────────────────────────
 spool = smooth(np.clip(thr * (rpm - 2500) / 4500, 0, 1), 400)
@@ -195,4 +160,4 @@ if pk > 10 ** (-3 / 20): x *= 10 ** (-3 / 20) / pk
 pcm = (x.T * 32767).astype('<i2')
 with wave.open(sys.argv[1], 'wb') as w:
     w.setnchannels(2); w.setsampwidth(2); w.setframerate(SR); w.writeframes(pcm.tobytes())
-print(f'ok {L}s eventos={len(events)} rms={20*np.log10(np.sqrt(np.mean(x**2))):.1f}dBFS')
+print(f'ok {L}s eventos={n_events} rms={20*np.log10(np.sqrt(np.mean(x**2))):.1f}dBFS')

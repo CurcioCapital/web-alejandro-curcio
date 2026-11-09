@@ -1,5 +1,5 @@
 /*
- * Versión: 2026-11-09.
+ * Versión: 2026-11-09 b (ambiente de drift).
  * Director de sonido — web de Alejandro Curcio.
  *
  * Regla: suena UN solo video a la vez, y solo si está en pantalla.
@@ -19,6 +19,10 @@
  *   data-audio="auto"    suena solo cuando le toca (ej. Pelota al Medio)
  *   data-audio="manual"  tiene audio, pero arranca solo si el usuario lo pide
  * Cualquier video que el usuario active con sonido entra como «manual».
+ *
+ * Sonido ambiente por sección: <section data-ambient="…m4a" data-ambient-vol="0.45">
+ * Suena en loop mientras la sección ocupe ≥ 35 % de la pantalla, con fundidos
+ * largos, y se apaga si un video con audio toma el turno (los videos mandan).
  * No usa IntersectionObserver (ver CLAUDE.md): scroll + getBoundingClientRect.
  */
 (() => {
@@ -46,7 +50,56 @@
 	const toPause = new WeakSet(); // videos manuales que se pausan al terminar de bajar
 
 	const videos = () => [...document.querySelectorAll('video')];
-	const hasAudioMark = () => document.querySelector('video[data-audio]');
+	const hasAudioMark = () => document.querySelector('video[data-audio], [data-ambient]');
+
+	// ── Ambiente por sección ───────────────────────────────────────
+	const AMB_MIN = 0.35; // fracción de la pantalla que tiene que ocupar la sección
+	let ambients = [];
+	function initAmbients() {
+		ambients = ambients.filter((a) => a.sec.isConnected);
+		for (const sec of document.querySelectorAll('[data-ambient]')) {
+			if (ambients.some((a) => a.sec === sec)) continue;
+			const audio = new Audio();
+			audio.src = sec.dataset.ambient;
+			audio.loop = true;
+			audio.preload = 'none';
+			audio.volume = 0;
+			ambients.push({ sec, audio, vol: Math.min(1, +sec.dataset.ambientVol || 0.4), cur: 0, timer: 0 });
+		}
+	}
+	const screenShare = (el) => {
+		const r = el.getBoundingClientRect();
+		return Math.max(0, Math.min(r.bottom, innerHeight) - Math.max(r.top, 0)) / innerHeight;
+	};
+	function rampAmbient(a, target) {
+		if (a.target === target) { // fundido en curso o terminado: no reiniciarlo
+			if (target > 0 && a.audio.paused) a.audio.play().catch(() => {});
+			return;
+		}
+		a.target = target;
+		clearInterval(a.timer);
+		if (target > 0 && a.audio.paused) a.audio.play().catch(() => {});
+		const dur = target > a.cur ? 1600 : 900; // entra lento, sale más rápido
+		const from = a.cur, t0 = performance.now();
+		// setInterval y no rAF: sigue funcionando con la pestaña en segundo plano.
+		a.timer = setInterval(() => {
+			const k = Math.min(1, (performance.now() - t0) / dur);
+			a.cur = from + (target - from) * (k * k * (3 - 2 * k));
+			try { a.audio.volume = a.cur; } catch {}
+			if (k >= 1) {
+				clearInterval(a.timer);
+				if (target === 0) a.audio.pause();
+				paint();
+			}
+		}, 40);
+	}
+	function updateAmbients(videoSounding) {
+		for (const a of ambients) {
+			const want = enabled && unlocked && !document.hidden && screenShare(a.sec) >= AMB_MIN;
+			rampAmbient(a, want && !videoSounding ? a.vol : 0);
+		}
+	}
+	const ambientPlaying = () => ambients.some((a) => !a.audio.paused && a.target > 0);
 
 	const ratio = (v) => {
 		const r = v.getBoundingClientRect();
@@ -161,6 +214,7 @@
 		}
 		// Ningún otro video puede sonar en simultáneo.
 		for (const v of videos()) if (v !== focus && !v.muted && !v.paused && v !== manual && !fadingOut(v)) silence(v);
+		updateAmbients(!!(focus && expected.get(focus) === false));
 		paint();
 	}
 	const schedule = () => { raf || (raf = requestAnimationFrame(tick)); };
@@ -220,7 +274,7 @@
 	addEventListener('resize', schedule, { passive: true });
 	document.addEventListener('visibilitychange', () => {
 		if (document.hidden && focus) { silence(focus); focus = null; }
-		else schedule();
+		schedule();
 	});
 
 	// ── Botón flotante ─────────────────────────────────────────────
@@ -270,7 +324,7 @@ color:var(--ed-bone,#f4f1ea);background:rgb(12 10 6 / .62);border:1px solid rgb(
 
 	function paint() {
 		if (!btn) return;
-		const playing = !!(focus && !focus.muted && !focus.paused);
+		const playing = !!(focus && !focus.muted && !focus.paused) || ambientPlaying();
 		const state = !enabled ? 'off' : playing ? 'on' : 'ready';
 		btn.dataset.state = state;
 		btn.setAttribute('aria-pressed', String(enabled));
@@ -279,9 +333,9 @@ color:var(--ed-bone,#f4f1ea);background:rgb(12 10 6 / .62);border:1px solid rgb(
 			!enabled ? 'Sin sonido' : !unlocked ? 'Activar sonido' : playing ? 'Sonando' : 'Sonido';
 	}
 
-	const start = () => { mountButton(); schedule(); };
+	const start = () => { initAmbients(); mountButton(); schedule(); };
 	if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start);
 	else start();
 	// Transiciones de página de Astro (si están activas).
-	document.addEventListener('astro:page-load', () => { manual = focus = null; btn = btn && btn.isConnected ? btn : null; start(); });
+	document.addEventListener('astro:page-load', () => { manual = focus = null; for (const a of ambients) { clearInterval(a.timer); a.audio.pause(); } ambients = []; btn = btn && btn.isConnected ? btn : null; start(); });
 })();

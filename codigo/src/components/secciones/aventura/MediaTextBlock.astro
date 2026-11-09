@@ -1,0 +1,63 @@
+---
+/**
+ * MediaTextBlock.astro — Aventura-only. Two-column block: a media slot
+ * (photo card, HoverPlayCard, etc.) beside a text slot. Used for the
+ * "piloto" block (HoverPlayCard + Drift Park Solidario copy) and the Fuji
+ * block (fuji-referencia photo + ascent story). Not a shared component —
+ * lives under secciones/aventura/. Usage:
+ * <MediaTextBlock reverse>
+ *   <Fragment slot="media"><HoverPlayCard ... /></Fragment>
+ *   <p>...</p>
+ * </MediaTextBlock>
+ */
+interface Props {
+  reverse?: boolean; // media on the right instead of the left
+  class?: string;
+}
+
+const { reverse = false, class: className = '' } = Astro.props;
+---
+
+<div class:list={['media-text-block', reverse && 'media-text-block--reverse', className]}>
+  <div class="media-text-block__media"><slot name="media" /></div>
+  <div class="media-text-block__text"><slot /></div>
+</div>
+
+<style>
+  .media-text-block {
+    display: grid;
+    grid-template-columns: minmax(260px, 460px) 1fr;
+    gap: clamp(36px, 6vw, 110px);
+    align-items: start;
+    margin-top: 40px;
+  }
+  .media-text-block--reverse {
+    grid-template-columns: 1fr minmax(260px, 460px);
+  }
+  .media-text-block--reverse .media-text-block__media {
+    order: 2;
+  }
+  .media-text-block__media {
+    position: sticky;
+    top: 100px;
+  }
+  .media-text-block__text {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  @media (max-width: 780px) {
+    .media-text-block,
+    .media-text-block--reverse {
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+    .media-text-block--reverse .media-text-block__media {
+      order: 0;
+    }
+    .media-text-block__media {
+      position: static;
+      max-width: 320px;
+    }
+  }
+</style>

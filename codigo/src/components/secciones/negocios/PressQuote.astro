@@ -1,0 +1,68 @@
+---
+/**
+ * PressQuote.astro — Negocios-only. Inline pull-quote for verified press
+ * quotes inside a <SectionWhite> body (white bg, black ink) — the
+ * light-mode counterpart to <QuoteOverlay>, which only works on a photo.
+ * Not a shared component — lives under secciones/negocios/.
+ */
+interface Props {
+  quote: string;
+  attribution: string;
+  size?: 'default' | 'sm';
+}
+
+const { quote, attribution, size = 'default' } = Astro.props;
+---
+
+<figure class:list={['press-quote', size === 'sm' && 'press-quote--sm']}>
+  <span class="press-quote-mark" aria-hidden="true">&ldquo;</span>
+  <blockquote>{quote}</blockquote>
+  <figcaption>{attribution}</figcaption>
+</figure>
+
+<style>
+  .press-quote {
+    max-width: 60ch;
+    margin: 40px 0;
+    padding-left: 24px;
+    border-left: 2px solid var(--color-cobalt);
+  }
+  .press-quote-mark {
+    display: block;
+    font-size: 32px;
+    line-height: 0.6;
+    font-weight: 700;
+    color: var(--color-cobalt);
+    margin-bottom: 8px;
+  }
+  .press-quote blockquote {
+    font-size: clamp(18px, 2vw, 24px);
+    font-weight: 500;
+    line-height: 1.4;
+    letter-spacing: -0.01em;
+    color: var(--color-black);
+  }
+  .press-quote figcaption {
+    margin-top: 14px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: rgba(10, 10, 10, 0.5);
+  }
+  .press-quote--sm {
+    margin: 24px 0;
+    padding-left: 18px;
+  }
+  .press-quote--sm .press-quote-mark {
+    font-size: 24px;
+    margin-bottom: 4px;
+  }
+  .press-quote--sm blockquote {
+    font-size: 15px;
+    line-height: 1.5;
+  }
+  .press-quote--sm figcaption {
+    margin-top: 10px;
+    font-size: 12px;
+  }
+</style>

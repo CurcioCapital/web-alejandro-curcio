@@ -1,0 +1,209 @@
+---
+/**
+ * preview-tipografia.astro — PÁGINA DE PRUEBA, no forma parte del sitio.
+ *
+ * Muestrario para elegir el registro tipográfico del display. Todas las
+ * variantes usan la MISMA fuente que ya tiene el sitio (Archivo Variable,
+ * ejes wght 100–900 y wdth 62–125%) salvo la última, que usa la serif que
+ * también está instalada. Ninguna requiere descargar nada nuevo.
+ *
+ * Mismo titular real y mismo tamaño en todas: lo único que cambia son los
+ * ejes, para que la comparación sea honesta.
+ *
+ * No toca ningún estilo del sitio: todo está scopeado a esta página.
+ */
+import Base from '../layouts/Base.astro';
+
+const titular = 'El verdadero capital se forja.';
+const palabras = ['Empresario', 'Deportista', 'Aventurero'];
+
+const variantes = [
+	{
+		id: 'a',
+		nombre: 'A · La de ahora',
+		ajustes: 'peso 700 · ancho 100% · tracking −0.028em',
+		lee: 'Grotesco pesado y neutro. Directo, pero a tamaño grande el peso 700 empieza a leerse como publicidad.',
+	},
+	{
+		id: 'b',
+		nombre: 'B · La anterior',
+		ajustes: 'peso 620 · ancho 112% · tracking −0.025em',
+		lee: 'La que tenía el sitio antes de hoy. El ancho estirado le daba carácter propio, pero también un aire algo institucional.',
+	},
+	{
+		id: 'c',
+		nombre: 'C · Editorial contemporáneo',
+		ajustes: 'peso 560 · ancho 100% · tracking −0.042em · interlineado 0.94',
+		lee: 'El registro de los sitios de producto más cuidados de hoy: peso medio, tracking muy cerrado, mucho aire. Se lee caro sin gritar.',
+	},
+	{
+		id: 'd',
+		nombre: 'D · Condensada pesada',
+		ajustes: 'peso 760 · ancho 82% · tracking −0.03em',
+		lee: 'Registro de revista y de afiche. Mucho impacto y muchísima presencia; entra más texto por línea.',
+	},
+	{
+		id: 'e',
+		nombre: 'E · Ligera monumental',
+		ajustes: 'peso 380 · ancho 100% · tracking −0.03em',
+		lee: 'El registro de moda y arquitectura. Elegante y silencioso. El riesgo es que a tamaño chico se deshilacha.',
+	},
+	{
+		id: 'f',
+		nombre: 'F · Serif de display',
+		ajustes: 'Instrument Serif · peso 400 · tracking −0.02em',
+		lee: 'Usa la serif que ya está instalada como titular. Registro de libro y de diario — coherente con que Alejandro escribe.',
+	},
+];
+---
+
+<Base title="Preview — tipografía" description="Página de prueba. No forma parte del sitio.">
+	<div class="aviso">
+		<strong>Página de prueba.</strong> Seis registros tipográficos, misma fuente instalada y mismo
+		tamaño. Decime la letra y la aplico en todo el sitio.
+	</div>
+
+	<section class="sheet sheet--cap-1 sheet--flush muestrario">
+		<div class="wrap">
+			{
+				variantes.map((v) => (
+					<article class={`bloque v-${v.id}`}>
+						<header class="meta">
+							<span class="meta-nombre">{v.nombre}</span>
+							<span class="meta-ajustes">{v.ajustes}</span>
+						</header>
+
+						<h2 class="muestra-titular">{titular}</h2>
+
+						<ul class="muestra-palabras">
+							{palabras.map((p) => <li>{p}</li>)}
+						</ul>
+
+						<p class="muestra-lee">{v.lee}</p>
+					</article>
+				))
+			}
+		</div>
+	</section>
+</Base>
+
+<style>
+	.aviso {
+		background: rgb(var(--accent-rgb) / 0.14);
+		border-bottom: 1px solid rgb(var(--accent-rgb) / 0.3);
+		color: var(--ink-hi);
+		font-size: 13.5px;
+		text-align: center;
+		padding: 12px 20px;
+	}
+
+	.bloque + .bloque {
+		margin-top: 88px;
+		padding-top: 68px;
+		border-top: 1px solid var(--color-line);
+	}
+
+	.meta {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: baseline;
+		gap: 6px 18px;
+		margin-bottom: 30px;
+	}
+	.meta-nombre {
+		font-size: 12.5px;
+		font-weight: 600;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--color-cobalt-bright);
+	}
+	.meta-ajustes {
+		font-size: 12.5px;
+		color: var(--ink-low);
+		font-variant-numeric: tabular-nums;
+	}
+
+	/* Mismo tamaño en todas — sólo cambian los ejes. */
+	.muestra-titular {
+		font-size: clamp(2.25rem, 1.5rem + 3.4vw, 4.5rem);
+		color: var(--ink-hi);
+		margin: 0;
+		max-width: 18ch;
+	}
+	.muestra-palabras {
+		list-style: none;
+		margin: 30px 0 0;
+		padding: 0;
+		color: var(--ink-hi);
+	}
+	.muestra-palabras li {
+		font-size: clamp(1.5rem, 1.1rem + 1.8vw, 2.5rem);
+	}
+	.muestra-lee {
+		margin: 26px 0 0;
+		font-size: 14.5px;
+		line-height: 1.6;
+		color: var(--ink-low);
+		max-width: 56ch;
+		/* la explicación siempre en el mismo registro, para no confundir */
+		font-family: var(--font-body);
+		font-weight: 400;
+		font-stretch: 100%;
+		letter-spacing: 0;
+	}
+
+	/* ---------- A · la de ahora ---------- */
+	.v-a .muestra-titular,
+	.v-a .muestra-palabras li {
+		font-weight: 700;
+		font-stretch: 100%;
+		letter-spacing: -0.028em;
+		line-height: 0.98;
+	}
+
+	/* ---------- B · la anterior ---------- */
+	.v-b .muestra-titular,
+	.v-b .muestra-palabras li {
+		font-weight: 620;
+		font-stretch: 112%;
+		letter-spacing: -0.025em;
+		line-height: 1.02;
+	}
+
+	/* ---------- C · editorial contemporáneo ---------- */
+	.v-c .muestra-titular,
+	.v-c .muestra-palabras li {
+		font-weight: 560;
+		font-stretch: 100%;
+		letter-spacing: -0.042em;
+		line-height: 0.94;
+	}
+
+	/* ---------- D · condensada pesada ---------- */
+	.v-d .muestra-titular,
+	.v-d .muestra-palabras li {
+		font-weight: 760;
+		font-stretch: 82%;
+		letter-spacing: -0.03em;
+		line-height: 0.92;
+	}
+
+	/* ---------- E · ligera monumental ---------- */
+	.v-e .muestra-titular,
+	.v-e .muestra-palabras li {
+		font-weight: 380;
+		font-stretch: 100%;
+		letter-spacing: -0.03em;
+		line-height: 1;
+	}
+
+	/* ---------- F · serif de display ---------- */
+	.v-f .muestra-titular,
+	.v-f .muestra-palabras li {
+		font-family: var(--font-serif);
+		font-weight: 400;
+		font-style: normal;
+		letter-spacing: -0.02em;
+		line-height: 1.02;
+	}
+</style>

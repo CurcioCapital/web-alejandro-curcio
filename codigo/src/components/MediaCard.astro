@@ -1,0 +1,55 @@
+---
+/**
+ * MediaCard.astro — generic rounded, blur-up, shadowed media card (book
+ * covers, press clippings, any 2:3-ish image tile). Usage:
+ * <MediaCard id="toolbook-front" kind="cover" alt="Tapa de Toolbook" />
+ * Omit id/src and pass `typographic` + children for a text-only card
+ * (e.g. an upcoming book with no cover art yet).
+ * Rediseño 21/10/2026: zoom contenido en hover (refresh.css) y
+ * data-cursor="view" para el cursor custom del agente de motion.
+ */
+import BlurImage from './BlurImage.astro';
+
+interface Props {
+  id?: string; // manifest asset id
+  src?: string; // raw public path escape hatch
+  alt?: string;
+  kind?: 'img' | 'cover';
+  size?: 'default' | 'sm'; // 'sm' uses --radius-sm instead of --radius-md
+  typographic?: boolean; // render <slot /> instead of an image (no cover art yet)
+  eager?: boolean;
+  class?: string;
+  /** Proporción REAL del archivo, ej. "2048 / 3216". Cuando se pasa, la
+   *  tarjeta la adopta y la imagen va en `contain`: no se recorta nada.
+   *  Obligatorio en tapas de libro — el 2:3 por defecto no es la medida de
+   *  ninguna tapa real y les come los bordes, que es donde está el texto. */
+  ratio?: string;
+}
+
+const {
+  id,
+  src,
+  alt = '',
+  kind = 'cover',
+  size = 'default',
+  typographic = false,
+  eager = false,
+  class: className = '',
+  ratio,
+} = Astro.props;
+---
+
+<div
+  class:list={[
+    'media-card',
+    size === 'sm' && 'media-card--sm',
+    typographic && 'typographic',
+    ratio && 'media-card--exacta',
+    className,
+  ]}
+  style={ratio ? `--card-ar:${ratio}` : undefined}
+  data-cursor={typographic ? undefined : 'view'}
+  data-cursor-label={typographic ? undefined : 'Ver'}
+>
+  {typographic ? <slot /> : <BlurImage id={id} src={src} alt={alt} kind={kind} eager={eager} />}
+</div>

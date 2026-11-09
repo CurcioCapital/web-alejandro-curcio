@@ -1,0 +1,1019 @@
+---
+/**
+ * ceo-de-tu-vida.astro — landing dedicada al lanzamiento del tercer libro.
+ *
+ * Distinta de /libros: allá conviven los tres libros como catálogo; acá hay
+ * uno solo y la página tiene un trabajo concreto — que alguien deje su mail
+ * y llegue al lanzamiento sabiendo de qué se trata.
+ *
+ * TODO el contenido sale de «05 — Hechos verificados.md», sección «Material
+ * de CEO DE TU VIDA», que a su vez viene del PDF de 70 páginas que mandó
+ * Mariana Zabala (editorial) el 27/08/2026. Las tres reglas que se muestran
+ * son de las 7 que la editorial envió como material promocional.
+ *
+ * DOS COSAS NO ESTÁN Y SE NOTA A PROPÓSITO:
+ * 1. El video del evento. El evento es en noviembre de 2026 — todavía no
+ *    ocurrió. El bloque existe con su hueco reservado y un aviso; cuando haya
+ *    material se cambia el `data-pendiente` por el video y listo.
+ * 2. El formulario NO tiene servicio conectado. Sin `data-endpoint` el botón
+ *    queda deshabilitado a propósito: es preferible que no se pueda enviar
+ *    antes que tragarse mails en silencio.
+ *
+ * La mecánica japonesa del evento (torii, omikuji, taiko) NO se publica: el
+ * concepto todavía no lo aprobó Alejandro, y además arruinaría la sorpresa.
+ * El ema sí, pero reinterpretado como pieza web — ver la sección «Tu ema».
+ */
+import Base from '../layouts/Base.astro';
+import '../components/secciones/libros/ed.css';
+import MediaCard from '../components/MediaCard.astro';
+import CeoClimax from '../components/secciones/libros/CeoClimax.astro';
+
+// Las seis secciones del libro, con las preguntas que abren cada una.
+const secciones = [
+	{ n: 'I', titulo: 'Identidad y fundamentos', preguntas: '¿Quién sos? ¿Qué te define? ¿Desde dónde construís?' },
+	{ n: 'II', titulo: 'Mente, emociones y decisión', preguntas: '¿Cómo pensás? ¿Cómo reaccionás? ¿Cómo decidís?' },
+	{ n: 'III', titulo: 'Energía, tiempo y vida', preguntas: '¿Cómo vivís? ¿Cómo sostenés? ¿Cómo rendís?' },
+	{ n: 'IV', titulo: 'Acción y ejecución', preguntas: '¿Cómo avanzás? ¿Cómo hacés que pase?' },
+	{ n: 'V', titulo: 'Negocio, dinero y liderazgo', preguntas: '¿Cómo construís? ¿Cómo escalás? ¿Cómo liderás?' },
+	{ n: 'VI', titulo: 'Entorno, relaciones y sistema', preguntas: '¿Con quién vivís? ¿Qué sistema te sostiene?' },
+];
+
+// Los once interludios. El kanji es el ancla visual; el romaji, el nombre.
+const palabras = [
+	{ kanji: '和', romaji: 'Wa', linea: 'La armonía como principio de liderazgo' },
+	{ kanji: 'おもてなし', romaji: 'Omotenashi', linea: 'El arte de anticipar al otro' },
+	{ kanji: '侘寂', romaji: 'Wabi-sabi', linea: 'La belleza de lo imperfecto' },
+	{ kanji: '改善', romaji: 'Kaizen', linea: 'El poder de mejorar todos los días' },
+	{ kanji: '生き甲斐', romaji: 'Ikigai', linea: 'La razón por la que te levantás cada mañana' },
+	{ kanji: '職人', romaji: 'Shokunin', linea: 'El espíritu del maestro artesano' },
+	{ kanji: '現地現物', romaji: 'Genchi genbutsu', linea: 'Ir y ver con tus propios ojos' },
+	{ kanji: 'こだわり', romaji: 'Kodawari', linea: 'La obsesión silenciosa por la excelencia' },
+	{ kanji: '現場', romaji: 'Gemba', linea: 'El lugar donde ocurre la verdad' },
+	{ kanji: '武士道', romaji: 'Bushidō', linea: 'El código del honor' },
+	{ kanji: '無駄', romaji: 'Muda', linea: 'El enemigo invisible de la eficiencia' },
+];
+
+// Orden de la grilla: Kaizen al centro (5 · Kaizen · 5) para que quede
+// simétrica. La numeración (decorativa) sigue el orden en pantalla.
+const kaizen = palabras.findIndex((p) => p.romaji === 'Kaizen');
+const resto = palabras.map((p, i) => ({ p, i })).filter(({ i }) => i !== kaizen);
+const orden = [...resto.slice(0, 5), { p: palabras[kaizen], i: kaizen }, ...resto.slice(5)];
+
+// Tres de las siete reglas que mandó la editorial como material promocional.
+const reglas = [
+	'Construí primero lo que nadie puede quitarte: tu conocimiento y tu capacidad de aplicarlo.',
+	'No trabajes para demostrar tu valor. Trabajá para construir valor.',
+	'No te define lo que aspirás a lograr. Te define lo que dejás de tolerar.',
+];
+---
+
+<Base
+	title="CEO DE TU VIDA — Alejandro Curcio"
+	description="51 reglas para decidir mejor, liderar con claridad y construir una vida con intención. El tercer libro de Alejandro Curcio, por Grijalbo. Noviembre de 2026."
+>
+	<!-- ============ 1 · APERTURA ============ -->
+	<section class="ed-sec ed-grid ceo-hero">
+		<div class="ceo-hero-glow" aria-hidden="true"></div>
+		<div class="ed-wrap">
+			<div class="ceo-top ed-mono">
+				<span class="ceo-kicker">Grijalbo · Noviembre 2026</span>
+				<span class="ceo-idx" aria-hidden="true">[ 00 ]</span>
+			</div>
+			<div class="ceo-hero-grid">
+				<div class="ceo-hero-copy">
+					<h1 class="ceo-title ed-display" data-split="lines">CEO DE TU VIDA</h1>
+					<p class="ceo-sub ed-serif" data-split="lines">
+						51 reglas para decidir mejor, liderar con claridad y construir una vida con intención.
+					</p>
+					<p class="ceo-lead" data-reveal>
+						El tercer libro de Alejandro Curcio. Después de mirar hacia adentro
+						(<a href="/libros" data-cursor="link">Capital de Vida</a>) y de entender lo que viene
+						(<a href="/libros" data-cursor="link">Toolbook</a>), este es el de hacerse cargo.
+					</p>
+
+					<!-- Cuenta regresiva en días. Sin segundos: ver el criterio en
+					     Header.astro — el tictac al segundo es urgencia fabricada.
+					     Los dígitos giran como odómetro (odoSet de ed.ts). -->
+					<p class="ceo-faltan ed-mono" data-countdown="2026-11-17T00:00:00-03:00" hidden></p>
+
+					<!-- Sin servicio conectado el botón queda deshabilitado: mejor que
+					     no se pueda enviar a que se traguen mails en silencio. -->
+					<form class="ceo-form" data-aviso data-endpoint="">
+						<label class="ceo-form-label ed-mono" for="ceo-mail">Enterate del lanzamiento</label>
+						<div class="ceo-form-row">
+							<span class="ceo-form-prompt ed-mono" aria-hidden="true">&gt;</span>
+							<input
+								id="ceo-mail"
+								type="email"
+								name="email"
+								required
+								autocomplete="email"
+								placeholder="tu@correo.com"
+								aria-describedby="ceo-form-nota"
+							/>
+							<button type="submit">Avisame</button>
+						</div>
+						<p class="ceo-form-nota ed-mono" id="ceo-form-nota" data-nota></p>
+					</form>
+				</div>
+
+				<figure class="ceo-cover" data-ed-tilt="10">
+					<div class="ceo-cover-obj ed-tilt__obj" data-reveal="mask">
+						<MediaCard
+							src="/media/covers/ceo-de-tu-vida-mockup.jpg"
+							class="media-card--natural"
+							alt="El libro CEO DE TU VIDA, de Alejandro Curcio (Grijalbo, noviembre 2026)"
+						/>
+					</div>
+				</figure>
+			</div>
+		</div>
+	</section>
+
+	<!-- ============ 2 · EL ORIGEN ============
+	     La estética japonesa del libro no es una decisión de diseño: es de
+	     dónde salió el material. Por eso este bloque va antes que el índice. -->
+	<section id="origen" class="ed-sec ed-sec--light ed-sec--sheet ed-grid ceo-origen">
+		<div class="ed-wrap ceo-split">
+			<div class="ceo-head">
+				<span class="ed-mono ceo-head-n" aria-hidden="true">[ 01 ]</span>
+				<span class="kicker ed-mono ceo-k">El origen</span>
+				<h2 class="section-title ed-display ceo-h2" data-split="lines">El libro empezó en una playa de Okinawa.</h2>
+			</div>
+			<div class="origen-cuerpo" data-pinta>
+				<p data-pinta-words>
+					Alejandro entró a la empresa familiar siendo casi adolescente. <strong>A los 25 ya dirigía
+					la compañía</strong>, con un padre que le llevaba más de cincuenta años.
+				</p>
+				<p data-pinta-words>
+					En 2023 viajó a Japón con su hijo Lucca. Toyota Motor Corporation había organizado un
+					encuentro de presidentes de distintos países <strong>junto a las segundas y terceras
+					generaciones</strong> de sus familias empresarias. El tema declarado era el negocio. El
+					tema real era el legado.
+				</p>
+				<p data-pinta-words>
+					Después de Tokio fueron a Okinawa. Una mañana caminó solo por la playa, con el mar calmo
+					y en silencio. De ahí salieron las preguntas que originaron este libro.
+				</p>
+			</div>
+		</div>
+	</section>
+
+	<!-- ============ 3 · LAS SEIS PREGUNTAS ============ -->
+	<section id="secciones" class="ed-sec ed-sec--sheet ed-grid ceo-secciones">
+		<div class="ed-wrap">
+			<div class="ceo-head ceo-head--row">
+				<span class="ed-mono ceo-head-n" aria-hidden="true">[ 02 ]</span>
+				<span class="kicker ed-mono ceo-k">Seis secciones</span>
+				<h2 class="section-title ed-display ceo-h2" data-split="lines">El libro está ordenado como preguntas.</h2>
+				<p class="section-lead ceo-lead2" data-reveal>
+					Cada sección abre con las suyas. Las <span data-counter>51</span> reglas son las respuestas.
+				</p>
+			</div>
+
+			<ol class="secciones">
+				{
+					secciones.map((s) => (
+						<li class="seccion" data-scrub="enter">
+							<span class="seccion-n">{s.n}</span>
+							<div class="seccion-txt">
+								<h3 class="seccion-titulo">{s.titulo}</h3>
+								<p class="seccion-preguntas">{s.preguntas}</p>
+							</div>
+						</li>
+					))
+				}
+			</ol>
+		</div>
+	</section>
+
+	<!-- ============ 3 · CUENTA REGRESIVA (la misma de /libros) ============ -->
+	<CeoClimax id="lanzamiento" kicker="Lanzamiento · 17 de noviembre de 2026" n="03" />
+</Base>
+
+<style>
+	/* ================= cabeceras ================= */
+	.ceo-head {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) minmax(0, 3fr);
+		grid-template-areas:
+			'n t'
+			'k t'
+			'. l';
+		grid-template-rows: auto 1fr auto;
+		column-gap: var(--ed-gutter);
+		row-gap: 8px;
+		padding-top: 22px;
+		border-top: 1px solid var(--ed-line-strong);
+	}
+	.ed-sec--light .ceo-head {
+		border-top-color: rgb(12 10 6 / 0.2);
+	}
+	.ceo-head-n {
+		grid-area: n;
+		color: rgb(255 255 255 / 0.45);
+	}
+	.ed-sec--light .ceo-head-n {
+		color: rgb(12 10 6 / 0.5);
+	}
+	.ceo-k {
+		grid-area: k;
+		margin: 0;
+		font: 500 11.5px/1.4 var(--ed-mono);
+		letter-spacing: 0.08em;
+		color: var(--ed-accent);
+	}
+	.ed-sec--light .ceo-k {
+		color: var(--ed-accent-ink);
+	}
+	.ceo-h2 {
+		grid-area: t;
+		font-size: clamp(2.6rem, 1.2rem + 5.6vw, 7.5rem);
+		color: inherit;
+		max-width: none;
+	}
+	.ceo-lead2 {
+		grid-area: l;
+		margin: 16px 0 0;
+		max-width: 56ch;
+		font-size: clamp(1.0625rem, 1rem + 0.3vw, 1.3125rem);
+		line-height: 1.55;
+		color: rgb(255 255 255 / 0.68);
+	}
+	.ed-sec--light .ceo-lead2 {
+		color: rgb(12 10 6 / 0.7);
+	}
+	.ceo-lead2 a {
+		color: inherit;
+		text-decoration: underline;
+		text-decoration-color: var(--ed-accent);
+		text-underline-offset: 4px;
+	}
+	/* sección partida: cabecera a la izquierda, cuerpo a la derecha */
+	.ceo-split {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+		gap: clamp(40px, 6vw, 112px);
+		align-items: start;
+	}
+	.ceo-split .ceo-head {
+		grid-template-columns: 1fr;
+		grid-template-areas: 'n' 'k' 't' 'l';
+		grid-template-rows: auto;
+	}
+	.ceo-split .ceo-h2 {
+		font-size: clamp(2.6rem, 1rem + 4.6vw, 6.25rem);
+		margin-top: 18px;
+	}
+
+	/* ================= apertura ================= */
+	.ceo-hero {
+		min-height: min(100svh, 1080px);
+		padding-top: clamp(120px, 15vh, 180px);
+		padding-bottom: clamp(56px, 8vh, 96px);
+	}
+	.ceo-hero-glow {
+		position: absolute;
+		inset: auto -10% -30% 30%;
+		height: 90%;
+		z-index: -1;
+		background: radial-gradient(closest-side, rgb(232 200 116 / 0.16), transparent 70%);
+		pointer-events: none;
+	}
+	.ceo-top {
+		display: flex;
+		justify-content: space-between;
+		padding-bottom: 14px;
+		border-bottom: 1px solid var(--ed-line-strong);
+		margin-bottom: clamp(32px, 5vw, 64px);
+	}
+	.ceo-kicker {
+		color: var(--ed-accent);
+	}
+	.ceo-idx {
+		color: rgb(255 255 255 / 0.45);
+	}
+	.ceo-hero-grid {
+		display: grid;
+		grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+		gap: clamp(36px, 5vw, 88px);
+		align-items: center;
+	}
+	.ceo-title {
+		text-transform: uppercase;
+		font-size: clamp(4.5rem, 13.5vw, 14rem);
+		line-height: 0.8;
+		letter-spacing: -0.025em;
+		color: #fff;
+		max-width: 7ch;
+	}
+	.ceo-sub {
+		font-size: clamp(1.6rem, 1rem + 2vw, 3rem);
+		line-height: 1.05;
+		color: var(--ed-accent);
+		margin: clamp(24px, 3vw, 40px) 0 0;
+		max-width: 18em;
+		text-wrap: balance;
+	}
+	.ceo-lead {
+		font-size: var(--text-body, 1.0625rem);
+		line-height: 1.68;
+		color: rgb(255 255 255 / 0.7);
+		margin: 22px 0 0;
+		max-width: 46ch;
+	}
+	.ceo-lead a {
+		color: #fff;
+		text-decoration: none;
+		border-bottom: 1px solid rgb(255 255 255 / 0.3);
+		transition: border-color 0.3s var(--ed-expo), color 0.3s var(--ed-expo);
+	}
+	.ceo-lead a:hover {
+		border-bottom-color: var(--ed-accent);
+		color: var(--ed-accent);
+	}
+	.ceo-faltan {
+		display: inline-flex;
+		align-items: center;
+		gap: 10px;
+		margin: 28px 0 0;
+		padding: 10px 14px;
+		border: 1px solid var(--ed-line-strong);
+		border-radius: 999px;
+		font-size: 12px;
+		color: rgb(255 255 255 / 0.75);
+	}
+	.ceo-faltan[hidden] {
+		display: none;
+	}
+	.ceo-faltan::before {
+		content: '';
+		width: 7px;
+		height: 7px;
+		border-radius: 50%;
+		background: var(--ed-accent);
+		box-shadow: 0 0 0 4px rgb(232 200 116 / 0.18);
+	}
+	.ceo-faltan :global(.ed-odo) {
+		color: var(--ed-accent);
+		font-weight: 600;
+	}
+	.ceo-cover {
+		margin: 0;
+		perspective: 1200px;
+	}
+	.ceo-cover :global(.media-card--natural) {
+		--card-ar: 1280 / 1220;
+		border-radius: var(--ed-r-lg);
+	}
+
+	/* ---------- formulario (DESACTIVADO a propósito sin endpoint) ---------- */
+	.ceo-form {
+		margin: 30px 0 0;
+		max-width: 500px;
+	}
+	.ceo-form-label {
+		display: block;
+		color: rgb(255 255 255 / 0.55);
+		margin-bottom: 12px;
+	}
+	.ceo-form-row {
+		position: relative;
+		display: flex;
+		gap: 8px;
+		padding: 6px;
+		border: 1px solid rgb(255 255 255 / 0.18);
+		border-radius: 999px;
+		background: rgb(255 255 255 / 0.04);
+	}
+	.ceo-form-prompt {
+		align-self: center;
+		padding-left: 14px;
+		color: var(--ed-accent);
+		font-size: 14px;
+	}
+	.ceo-form input {
+		flex: 1 1 auto;
+		min-width: 0;
+		background: transparent;
+		border: 0;
+		padding: 12px 8px;
+		color: #fff;
+		font-family: var(--ed-mono);
+		font-size: 14px;
+		outline: none;
+	}
+	.ceo-form-row:focus-within {
+		border-color: var(--ed-accent);
+	}
+	.ceo-form input::placeholder {
+		color: rgb(255 255 255 / 0.4);
+	}
+	.ceo-form button {
+		min-height: 44px;
+		flex: 0 0 auto;
+		border: 0;
+		border-radius: 999px;
+		padding: 12px 22px;
+		background: var(--ed-accent);
+		color: var(--ed-ink);
+		font-family: var(--ed-mono);
+		font-size: 12px;
+		font-weight: 600;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		cursor: pointer;
+		transition: background 0.3s var(--ed-expo), opacity 0.3s var(--ed-expo);
+	}
+	.ceo-form button:hover:not(:disabled) {
+		background: #fff;
+	}
+	.ceo-form button:disabled {
+		opacity: 0.4;
+		cursor: not-allowed;
+	}
+	.ceo-form-nota {
+		margin: 12px 0 0;
+		color: rgb(255 255 255 / 0.5);
+		min-height: 1.2em;
+		text-transform: none;
+		letter-spacing: 0.02em;
+	}
+
+	/* ================= origen ================= */
+	/* Texto que se pinta palabra por palabra con el scroll (igual que «Quién es»
+	   en el home). El estado apagado cuelga de html.pinta-on (sin JS: todo visible). */
+	:global(html.pinta-on) .origen-cuerpo :global(.pw) {
+		opacity: 0.16;
+		transition: opacity 0.35s ease;
+	}
+	:global(html.pinta-on) .origen-cuerpo :global(.pw.is-on) {
+		opacity: 1;
+	}
+	.origen-cuerpo {
+		display: flex;
+		flex-direction: column;
+		gap: 26px;
+		padding-top: 22px;
+		border-top: 1px solid rgb(12 10 6 / 0.2);
+	}
+	.origen-cuerpo p {
+		margin: 0;
+		font-size: clamp(1.125rem, 1rem + 0.5vw, 1.5rem);
+		line-height: 1.55;
+		color: rgb(12 10 6 / 0.72);
+	}
+	.origen-cuerpo strong {
+		color: var(--ed-ink);
+		font-weight: 650;
+		background: linear-gradient(transparent 62%, rgb(232 200 116 / 0.5) 62%);
+	}
+
+	/* ================= seis secciones ================= */
+	.secciones {
+		list-style: none;
+		margin: clamp(48px, 6vw, 96px) 0 0;
+		padding: 0;
+		border-top: 1px solid var(--ed-line-strong);
+	}
+	.seccion {
+		position: relative;
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) minmax(0, 3fr);
+		gap: var(--ed-gutter);
+		align-items: baseline;
+		padding: clamp(24px, 3vw, 40px) 0;
+		border-bottom: 1px solid var(--ed-line-strong);
+	}
+	.seccion::after {
+		content: '';
+		position: absolute;
+		left: 0;
+		right: 0;
+		bottom: -1px;
+		height: 1px;
+		background: var(--ed-accent);
+		transform-origin: left;
+		transform: scaleX(min(1, calc(var(--p, 1) * 1.6)));
+	}
+	.seccion-n {
+		font-family: var(--ed-display);
+		font-weight: 500;
+		font-size: clamp(3rem, 2rem + 4vw, 6.5rem);
+		letter-spacing: -0.06em;
+		line-height: 0.95;
+		color: transparent;
+		-webkit-text-stroke: 1px var(--ed-accent);
+	}
+	.seccion-titulo {
+		font-family: var(--ed-display);
+		font-weight: 560;
+		font-size: clamp(1.75rem, 1rem + 2.2vw, 3.25rem);
+		letter-spacing: -0.04em;
+		line-height: 1.02;
+		color: #fff;
+		margin: 0;
+		transition: color 0.4s var(--ed-expo);
+	}
+	.seccion:hover .seccion-titulo {
+		color: var(--ed-accent);
+	}
+	.seccion-preguntas {
+		margin: 14px 0 0;
+		font-family: var(--ed-serif);
+		font-style: italic;
+		font-size: clamp(1.25rem, 1rem + 0.9vw, 2rem);
+		line-height: 1.2;
+		color: rgb(255 255 255 / 0.68);
+	}
+
+	/* ================= once palabras ================= */
+	.palabras {
+		list-style: none;
+		margin: clamp(48px, 6vw, 88px) 0 0;
+		padding: 0;
+		display: grid;
+		grid-template-columns: repeat(5, minmax(0, 1fr));
+		gap: 0;
+		/* las líneas las dibuja cada celda (box-shadow): así la fila
+		   incompleta del final no deja un hueco gris. */
+		background: var(--ed-bg-2);
+		border: 1px solid var(--ed-line-strong);
+		border-radius: var(--ed-r-lg);
+		overflow: hidden;
+	}
+	.palabra {
+		position: relative;
+		background: var(--ed-bg-2);
+		box-shadow: 1px 0 0 var(--ed-line-strong), 0 1px 0 var(--ed-line-strong);
+		padding: 22px 22px 26px;
+		min-height: 240px;
+		display: flex;
+		flex-direction: column;
+		transition-delay: calc(var(--i, 0) * 70ms);
+		isolation: isolate;
+	}
+	.palabra::before {
+		content: '';
+		position: absolute;
+		inset: 0;
+		z-index: -1;
+		background: radial-gradient(260px circle at var(--mx, 50%) var(--my, 50%), rgb(232 200 116 / 0.16), transparent 70%);
+		opacity: 0;
+		transition: opacity 0.5s var(--ed-expo);
+	}
+	.palabra:hover::before {
+		opacity: 1;
+	}
+	.palabra-i {
+		color: rgb(255 255 255 / 0.35);
+		margin-bottom: auto;
+	}
+	/* Kaizen: fila propia, centrada, como eje de la grilla. */
+	.palabra--centro {
+		grid-column: 1 / -1;
+		align-items: center;
+		text-align: center;
+		min-height: 260px;
+		background: linear-gradient(180deg, rgb(232 200 116 / 0.07), transparent), var(--ed-bg-2);
+	}
+	.palabra--centro .palabra-i {
+		align-self: center;
+	}
+	.palabra--centro .palabra-kanji {
+		font-size: clamp(56px, 6vw, 96px);
+		transform-origin: center bottom;
+	}
+	@media (max-width: 1100px) {
+		.palabras {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+		}
+		/* 5 por grupo: la última de cada grupo ocupa la fila entera */
+		.palabra:nth-child(5),
+		.palabra:nth-child(11) {
+			grid-column: 1 / -1;
+		}
+	}
+	@media (max-width: 600px) {
+		.palabras {
+			grid-template-columns: 1fr;
+		}
+	}
+	.palabra-kanji {
+		margin-top: 28px;
+		font-size: clamp(36px, 3vw, 50px);
+		line-height: 1.1;
+		color: #fff;
+		letter-spacing: 0.02em;
+		white-space: nowrap;
+		transform-origin: left bottom;
+		transition: transform 0.7s var(--ed-expo), color 0.4s var(--ed-expo);
+	}
+	.palabra:hover .palabra-kanji {
+		transform: scale(1.12);
+		color: var(--ed-accent);
+	}
+	.palabra-romaji {
+		margin-top: 16px;
+		color: var(--ed-accent);
+	}
+	.palabra-linea {
+		margin-top: 8px;
+		font-size: 14.5px;
+		line-height: 1.5;
+		color: rgb(255 255 255 / 0.6);
+	}
+
+	/* ================= reglas ================= */
+	.reglas {
+		list-style: none;
+		margin: clamp(40px, 6vw, 88px) 0 0;
+		padding: 0;
+		display: flex;
+		flex-direction: column;
+	}
+	.regla {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) minmax(0, 3fr);
+		gap: var(--ed-gutter);
+		padding: clamp(28px, 4vw, 56px) 0;
+		border-top: 1px solid rgb(12 10 6 / 0.18);
+	}
+	.regla-n {
+		color: var(--ed-accent-ink);
+		padding-top: 0.8em;
+	}
+	.regla-t {
+		display: block;
+		font-family: var(--ed-serif);
+		font-style: italic;
+		font-weight: 400;
+		font-size: clamp(2rem, 1rem + 3.4vw, 4.6rem);
+		line-height: 1.02;
+		letter-spacing: -0.015em;
+		color: var(--ed-ink);
+		text-wrap: balance;
+		max-width: 16em;
+	}
+	.reglas-pie {
+		margin: 0;
+		padding-top: 24px;
+		border-top: 1px solid rgb(12 10 6 / 0.18);
+		font-size: 15.5px;
+		line-height: 1.6;
+		color: rgb(12 10 6 / 0.66);
+		max-width: 52ch;
+		margin-left: calc(25% + var(--ed-gutter) / 4);
+	}
+	.reglas-pie strong {
+		color: var(--ed-ink);
+		font-weight: 650;
+	}
+
+	/* ================= ema ================= */
+	.ceo-ema-glow {
+		position: absolute;
+		inset: 0;
+		z-index: -1;
+		background: radial-gradient(80% 60% at 70% 0%, rgb(232 200 116 / 0.16), transparent 60%);
+		pointer-events: none;
+	}
+	.ema {
+		position: relative;
+		padding: 56px clamp(20px, 3vw, 36px) 24px;
+		border-radius: 28px 28px 18px 18px;
+		background:
+			repeating-linear-gradient(176deg, rgb(255 255 255 / 0.02) 0 2px, transparent 2px 9px),
+			linear-gradient(160deg, #3a2c14, #20180b);
+		border: 1px solid rgb(232 200 116 / 0.3);
+		box-shadow: 0 40px 80px rgb(0 0 0 / 0.45);
+		clip-path: polygon(0 18%, 50% 0, 100% 18%, 100% 100%, 0 100%);
+	}
+	.ema-hole {
+		position: absolute;
+		top: 22px;
+		left: 50%;
+		width: 12px;
+		height: 12px;
+		margin-left: -6px;
+		border-radius: 50%;
+		background: var(--ed-bg);
+		box-shadow: inset 0 1px 2px rgb(0 0 0 / 0.8), 0 0 0 1px rgb(232 200 116 / 0.4);
+	}
+	.ema-label {
+		display: block;
+		font-family: var(--ed-display);
+		font-weight: 560;
+		font-size: clamp(1.25rem, 1rem + 0.8vw, 1.75rem);
+		letter-spacing: -0.035em;
+		line-height: 1.1;
+		color: #fff;
+		margin: 28px 0 18px;
+	}
+	.ema-txt {
+		width: 100%;
+		resize: vertical;
+		background: rgb(12 10 6 / 0.45);
+		border: 1px solid rgb(255 255 255 / 0.16);
+		border-radius: 14px;
+		padding: 16px 18px;
+		color: #fff;
+		font-family: var(--ed-serif);
+		font-style: italic;
+		font-size: clamp(1.25rem, 1rem + 0.6vw, 1.6rem);
+		line-height: 1.35;
+		outline: none;
+		transition: border-color 0.3s var(--ed-expo);
+	}
+	.ema-txt:focus {
+		border-color: var(--ed-accent);
+	}
+	.ema-txt::placeholder {
+		color: rgb(255 255 255 / 0.38);
+	}
+	.ema-pie {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: baseline;
+		justify-content: space-between;
+		gap: 6px 18px;
+		margin-top: 14px;
+		color: rgb(255 255 255 / 0.55);
+		text-transform: none;
+		letter-spacing: 0.02em;
+	}
+	.ema-contador {
+		color: var(--ed-accent);
+	}
+
+	/* ================= evento ================= */
+	.evento-hueco {
+		position: relative;
+		margin-top: clamp(40px, 5vw, 72px);
+		aspect-ratio: 16 / 9;
+		display: grid;
+		place-items: center;
+		padding: 24px;
+		border: 1px dashed rgb(255 255 255 / 0.2);
+		border-radius: var(--ed-r-lg);
+		background:
+			linear-gradient(rgb(255 255 255 / 0.04) 1px, transparent 1px) 0 0 / 100% 12.5%,
+			linear-gradient(90deg, rgb(255 255 255 / 0.04) 1px, transparent 1px) 0 0 / 6.25% 100%,
+			rgb(255 255 255 / 0.015);
+	}
+	.evento-hueco-rec {
+		position: absolute;
+		top: 18px;
+		left: 20px;
+		display: inline-flex;
+		align-items: center;
+		gap: 8px;
+		font-family: var(--ed-mono);
+		font-size: 11px;
+		letter-spacing: 0.08em;
+		color: rgb(255 255 255 / 0.45);
+	}
+	.evento-hueco-rec i {
+		width: 8px;
+		height: 8px;
+		border-radius: 50%;
+		background: var(--ed-accent);
+		animation: ceo-blink 1.6s steps(2, start) infinite;
+	}
+	@keyframes ceo-blink {
+		to { visibility: hidden; }
+	}
+	.evento-hueco-txt {
+		color: rgb(255 255 255 / 0.55);
+		text-align: center;
+		max-width: 34ch;
+	}
+	.ceo-evento-cta {
+		margin-top: 36px;
+	}
+
+	/* ================= responsive ================= */
+	@media (max-width: 900px) {
+		.ceo-hero-grid,
+		.ceo-split {
+			grid-template-columns: 1fr;
+			gap: 34px;
+		}
+		.ceo-cover {
+			order: -1;
+			max-width: 420px;
+		}
+		.ceo-head,
+		.seccion,
+		.regla {
+			grid-template-columns: 1fr;
+		}
+		.ceo-head {
+			grid-template-areas: 'n' 'k' 't' 'l';
+			grid-template-rows: auto;
+		}
+		.ceo-h2 {
+			margin-top: 14px;
+		}
+		.reglas-pie {
+			margin-left: 0;
+		}
+		.regla-n {
+			padding-top: 0;
+		}
+	}
+	@media (max-width: 560px) {
+		.ceo-form-row {
+			flex-wrap: wrap;
+			border-radius: 22px;
+		}
+		.ceo-form-prompt {
+			display: none;
+		}
+		.ceo-form input {
+			padding-left: 14px;
+		}
+		.ceo-form button {
+			width: 100%;
+		}
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.evento-hueco-rec i {
+			animation: none;
+		}
+		.palabra-kanji {
+			transition: none;
+		}
+		.palabra:hover .palabra-kanji {
+			transform: none;
+		}
+	}
+</style>
+
+<script>
+	// «El origen»: el texto se pinta palabra por palabra con el scroll, con la
+	// misma mecánica que «Quién es» en el home.
+	{
+		const caja = document.querySelector<HTMLElement>('[data-pinta]');
+		const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+		if (caja && !reduce) {
+			const palabras: HTMLElement[] = [];
+			const envolver = (nodo: Node) => {
+				Array.from(nodo.childNodes).forEach((n) => {
+					if (n.nodeType === 3) {
+						const frag = document.createDocumentFragment();
+						(n.textContent || '').split(/(\s+)/).forEach((t) => {
+							if (!t) return;
+							if (/^\s+$/.test(t)) frag.appendChild(document.createTextNode(t));
+							else {
+								const sp = document.createElement('span');
+								sp.className = 'pw';
+								sp.textContent = t;
+								frag.appendChild(sp);
+								palabras.push(sp);
+							}
+						});
+						n.parentNode!.replaceChild(frag, n);
+					} else if (n.nodeType === 1) envolver(n);
+				});
+			};
+			const bloques = Array.from(caja.querySelectorAll<HTMLElement>('[data-pinta-words]'));
+			bloques.forEach(envolver);
+			document.documentElement.classList.add('pinta-on');
+			const primero = bloques[0], ultimo = bloques[bloques.length - 1];
+			let raf = 0;
+			const pintar = () => {
+				raf = 0;
+				const vh = innerHeight;
+				const a = primero.getBoundingClientRect().top;
+				const b = ultimo.getBoundingClientRect().bottom;
+				const ini = vh * 0.85, fin = vh * 0.5;
+				const p = Math.min(1, Math.max(0, (ini - a) / ((b - a + (ini - fin)) || 1)));
+				const n = Math.round(p * palabras.length);
+				palabras.forEach((w, i) => w.classList.toggle('is-on', i < n));
+			};
+			addEventListener('scroll', () => { if (!raf) raf = requestAnimationFrame(pintar); }, { passive: true });
+			addEventListener('resize', () => { if (!raf) raf = requestAnimationFrame(pintar); });
+			pintar();
+		}
+	}
+
+	import { odoSet } from '../components/secciones/libros/ed';
+
+	// ---------- cuenta regresiva, sólo días ----------
+	// Mismo texto que antes («Faltan N días» / «Falta 1 día»); el número va
+	// en un odómetro (odoSet) salvo con reduced-motion.
+	const faltan = document.querySelector<HTMLElement>('.ceo-faltan[data-countdown]');
+	if (faltan) {
+		const target = new Date(faltan.dataset.countdown || '').getTime();
+		const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+		let num: HTMLElement | null = null;
+		let pre: Text | null = null;
+		let post: Text | null = null;
+		const tick = () => {
+			const left = target - Date.now();
+			if (left <= 0) {
+				faltan.hidden = true;
+				return;
+			}
+			const dias = Math.ceil(left / 86400000);
+			if (reduce) {
+				faltan.textContent = dias === 1 ? 'Falta 1 día' : `Faltan ${dias} días`;
+				return;
+			}
+			if (!num) {
+				faltan.textContent = '';
+				pre = document.createTextNode('');
+				num = document.createElement('span');
+				post = document.createTextNode('');
+				faltan.append(pre, num, post);
+			}
+			pre!.nodeValue = dias === 1 ? 'Falta ' : 'Faltan ';
+			post!.nodeValue = dias === 1 ? ' día' : ' días';
+			odoSet(num, String(dias), !num.dataset.odoValue);
+			if (num.dataset.odoRun !== '1') {
+				num.dataset.odoRun = '1';
+				requestAnimationFrame(() =>
+					requestAnimationFrame(() => {
+						num!.querySelectorAll<HTMLElement>('.ed-odo__col').forEach((c, i) => {
+							c.style.transitionDelay = `${300 + i * 120}ms`;
+							c.style.setProperty('--d', String(dias).replace(/\D/g, '')[i] ?? '0');
+						});
+					})
+				);
+			}
+		};
+		if (!Number.isNaN(target) && target > Date.now()) {
+			tick();
+			faltan.hidden = false;
+			setInterval(tick, 60000);
+		}
+	}
+
+	// ---------- aviso de lanzamiento ----------
+	// Sin endpoint el formulario se deshabilita y lo dice. Es preferible a un
+	// botón que parece funcionar y tira los mails a la basura.
+	document.querySelectorAll<HTMLFormElement>('[data-aviso]').forEach((form) => {
+		const endpoint = form.dataset.endpoint?.trim();
+		const nota = form.querySelector<HTMLElement>('[data-nota]')!;
+		const btn = form.querySelector('button')!;
+		const input = form.querySelector('input')!;
+
+		if (!endpoint) {
+			btn.disabled = true;
+			input.disabled = true;
+			nota.textContent = 'Todavía sin conectar: falta elegir el servicio que recibe los mails.';
+			return;
+		}
+
+		form.addEventListener('submit', async (e) => {
+			e.preventDefault();
+			btn.disabled = true;
+			nota.textContent = 'Enviando…';
+			try {
+				const res = await fetch(endpoint, {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+					body: JSON.stringify({ email: input.value }),
+				});
+				if (!res.ok) throw new Error(String(res.status));
+				form.reset();
+				nota.textContent = 'Listo. Te avisamos cuando haya fecha.';
+			} catch {
+				nota.textContent = 'No se pudo enviar. Probá de nuevo en un rato.';
+				btn.disabled = false;
+			}
+		});
+	});
+
+	// ---------- ema ----------
+	// Se guarda en el navegador de quien escribe y en ningún otro lado. El
+	// acceso va en try/catch porque en ventana privada localStorage tira.
+	document.querySelectorAll<HTMLElement>('[data-ema]').forEach((box) => {
+		const input = box.querySelector<HTMLTextAreaElement>('[data-ema-input]')!;
+		const count = box.querySelector<HTMLElement>('[data-ema-count]')!;
+		const CLAVE = 'ac:ema';
+		const max = Number(input.getAttribute('maxlength')) || 180;
+
+		const pintar = () => {
+			count.textContent = `${input.value.length} / ${max}`;
+		};
+
+		try {
+			const guardado = localStorage.getItem(CLAVE);
+			if (guardado) input.value = guardado;
+		} catch {
+			/* ventana privada o storage bloqueado: se sigue sin guardar */
+		}
+		pintar();
+
+		input.addEventListener('input', () => {
+			pintar();
+			try {
+				localStorage.setItem(CLAVE, input.value);
+			} catch {
+				/* idem */
+			}
+		});
+	});
+</script>

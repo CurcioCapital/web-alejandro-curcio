@@ -1,0 +1,695 @@
+---
+import PushLimits from '../components/secciones/deportista/PushLimits.astro';
+import CascoEnPista from '../components/secciones/deportista/CascoEnPista.astro';
+/**
+ * deportista.astro — la faceta «Deportista».
+ *
+ * Tiene página propia desde el 15/10/2026: antes vivía dentro de /aventura y
+ * al entrar por esta faceta lo primero que se veía era el hero de Aventurero
+ * (piscinas de hielo, kicker «Aventura»). Un ancla no alcanzaba.
+ *
+ * REHECHO el 16/10/2026 con tres correcciones de Dolores:
+ *  · El título anterior («CEO en semana, piloto en pista») no gustaba. El
+ *    nuevo sale de la propia bajada y además esquiva la palabra «piloto»,
+ *    que AYAX había pedido no usar porque sugiere que corre profesionalmente.
+ *  · La bajada quedaba como un párrafo suelto encima del video: ahora es una
+ *    línea de ficha en versalitas + una frase corta.
+ *  · El bloque «Al volante» era un video vertical solo contra mucho negro.
+ *    Ahora hay un mosaico con cinco piezas y una sola retícula.
+ *
+ * QUIÉN APARECE EN QUÉ. El clip del Drift Park es el único que el manifest
+ * certifica como «Ale al volante» (su casco lleva el trébol de Curcio
+ * Capital), y por eso es el que manda en el mosaico. Los tres cortes de
+ * ProDrift muestran la competencia, no a él: en esos planos el piloto lleva
+ * casco rosa. Los pies de foto lo dicen así, sin atribuir de más.
+ */
+import Base from '../layouts/Base.astro';
+import '../components/secciones/historia/pa-kit.css';
+
+const pad2 = (n: number) => String(n).padStart(2, '0');
+const ficha = ['Toyota Gazoo Racing Drift', 'Drift Park', 'ProDrift'];
+
+// Toyota Supra 2027: dos piezas verticales propias (IMG_5079 / IMG_5080,
+// entregadas el 26/10/2026). Sin pie inventado: sólo el titular pedido.
+const supra = [
+  {
+    src: '/media/video/supra-1.mp4',
+    poster: '/media/video/supra-1-poster.jpg',
+    alt: 'Toyota Supra con los colores de Toyota Gazoo Racing y el trébol de Curcio Capital, en estudio',
+  },
+  {
+    src: '/media/video/supra-2.mp4',
+    poster: '/media/video/supra-2-poster.jpg',
+    alt: 'Detalles del Toyota Supra de Toyota Gazoo Racing con el logo de Ayax en el frente',
+  },
+];
+
+const mosaico = [
+  {
+    clase: 'alta',
+    src: '/media/video/drift-park-card.mp4',
+    poster: '/media/video/drift-park-card-poster.jpg',
+    alt: 'Alejandro Curcio al volante en el Toyota Drift Park',
+    titulo: 'Al volante',
+    pie: 'Toyota Drift Park, 26 de abril de 2025. El casco lleva el trébol de Curcio Capital.',
+  },
+  {
+    src: '/media/video/drift-cabina.mp4',
+    poster: '/media/video/drift-cabina-poster.jpg',
+    alt: 'Un piloto dentro del auto durante la primera fecha de ProDrift',
+    titulo: 'Dentro del auto',
+    pie: 'ProDrift, primera fecha — 10 de mayo de 2025.',
+  },
+  {
+    // El corte de tarjeta de `brindis` mostraba el hall del evento, sin un
+    // solo traje de carrera: el pie que decía «celebrando en pista» era
+    // falso. Este tramo del video completo sí muestra al equipo.
+    src: '/media/video/gr-equipo.mp4',
+    poster: '/media/video/gr-equipo-poster.jpg',
+    alt: 'El equipo de Toyota Gazoo Racing Uruguay en la celebración de los 80 años de Ayax',
+    titulo: 'El equipo',
+    pie: 'Toyota Gazoo Racing Uruguay, en la celebración por los 80 años de Ayax.',
+  },
+  {
+    src: '/media/video/drift-humo.mp4',
+    poster: '/media/video/drift-humo-poster.jpg',
+    alt: 'Un auto derrapando entre humo de neumático',
+    titulo: 'Humo',
+    pie: 'La goma quemada es el puntaje: en drift se puntea el ángulo, la línea y el espectáculo.',
+  },
+  {
+    src: '/media/video/drift-pista.mp4',
+    poster: '/media/video/drift-pista-poster.jpg',
+    alt: 'Un Toyota Gazoo Racing en pista durante ProDrift',
+    titulo: 'Round 1',
+    pie: 'ProDrift Uruguay, primera fecha — 10 de mayo de 2025.',
+  },
+];
+---
+
+<Base
+  title="Deportista — Alejandro Curcio"
+  description="No mira las carreras desde la tribuna: corre drift él mismo con Toyota Gazoo Racing Drift."
+>
+<div class="pa pa--dep">
+  <section id="piloto" class="dep">
+    <!-- HERO a sangre: video del Drift con parallax, display enorme y una
+         telemetría decorativa (velocímetro + barra) atada al scroll. La
+         telemetría no muestra datos: sólo marcas y el avance de la página. -->
+    <CascoEnPista
+      titulo="En pista"
+      bajada="Toyota Gazoo Racing Drift Pilot"
+      frase="No mira las carreras desde la tribuna."
+      ficha={['Toyota Gazoo Racing Drift', 'Drift Park', 'ProDrift']}
+    />
+
+    <!-- Cinta gigante que cruza con el scroll (como charlesleclerc.com). -->
+    <PushLimits texto="Pushing the limits for better" />
+    <!-- Velocímetro: fijo durante TODO el scroll de la página (pedido 26/10). -->
+      <div class="dep-gauge dep-gauge--fixed" data-dep-gauge aria-hidden="true">
+        <svg viewBox="0 0 200 120" class="dep-gauge-svg">
+          <path class="dep-gauge-track" d="M20 110 A80 80 0 0 1 180 110" />
+          <path class="dep-gauge-fill" d="M20 110 A80 80 0 0 1 180 110" pathLength="100" />
+          {Array.from({ length: 21 }, (_, k) => {
+            const a = Math.PI * (1 - k / 20);
+            const r1 = k % 5 === 0 ? 62 : 68;
+            return (
+              <line
+                class:list={['dep-gauge-tick', k % 5 === 0 && 'is-major', k >= 16 && 'is-red']}
+                x1={100 + Math.cos(a) * r1}
+                y1={110 - Math.sin(a) * r1}
+                x2={100 + Math.cos(a) * 74}
+                y2={110 - Math.sin(a) * 74}
+              />
+            );
+          })}
+          <g class="dep-gauge-needle"><line x1="100" y1="110" x2="100" y2="44" /><circle cx="100" cy="110" r="5" /></g>
+        </svg>
+        <span class="pa-mono dep-gauge-read"><b data-dep-pct>000</b>%</span>
+      </div>
+
+    <!-- Marquesina decorativa: repite la ficha de arriba (aria-hidden). -->
+    <div class="dep-marquee pa-marquee" data-marquee data-marquee-speed="90" aria-hidden="true">
+      {[...ficha, ...ficha].map((t, k) => (
+        <span class:list={['dep-mq-item', 'pa-display', k % 2 === 1 && 'is-outline']}>{t}<i>✦</i></span>
+      ))}
+    </div>
+
+    <div class="wrap">
+      <!-- Una sola retícula para todo el material. La pieza certificada
+           («Al volante») manda: a sangre del ancho, con parallax. -->
+      <div class="dep-mosaico">
+        {
+          mosaico.map((m, i) => (
+            <figure class:list={['dep-pieza', m.clase]}>
+              <div class="dep-pieza-media pa-crop" data-reveal="mask" data-cursor="play" data-cursor-label="Play" data-dep-piece>
+                <div class="dep-pieza-par" data-parallax={i === 0 ? '0.1' : '0.05'}>
+                  <video
+                    src={m.src}
+                    poster={m.poster}
+                    muted
+                    loop
+                    autoplay
+                    playsinline
+                    preload="none"
+                    aria-label={m.alt}
+                  />
+                </div>
+                <button class="dep-toggle pa-mono" type="button" data-dep-toggle aria-label={`Pausar: ${m.titulo}`}>
+                  <span class="dep-toggle-ico" aria-hidden="true"></span><span data-dep-toggle-label>Pausa</span>
+                </button>
+                <span class="dep-pieza-idx pa-mono" aria-hidden="true">{pad2(i + 1)} / {pad2(mosaico.length)}</span>
+              </div>
+              <figcaption>
+                <span class="dep-pieza-titulo pa-display">{m.titulo}</span>
+                <span class="dep-pieza-pie">{m.pie}</span>
+              </figcaption>
+            </figure>
+          ))
+        }
+      </div>
+
+      <!-- TOYOTA SUPRA 2027: dos verticales lado a lado, mismo comportamiento
+           que el mosaico (reveal con máscara, autoplay en vista, pausa). -->
+      <section class="dep-supra" aria-labelledby="dep-supra-t">
+        <header class="dep-supra-head">
+          <p class="pa-kick"><span class="pa-idx">[ GR ]</span>En pista</p>
+          <h2 id="dep-supra-t" class="pa-display dep-supra-title" data-split="lines">Toyota Supra 2027</h2>
+        </header>
+        <div class="dep-supra-grid">
+          {
+            supra.map((m, i) => (
+              <figure class="dep-pieza dep-supra-pieza">
+                <div class="dep-pieza-media pa-crop" data-reveal="mask" data-cursor="play" data-cursor-label="Play" data-dep-piece>
+                  <div class="dep-pieza-par" data-parallax={i === 0 ? '0.04' : '0.09'}>
+                    <video src={m.src} poster={m.poster} muted loop autoplay playsinline preload="none" aria-label={m.alt} />
+                  </div>
+                  <button class="dep-toggle pa-mono" type="button" data-dep-toggle aria-label={`Pausar: Toyota Supra 2027, video ${i + 1}`}>
+                    <span class="dep-toggle-ico" aria-hidden="true"></span><span data-dep-toggle-label>Pausa</span>
+                  </button>
+                  <span class="dep-pieza-idx pa-mono" aria-hidden="true">{pad2(i + 1)} / {pad2(supra.length)}</span>
+                </div>
+              </figure>
+            ))
+          }
+        </div>
+      </section>
+
+      <blockquote class="dep-cita pa-quote">
+        <p data-split="words">
+          En el fondo lo que me encanta es la aventura del descubrimiento y la curiosidad por
+          generar valor donde otros aún no lo ven.
+        </p>
+        <cite>Alejandro Curcio — Forbes Uruguay, 23/01/2025</cite>
+      </blockquote>
+
+    </div>
+  </section>
+</div>
+</Base>
+
+<style>
+  .dep {
+    background: var(--pa-bg);
+    padding: 0 0 clamp(64px, 8vw, 120px);
+    color: var(--ink-hi);
+  }
+
+  /* ---- hero ---- */
+  .dep-hero {
+    --p: 0;
+    position: relative;
+    margin: 0;
+    min-height: var(--pa-hero-h);
+    display: flex;
+    align-items: flex-end;
+    overflow: hidden;
+    background: var(--pa-bg-2);
+    isolation: isolate;
+  }
+  .dep-hero-media {
+    position: absolute;
+    inset: -8% 0;
+    z-index: -2;
+  }
+  .dep-plate-video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 45%;
+  }
+  .dep-plate-scrim {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background:
+      linear-gradient(0deg, rgba(8, 7, 5, 0.96) 0%, rgba(8, 7, 5, 0.55) 38%, rgba(8, 7, 5, 0.08) 70%, rgba(8, 7, 5, 0.4) 100%),
+      linear-gradient(90deg, rgba(8, 7, 5, 0.6) 0%, transparent 60%);
+  }
+  .dep-plate-copy {
+    width: 100%;
+    padding-bottom: clamp(48px, 7vh, 88px);
+    display: grid;
+    gap: clamp(18px, 2.4vw, 30px);
+  }
+  .dep-plate-title {
+    font-size: clamp(44px, min(8.4vw, 15vh), 168px);
+    line-height: 0.98;
+    letter-spacing: -0.045em;
+    color: #fff;
+  }
+  .dep-plate-ficha {
+    color: rgba(255, 255, 255, 0.78);
+    margin: 0;
+  }
+  .dep-plate-ficha span {
+    color: var(--pa-accent);
+    margin: 0 10px;
+  }
+  .dep-hero-bar {
+    position: absolute;
+    inset: auto 0 0 0;
+    height: 2px;
+    background: rgb(255 255 255 / 0.12);
+  }
+  .dep-hero-bar i {
+    position: absolute;
+    inset: 0;
+    background: var(--pa-accent);
+    transform-origin: 0 50%;
+    transform: scaleX(var(--pg, 0));
+  }
+
+  /* velocímetro decorativo */
+  .dep-gauge {
+    position: fixed;
+    z-index: 60;
+    bottom: clamp(16px, 3vh, 32px);
+    right: var(--pa-pad-x);
+    width: clamp(130px, 12vw, 190px);
+    display: grid;
+    justify-items: center;
+    gap: 2px;
+    padding: 14px 14px 12px;
+    border-radius: 22px;
+    background: rgb(12 10 6 / 0.45);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: inset 0 0 0 1px var(--pa-line-strong);
+  }
+  .dep-gauge-svg {
+    width: 100%;
+    overflow: visible;
+  }
+  .dep-gauge-track,
+  .dep-gauge-fill {
+    fill: none;
+    stroke-width: 3;
+    stroke-linecap: round;
+  }
+  .dep-gauge-track {
+    stroke: rgb(255 255 255 / 0.14);
+  }
+  .dep-gauge-fill {
+    stroke: var(--pa-accent);
+    stroke-dasharray: 100;
+    stroke-dashoffset: calc(100 - var(--pg, 0) * 100);
+  }
+  .dep-gauge-tick {
+    stroke: rgb(255 255 255 / 0.4);
+    stroke-width: 1;
+  }
+  .dep-gauge-tick.is-major {
+    stroke: #fff;
+    stroke-width: 2;
+  }
+  .dep-gauge-tick.is-red {
+    stroke: var(--pa-accent);
+  }
+  .dep-gauge-needle {
+    transform-origin: 100px 110px;
+    transform: rotate(calc(-90deg + var(--pg, 0) * 180deg));
+    transition: transform 160ms linear;
+  }
+  .dep-gauge-needle line {
+    stroke: var(--pa-accent);
+    stroke-width: 2.5;
+    stroke-linecap: round;
+  }
+  .dep-gauge-needle circle {
+    fill: var(--pa-accent);
+  }
+  .dep-gauge-read {
+    color: var(--ink-mid);
+  }
+  .dep-gauge-read b {
+    font-size: 22px;
+    color: #fff;
+    font-weight: 600;
+    letter-spacing: 0;
+  }
+
+  /* ---- marquesina ---- */
+  .dep-marquee {
+    padding: clamp(28px, 4vw, 56px) 0;
+    border-bottom: 1px solid var(--pa-line);
+  }
+  .dep-mq-item {
+    display: inline-flex;
+    align-items: center;
+    gap: clamp(24px, 3vw, 48px);
+    padding-right: clamp(24px, 3vw, 48px);
+    font-size: clamp(52px, 8.4vw, 156px);
+    line-height: 1;
+    color: #fff;
+  }
+  .dep-mq-item.is-outline {
+    color: transparent;
+    -webkit-text-stroke: 1px rgb(232 200 116 / 0.7);
+  }
+  .dep-mq-item i {
+    font-style: normal;
+    font-size: 0.28em;
+    color: var(--pa-accent);
+    -webkit-text-stroke: 0;
+  }
+
+  /* ---- Toyota Supra 2027 ---- */
+  .dep-supra {
+    margin-top: clamp(80px, 10vw, 160px);
+    margin-bottom: clamp(64px, 9vw, 150px);
+  }
+  .dep-supra-head {
+    display: grid;
+    gap: clamp(14px, 1.6vw, 22px);
+    margin-bottom: clamp(32px, 4vw, 64px);
+  }
+  .dep-supra-title {
+    margin: 0;
+    font-size: clamp(48px, 9vw, 168px);
+    line-height: 0.9;
+    letter-spacing: -0.045em;
+    text-transform: uppercase;
+  }
+  .dep-supra-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(14px, 1.6vw, 26px);
+    max-width: 1080px;
+    margin-inline: auto;
+  }
+  .dep-supra-pieza:nth-child(2) {
+    margin-top: clamp(40px, 9vw, 160px);
+  }
+  .dep-supra .dep-pieza-media {
+    aspect-ratio: 9 / 16;
+  }
+  @media (max-width: 600px) {
+    .dep-supra-grid {
+      gap: 10px;
+    }
+    .dep-supra .dep-pieza-idx {
+      top: 14px;
+      left: 14px;
+    }
+    .dep-supra .dep-toggle {
+      right: 10px;
+      bottom: 10px;
+    }
+  }
+
+  /* ---- mosaico ---- */
+  .dep-mosaico {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(28px, 3vw, 48px) clamp(14px, 1.6vw, 26px);
+    margin-top: clamp(48px, 6vw, 96px);
+  }
+  .dep-pieza {
+    margin: 0;
+  }
+  .dep-pieza:nth-child(3),
+  .dep-pieza:nth-child(5) {
+    margin-top: clamp(0px, 8vw, 140px);
+  }
+  .dep-pieza.alta {
+    grid-column: 1 / -1;
+  }
+  .dep-pieza-media {
+    position: relative;
+    aspect-ratio: 16 / 10;
+    border-radius: var(--pa-r-lg);
+    overflow: hidden;
+    background: var(--pa-bg-2);
+    --pa-crop-o: 10px;
+    --pa-crop-c: rgb(255 255 255 / 0.55);
+    cursor: pointer;
+  }
+  .dep-pieza.alta .dep-pieza-media {
+    aspect-ratio: 21 / 9;
+  }
+  .dep-pieza-par {
+    position: absolute;
+    inset: -8% 0;
+  }
+  .dep-pieza-par video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 900ms var(--pa-ease);
+  }
+  .dep-pieza-media:hover video {
+    transform: scale(1.04);
+  }
+  .dep-pieza-idx {
+    position: absolute;
+    top: 22px;
+    left: 24px;
+    z-index: 2;
+    color: rgb(255 255 255 / 0.8);
+  }
+  .dep-toggle {
+    position: absolute;
+    right: 18px;
+    bottom: 18px;
+    z-index: 4;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px 8px 10px;
+    border: 0;
+    border-radius: 999px;
+    background: rgb(12 10 6 / 0.55);
+    backdrop-filter: blur(8px);
+    color: #fff;
+    cursor: pointer;
+    font-size: 11px;
+  }
+  /* Área táctil ≥44px sin agrandar la pastilla. */
+  .dep-toggle::after {
+    content: '';
+    position: absolute;
+    inset: -7px -4px;
+  }
+  .dep-toggle:hover {
+    background: var(--pa-accent);
+    color: var(--pa-ink);
+  }
+  .dep-toggle:focus-visible {
+    outline: 2px solid var(--pa-accent);
+    outline-offset: 3px;
+  }
+  .dep-toggle-ico {
+    width: 10px;
+    height: 10px;
+    background:
+      linear-gradient(currentColor, currentColor) left / 3px 100% no-repeat,
+      linear-gradient(currentColor, currentColor) right / 3px 100% no-repeat;
+  }
+  .dep-toggle.is-paused .dep-toggle-ico {
+    background: currentColor;
+    clip-path: polygon(0 0, 100% 50%, 0 100%);
+  }
+  .dep-pieza figcaption {
+    display: grid;
+    grid-template-columns: minmax(0, auto) minmax(0, 1fr);
+    gap: 18px;
+    align-items: baseline;
+    padding-top: 18px;
+    border-bottom: 1px solid var(--pa-line);
+    padding-bottom: 16px;
+  }
+  .dep-pieza-titulo {
+    font-size: clamp(26px, 2.5vw, 40px);
+    color: #fff;
+  }
+  .dep-pieza-pie {
+    font-size: 13.5px;
+    line-height: 1.45;
+    color: var(--ink-low);
+    max-width: 52ch;
+  }
+
+  /* ---- cita ---- */
+  .dep-cita {
+    margin: clamp(88px, 12vw, 180px) 0 0;
+    max-width: 1120px;
+  }
+  .dep-cita p {
+    font-family: var(--pa-serif);
+    font-style: italic;
+    font-size: clamp(32px, 1.2rem + 3vw, 72px);
+    line-height: 1.06;
+    color: #fff;
+    margin: 0;
+  }
+  .dep-cita cite {
+    margin-top: 26px;
+  }
+
+  .dep-salida {
+    margin-top: clamp(64px, 8vw, 120px);
+    padding-top: 28px;
+    border-top: 1px solid var(--pa-line-strong);
+  }
+  .dep-salida-link {
+    display: inline-flex;
+    align-items: center;
+    gap: clamp(16px, 2vw, 32px);
+    color: #fff;
+    text-decoration: none;
+  }
+  .dep-salida-txt {
+    font-size: clamp(38px, 8.6vw, 136px);
+    transition: color 300ms var(--pa-ease);
+  }
+  .dep-salida-ico {
+    display: grid;
+    place-items: center;
+    width: clamp(48px, 6vw, 96px);
+    flex: 0 0 auto;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: var(--pa-accent);
+    color: var(--pa-ink);
+    transition: transform 500ms var(--pa-ease);
+  }
+  .dep-salida-link:hover .dep-salida-txt {
+    color: var(--pa-accent);
+  }
+  .dep-salida-link:hover .dep-salida-ico {
+    transform: rotate(-45deg);
+  }
+  .dep-salida-link:focus-visible {
+    outline: 2px solid var(--pa-accent);
+    outline-offset: 6px;
+  }
+
+  @media (max-width: 760px) {
+    .dep-mosaico {
+      grid-template-columns: 1fr;
+    }
+    .dep-pieza:nth-child(n) {
+      margin-top: 0;
+    }
+    .dep-pieza.alta .dep-pieza-media {
+      aspect-ratio: 4 / 5;
+    }
+    .dep-pieza figcaption {
+      grid-template-columns: 1fr;
+      gap: 8px;
+    }
+    .dep-gauge {
+      width: 96px;
+      padding: 8px 8px 6px;
+      border-radius: 16px;
+      bottom: 14px;
+      right: 14px;
+    }
+    .dep-gauge-read b {
+      font-size: 16px;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .dep-gauge-needle,
+    .dep-pieza-par video {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  // Telemetría del héroe: --pg = avance de la página (0→1). Sólo decora.
+  const prm = matchMedia('(prefers-reduced-motion: reduce)');
+  const hero = document.querySelector<HTMLElement>('[data-dep-gauge]');
+  const pct = document.querySelector<HTMLElement>('[data-dep-pct]');
+  let raf = 0;
+  const paint = () => {
+    raf = 0;
+    const max = document.documentElement.scrollHeight - innerHeight;
+    const pg = max > 0 ? Math.min(1, Math.max(0, scrollY / max)) : 0;
+    hero?.style.setProperty('--pg', pg.toFixed(4));
+    if (pct) pct.textContent = String(Math.round(pg * 100)).padStart(3, '0');
+  };
+  addEventListener('scroll', () => { if (!raf) raf = requestAnimationFrame(paint); }, { passive: true });
+  paint();
+
+  // Videos: reproducen sólo cerca del viewport (rendimiento) y nunca con
+  // reduced-motion. El botón (o tocar el video) pausa / reanuda; la
+  // decisión del usuario se respeta al volver a entrar en pantalla.
+  const pieces = [...document.querySelectorAll<HTMLElement>('[data-dep-piece]')];
+  const heroVideo = document.querySelector<HTMLVideoElement>('[data-dep-video]');
+  const all: { v: HTMLVideoElement; box: HTMLElement; btn?: HTMLButtonElement | null; user?: boolean }[] = [];
+  if (heroVideo) all.push({ v: heroVideo, box: heroVideo.parentElement as HTMLElement });
+  pieces.forEach((box) => {
+    const v = box.querySelector('video');
+    if (!v) return;
+    v.removeAttribute('autoplay');
+    const item = { v, box, btn: box.querySelector<HTMLButtonElement>('[data-dep-toggle]'), user: false };
+    all.push(item);
+    const setUI = () => {
+      const paused = v.paused;
+      item.btn?.classList.toggle('is-paused', paused);
+      const lbl = item.btn?.querySelector('[data-dep-toggle-label]');
+      if (lbl) lbl.textContent = paused ? 'Play' : 'Pausa';
+      const title = item.btn?.getAttribute('aria-label')?.split(': ')[1] ?? '';
+      item.btn?.setAttribute('aria-label', `${paused ? 'Reproducir' : 'Pausar'}: ${title}`);
+    };
+    v.addEventListener('play', setUI);
+    v.addEventListener('pause', setUI);
+    const toggle = (e: Event) => {
+      e.stopPropagation();
+      if (v.paused) {
+        item.user = false;
+        v.play().catch(() => {});
+      } else {
+        item.user = true;
+        v.pause();
+      }
+    };
+    item.btn?.addEventListener('click', toggle);
+    box.addEventListener('click', toggle);
+    setUI();
+  });
+  if (heroVideo && prm.matches) {
+    heroVideo.removeAttribute('autoplay');
+    heroVideo.pause();
+  }
+
+  let rafV = 0;
+  const check = () => {
+    rafV = 0;
+    for (const it of all) {
+      const r = it.box.getBoundingClientRect();
+      const near = r.top < innerHeight + 200 && r.bottom > -200;
+      if (near && !prm.matches && !it.user) {
+        if (it.v.paused) it.v.play().catch(() => {});
+      } else if (!near && !it.v.paused) {
+        it.v.pause();
+      }
+    }
+  };
+  addEventListener('scroll', () => { if (!rafV) rafV = requestAnimationFrame(check); }, { passive: true });
+  addEventListener('resize', () => { if (!rafV) rafV = requestAnimationFrame(check); }, { passive: true });
+  check();
+</script>

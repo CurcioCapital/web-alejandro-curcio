@@ -1,0 +1,298 @@
+---
+/**
+ * kit/QuoteRotator.astro — auto-rotating testimonial, 500ms crossfade,
+ * avatar row synced + clickable (Robbins §4, click-to-jump is our upgrade).
+ * Usage: <QuoteRotator items={[{ quote, author, detail, avatarSrc }]} />
+ */
+interface QuoteItem {
+  quote: string;
+  author: string;
+  detail?: string;
+  avatarSrc: string;
+  bgSrc?: string;
+}
+
+interface Props {
+  items: QuoteItem[];
+  dwell?: number; // ms of dwell before auto-advancing
+  class?: string;
+}
+
+const { items, dwell = 3000, class: className = '' } = Astro.props;
+const hasBg = items.some((i) => i.bgSrc);
+---
+
+<div class:list={['kit-quote-rotator', className]} style={`--kit-dwell:${dwell}ms`}>
+  {
+    hasBg && (
+      <div class="kit-quote-rotator__bg-stack" aria-hidden="true">
+        {items.map(
+          (item, i) =>
+            item.bgSrc && (
+              <img
+                class:list={['kit-quote-rotator__bg', i === 0 && 'is-active']}
+                src={item.bgSrc}
+                alt=""
+                data-index={i}
+              />
+            )
+        )}
+        <div class="kit-quote-rotator__scrim" />
+      </div>
+    )
+  }
+  <div class="kit-quote-rotator__stage">
+    <div class="kit-quote-rotator__quotes">
+      {
+        items.map((item, i) => (
+          <blockquote class:list={['kit-quote-rotator__quote', i === 0 && 'is-active']} data-index={i}>
+            <p class="kit-quote-rotator__text">{item.quote}</p>
+            <footer class="kit-quote-rotator__meta">
+              <span class="kit-quote-rotator__author">{item.author}</span>
+              {item.detail && <span class="kit-quote-rotator__detail">{item.detail}</span>}
+            </footer>
+          </blockquote>
+        ))
+      }
+    </div>
+    <div class="kit-quote-rotator__avatars" role="tablist">
+      {
+        items.map((item, i) => (
+          <button
+            type="button"
+            class:list={['kit-quote-rotator__avatar', i === 0 && 'is-active']}
+            data-index={i}
+            role="tab"
+            aria-label={item.author}
+            aria-selected={i === 0 ? 'true' : 'false'}
+          >
+            <img src={item.avatarSrc} alt="" />
+          </button>
+        ))
+      }
+    </div>
+  </div>
+</div>
+
+<style>
+  .kit-quote-rotator {
+    position: relative;
+  }
+  .kit-quote-rotator__bg-stack {
+    position: absolute;
+    inset: 0;
+    border-radius: var(--radius-lg, 24px);
+    overflow: hidden;
+  }
+  .kit-quote-rotator__bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transition: opacity var(--dur, 500ms) var(--ease);
+  }
+  .kit-quote-rotator__bg.is-active {
+    opacity: 1;
+  }
+  .kit-quote-rotator__scrim {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0.15) 40%, rgba(0, 0, 0, 0.65) 100%);
+  }
+  .kit-quote-rotator__stage {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+    text-align: center;
+    padding: 24px;
+  }
+  .kit-quote-rotator__quotes {
+    display: grid;
+    width: 100%;
+    max-width: 780px;
+  }
+  /* Sin JS se ven TODAS las citas, una debajo de otra. Con JS se apilan
+     y rota una por vez. */
+  .kit-quote-rotator__quote {
+    grid-area: auto;
+  }
+  :global(html.js) .kit-quote-rotator__quote {
+    grid-area: 1 / 1;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s var(--ease, ease);
+  }
+  :global(html.js) .kit-quote-rotator__quote.is-active {
+    opacity: 1;
+    pointer-events: auto;
+    transition-delay: 0.15s;
+  }
+  :global(html.js) .kit-quote-rotator__quotes {
+    gap: 0;
+  }
+  .kit-quote-rotator__quotes {
+    gap: 40px;
+  }
+  /* motion: la cita entrante sube desde abajo, la saliente se va hacia arriba */
+  :global(html.mo) .kit-quote-rotator__text,
+  :global(html.mo) .kit-quote-rotator__meta {
+    translate: 0 28px;
+    transition: translate 0.9s var(--ease-expo, cubic-bezier(0.16, 1, 0.3, 1));
+  }
+  :global(html.mo) .kit-quote-rotator__quote.was-active .kit-quote-rotator__text,
+  :global(html.mo) .kit-quote-rotator__quote.was-active .kit-quote-rotator__meta {
+    translate: 0 -20px;
+    transition-duration: 0.6s;
+  }
+  :global(html.mo) .kit-quote-rotator__quote.is-active .kit-quote-rotator__text,
+  :global(html.mo) .kit-quote-rotator__quote.is-active .kit-quote-rotator__meta {
+    translate: none;
+    transition-delay: 0.12s;
+  }
+  :global(html.mo) .kit-quote-rotator__quote.is-active .kit-quote-rotator__meta {
+    transition-delay: 0.22s;
+  }
+  :global(html.mo) .kit-quote-rotator__bg {
+    scale: 1.06;
+    transition:
+      opacity 0.9s var(--ease, ease),
+      scale 6s linear;
+  }
+  :global(html.mo) .kit-quote-rotator__bg.is-active {
+    scale: 1;
+  }
+  .kit-quote-rotator__text {
+    font-size: var(--text-quote, clamp(24px, 3.4vw, 42px));
+    font-weight: 600;
+    line-height: 1.24;
+    letter-spacing: -0.015em;
+  }
+  .kit-quote-rotator__meta {
+    margin-top: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .kit-quote-rotator__author {
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+  }
+  .kit-quote-rotator__detail {
+    font-size: 13px;
+    opacity: 0.65;
+  }
+  .kit-quote-rotator__avatars {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .kit-quote-rotator__avatar {
+    position: relative;
+    width: 48px;
+    height: 48px;
+    border-radius: 999px;
+    border: none;
+    padding: 0;
+    overflow: hidden;
+    cursor: pointer;
+    opacity: 0.5;
+    transition: opacity var(--dur, 500ms) var(--ease), box-shadow var(--dur, 500ms) var(--ease);
+  }
+  .kit-quote-rotator__avatar:hover,
+  .kit-quote-rotator__avatar.is-active {
+    opacity: 1;
+  }
+  .kit-quote-rotator__avatar.is-active {
+    box-shadow: 0 0 0 2px var(--color-cobalt, #d9a93c);
+  }
+  /* progreso del tiempo de permanencia de la cita activa */
+  .kit-quote-rotator__avatar::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 3px;
+    background: var(--accent, var(--color-cobalt, #d9a93c));
+    transform-origin: 0 50%;
+    transform: scaleX(0);
+  }
+  .kit-quote-rotator__avatar.is-active::after {
+    transform: scaleX(var(--kit-prog, 0));
+  }
+  .kit-quote-rotator__avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+</style>
+
+<script>
+  // Rotación por tiempo de permanencia medido en rAF: sólo corre mientras la
+  // pieza está en pantalla, sin hover y con la pestaña visible (y no corre
+  // con reduced-motion: ahí se navega con los avatares). El avatar activo
+  // muestra el avance como una barra fina.
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function wire(root: HTMLElement) {
+    const quotes = Array.from(root.querySelectorAll<HTMLElement>('.kit-quote-rotator__quote'));
+    const avatars = Array.from(root.querySelectorAll<HTMLButtonElement>('.kit-quote-rotator__avatar'));
+    const bgs = Array.from(root.querySelectorAll<HTMLElement>('.kit-quote-rotator__bg'));
+    if (!quotes.length) return;
+
+    const dwellRaw = getComputedStyle(root).getPropertyValue('--kit-dwell');
+    const dwell = parseInt(dwellRaw, 10) || 3000;
+
+    let index = 0;
+    let elapsed = 0;
+    let hovering = false;
+
+    function show(i: number) {
+      quotes.forEach((q, qi) => {
+        q.classList.toggle('was-active', qi === index && qi !== i);
+        q.classList.toggle('is-active', qi === i);
+      });
+      index = i;
+      elapsed = 0;
+      avatars.forEach((a, ai) => {
+        a.classList.toggle('is-active', ai === i);
+        a.setAttribute('aria-selected', ai === i ? 'true' : 'false');
+        a.style.setProperty('--kit-prog', '0');
+      });
+      bgs.forEach((b) => b.classList.toggle('is-active', Number(b.dataset.index) === i));
+    }
+
+    avatars.forEach((a) => {
+      a.addEventListener('click', () => show(Number(a.dataset.index)));
+    });
+    root.addEventListener('mouseenter', () => (hovering = true));
+    root.addEventListener('mouseleave', () => (hovering = false));
+    root.addEventListener('focusin', () => (hovering = true));
+    root.addEventListener('focusout', () => (hovering = false));
+
+    if (reduced || quotes.length < 2) return;
+    let last = performance.now();
+    const loop = (now: number) => {
+      const dt = Math.min(100, now - last);
+      last = now;
+      requestAnimationFrame(loop);
+      if (document.hidden || hovering) return;
+      const r = root.getBoundingClientRect();
+      if (r.bottom < 0 || r.top > innerHeight) return;
+      elapsed += dt;
+      avatars[index]?.style.setProperty('--kit-prog', Math.min(1, elapsed / dwell).toFixed(3));
+      if (elapsed >= dwell) show((index + 1) % quotes.length);
+    };
+    requestAnimationFrame(loop);
+  }
+
+  document.querySelectorAll<HTMLElement>('.kit-quote-rotator').forEach(wire);
+</script>

@@ -1,0 +1,271 @@
+---
+/**
+ * ChannelCard.astro — seguime-only. Tarjeta de canal (Instagram / YouTube /
+ * LinkedIn). Rediseño 21/10/2026: tarjeta oscura con grilla fina,
+ * crop-marks y hover MAGNÉTICO (data-magnetic del motion global) + una luz
+ * que sigue al cursor (data-ed-spot). La plataforma va en display enorme,
+ * el handle y el kicker en mono. La cifra (375.000+) cuenta desde 0 con
+ * data-counter y termina exactamente en el texto original.
+ * `featured` la hace ancha y horizontal (Instagram principal).
+ *
+ * Sin URLs inventadas: los href siguen en "#" hasta que se confirme cada
+ * perfil oficial — ver los TODO junto a cada uso en seguime.astro. Con "#"
+ * el CTA queda inerte (aria-disabled), igual que antes.
+ */
+interface Props {
+  featured?: boolean;
+  kicker: string;
+  platform: string;
+  handle: string;
+  stat?: string;
+  description: string;
+  ctaLabel: string;
+  ctaHref: string;
+  stagger?: number;
+}
+
+const {
+  featured = false,
+  kicker,
+  platform,
+  handle,
+  stat,
+  description,
+  ctaLabel,
+  ctaHref,
+  stagger = 0,
+} = Astro.props;
+
+const pending = ctaHref === '#';
+---
+
+<article
+  class:list={['channel-card', featured && 'channel-card--featured']}
+  data-reveal
+  data-ed-spot
+  data-magnetic="0.06"
+  style={`--i:${stagger}`}
+>
+  <div class="channel-media">
+    <div class="channel-tile">
+      <span class="tk">{platform}</span>
+      <span class="tt ed-mono">{handle}</span>
+      <span class="channel-tile-n ed-mono" aria-hidden="true">{`[ 0${stagger + 1} ]`}</span>
+    </div>
+  </div>
+  <div class="channel-body">
+    <span class="channel-kicker ed-mono">{kicker}</span>
+    {stat && <span class="channel-stat" data-counter>{stat}</span>}
+    <p class="channel-desc">{description}</p>
+    <a
+      class:list={['channel-link', featured && 'channel-link--pill']}
+      href={pending ? undefined : ctaHref}
+      aria-disabled={pending ? 'true' : undefined}
+      data-magnetic={featured ? '' : undefined}
+    >
+      <span>{ctaLabel}</span>
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+        <line x1="5" y1="12" x2="19" y2="12" />
+        <polyline points="12 5 19 12 12 19" />
+      </svg>
+    </a>
+  </div>
+</article>
+
+<style>
+  .channel-card {
+    position: relative;
+    isolation: isolate;
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+    padding: 14px 14px 26px;
+    border-radius: var(--ed-r-lg);
+    background: var(--ed-bg-2);
+    border: 1px solid var(--ed-line-strong);
+    color: #fff;
+    transition: border-color 0.5s var(--ed-expo), background 0.5s var(--ed-expo);
+    transition-delay: 0s;
+  }
+  .channel-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 0%), rgb(232 200 116 / 0.16), transparent 65%);
+    opacity: 0;
+    transition: opacity 0.5s var(--ed-expo);
+  }
+  .channel-card:hover {
+    border-color: rgb(232 200 116 / 0.5);
+  }
+  .channel-card:hover::before {
+    opacity: 1;
+  }
+  .channel-tile {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 24px;
+    aspect-ratio: 16 / 11;
+    padding: 20px;
+    border-radius: calc(var(--ed-r-lg) - 8px);
+    overflow: hidden;
+    background:
+      linear-gradient(to right, rgb(255 255 255 / 0.05) 1px, transparent 1px) 0 0 / 25% 100%,
+      linear-gradient(rgb(255 255 255 / 0.05) 1px, transparent 1px) 0 0 / 100% 25%,
+      radial-gradient(90% 80% at 100% 0%, rgb(232 200 116 / 0.22), transparent 60%),
+      var(--ed-bg);
+  }
+  .channel-tile .tk {
+    order: 2;
+    font-family: var(--ed-display);
+    font-weight: 560;
+    font-size: clamp(2.75rem, 1.5rem + 3.4vw, 5rem);
+    line-height: 0.95;
+    letter-spacing: -0.035em;
+    color: #fff;
+    transition: transform 0.8s var(--ed-expo), color 0.4s;
+    transform-origin: left bottom;
+  }
+  .channel-card:hover .channel-tile .tk {
+    transform: translateY(-4px);
+    color: var(--ed-accent);
+  }
+  .channel-tile .tt {
+    order: 1;
+    color: var(--ed-accent);
+    word-break: break-word;
+    max-width: 80%;
+  }
+  .channel-tile-n {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    color: rgb(255 255 255 / 0.35);
+  }
+  .channel-body {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 0 8px;
+  }
+  .channel-kicker {
+    color: var(--ed-accent);
+  }
+  .channel-stat {
+    font-family: var(--ed-display);
+    font-weight: 560;
+    font-size: clamp(2.5rem, 1.5rem + 3vw, 5rem);
+    line-height: 0.95;
+    letter-spacing: -0.035em;
+    color: #fff;
+    font-variant-numeric: tabular-nums;
+  }
+  .channel-desc {
+    font-size: 15px;
+    line-height: 1.6;
+    color: rgb(255 255 255 / 0.66);
+    max-width: 46ch;
+    margin: 0;
+  }
+  .channel-link {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 8px;
+    padding: 12px 18px;
+    border-radius: 999px;
+    border: 1px solid rgb(255 255 255 / 0.25);
+    font-family: var(--ed-mono);
+    font-size: 11.5px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #fff;
+    text-decoration: none;
+    transition: background 0.4s var(--ed-expo), color 0.4s var(--ed-expo), border-color 0.4s;
+  }
+  .channel-link svg {
+    transition: transform 0.5s var(--ed-expo);
+  }
+  .channel-link:not([aria-disabled='true']):hover {
+    background: var(--ed-accent);
+    color: var(--ed-ink);
+    border-color: var(--ed-accent);
+  }
+  .channel-card:hover .channel-link:not([aria-disabled='true']) svg {
+    transform: translateX(4px);
+  }
+  .channel-link--pill {
+    background: var(--ed-accent);
+    color: var(--ed-ink);
+    border-color: var(--ed-accent);
+  }
+  .channel-link[aria-disabled='true'] {
+    opacity: 0.55;
+    cursor: default;
+  }
+
+  /* featured (Instagram principal): horizontal, tile ancho */
+  .channel-card--featured {
+    flex-direction: row;
+    align-items: stretch;
+    gap: clamp(24px, 4vw, 56px);
+    padding: 14px clamp(14px, 3vw, 40px) 14px 14px;
+  }
+  .channel-card--featured .channel-media {
+    flex: 0 0 48%;
+  }
+  .channel-card--featured .channel-tile {
+    height: 100%;
+    min-height: 360px;
+    aspect-ratio: auto;
+  }
+  .channel-card--featured .channel-tile .tk {
+    font-size: clamp(3.5rem, 1.5rem + 6vw, 8.5rem);
+  }
+  .channel-card--featured .channel-body {
+    flex: 1;
+    justify-content: center;
+    gap: 18px;
+    padding: 24px 0;
+  }
+  .channel-card--featured .channel-stat {
+    font-size: clamp(3.5rem, 1.5rem + 5vw, 7.5rem);
+    color: var(--ed-accent);
+  }
+  .channel-card--featured .channel-desc {
+    font-size: 17px;
+    max-width: 50ch;
+  }
+  @media (max-width: 900px) {
+    .channel-card--featured {
+      flex-direction: column;
+      padding: 14px 14px 26px;
+    }
+    .channel-card--featured .channel-media {
+      flex: none;
+    }
+    .channel-card--featured .channel-tile {
+      min-height: 0;
+      aspect-ratio: 16 / 11;
+    }
+    .channel-card--featured .channel-body {
+      padding: 0 8px;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .channel-tile .tk,
+    .channel-link svg {
+      transition: none;
+    }
+    .channel-card:hover .channel-tile .tk {
+      transform: none;
+    }
+  }
+</style>

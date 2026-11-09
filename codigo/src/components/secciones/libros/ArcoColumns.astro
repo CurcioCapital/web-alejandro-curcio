@@ -1,0 +1,437 @@
+---
+/**
+ * ArcoColumns.astro — Libros-only. «El arco» como RECORRIDO PINEADO
+ * (rediseño 21/10/2026): la escena queda fija mientras se scrollea y las
+ * tapas giran en 3D de un libro al siguiente — Adentro → Afuera → Método.
+ * El mouse inclina la escena (data-ed-tilt). Los tres pasos siguen siendo
+ * los mismos <a> a cada libro, con el mismo texto; el activo se enciende
+ * según el progreso (data-step lo pone ed.ts).
+ *
+ * Las tapas son las reales de /media/covers/. CEO DE TU VIDA no tiene tapa
+ * definitiva (la del manifest es PROVISORIA), así que se dibuja tipográfica
+ * con su propio título — igual que en el clímax de la página.
+ *
+ * Sin JS o con reduced-motion: no hay pin; los tres pasos y las tres tapas
+ * quedan en una grilla estática.
+ */
+
+interface ArcoStep {
+  index: string;
+  label: string;
+  year: string;
+  book: string;
+  line: string;
+  anchor: string;
+}
+
+interface Props {
+  steps: ArcoStep[];
+}
+
+const { steps } = Astro.props;
+
+const covers: Record<string, { id: string; ar: string } | undefined> = {
+  'capital-de-vida': { id: 'capital-de-vida-front', ar: '2048 / 3216' },
+  toolbook: { id: 'toolbook-front', ar: '2048 / 3008' },
+};
+---
+
+<div class="arco" data-ed-pin data-steps={steps.length} data-step="0">
+  <div class="arco-sticky" data-ed-tilt="9">
+    <div class="arco-stage" aria-hidden="true">
+      <div class="arco-orbit ed-tilt__obj">
+        {
+          steps.map((s, i) => {
+            const c = covers[s.anchor];
+            return (
+              <div class="arco-book" style={`--i:${i};--ar:${c?.ar ?? '2 / 3'}`}>
+                <div class="arco-book__front">
+                  {c ? (
+                    <picture>
+                      <source type="image/avif" srcset={`/media/covers/${c.id}-640.avif 640w, /media/covers/${c.id}-1280.avif 1280w`} sizes="340px" />
+                      <source type="image/webp" srcset={`/media/covers/${c.id}-640.webp 640w, /media/covers/${c.id}-1280.webp 1280w`} sizes="340px" />
+                      <img src={`/media/covers/${c.id}-640.jpg`} alt="" loading="lazy" decoding="async" />
+                    </picture>
+                  ) : (
+                    <div class="arco-book__typo">
+                      <span class="ed-mono">{s.year}</span>
+                      <span class="arco-book__typo-t">{s.book}</span>
+                    </div>
+                  )}
+                  <span class="arco-book__sheen" />
+                </div>
+                <div class="arco-book__spine">
+                  <span class="ed-mono">{s.book}</span>
+                </div>
+                <div class="arco-book__pages" />
+              </div>
+            );
+          })
+        }
+      </div>
+      <div class="arco-floor"></div>
+    </div>
+
+    <ol class="arco-steps">
+      {
+        steps.map((s, i) => (
+          <li>
+            <a class="arco-step ed-focus" href={`#${s.anchor}`} data-i={i}>
+              <span class="arco-index ed-mono">{s.index}</span>
+              <span class="arco-label">{s.label}</span>
+              <span class="arco-book-name ed-mono">
+                {s.book} <em>· {s.year}</em>
+              </span>
+              <p class="arco-line">{s.line}</p>
+            </a>
+          </li>
+        ))
+      }
+    </ol>
+
+    <div class="arco-progress ed-mono" aria-hidden="true">
+      <span class="arco-progress__bar"><i></i></span>
+      <span class="arco-progress__n">
+        {steps.map((s) => <b>{s.index}</b>)}
+        <span> / {String(steps.length).padStart(2, '0')}</span>
+      </span>
+    </div>
+  </div>
+</div>
+
+<style>
+  /* ---------------- base estática (sin JS / reduced-motion) ---------------- */
+  .arco {
+    position: relative;
+    margin-top: clamp(48px, 6vw, 88px);
+  }
+  .arco-sticky {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+    grid-template-areas:
+      'steps stage'
+      'prog stage';
+    gap: 24px clamp(24px, 4vw, 72px);
+    align-items: center;
+  }
+  .arco-stage {
+    grid-area: stage;
+    position: relative;
+    height: clamp(380px, 60vh, 620px);
+    perspective: 1600px;
+    perspective-origin: 50% 40%;
+  }
+  .arco-orbit {
+    position: absolute;
+    inset: 0;
+    transform-style: preserve-3d;
+  }
+  .arco-book {
+    --w: clamp(170px, 19vw, 300px);
+    --t: clamp(18px, 1.8vw, 30px);
+    --pinx: var(--pin, 0);
+    --d: calc(var(--i) - var(--pinx) * 2);
+    --ad: max(var(--d), calc(var(--d) * -1));
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: var(--w);
+    aspect-ratio: var(--ar);
+    margin-left: calc(var(--w) / -2);
+    translate: 0 -50%;
+    transform-style: preserve-3d;
+    transform:
+      translateX(calc(var(--d) * var(--w) * 1.12))
+      translateZ(calc(var(--ad) * -320px))
+      rotateY(calc(var(--d) * -42deg - 12deg))
+      rotateX(4deg);
+    opacity: calc(1 - var(--ad) * 0.38);
+  }
+  .arco-book__front,
+  .arco-book__spine,
+  .arco-book__pages {
+    position: absolute;
+    backface-visibility: hidden;
+  }
+  .arco-book__front {
+    inset: 0;
+    transform: translateZ(calc(var(--t) / 2));
+    border-radius: 3px 8px 8px 3px;
+    overflow: hidden;
+    background: #111;
+    box-shadow: 0 40px 80px rgb(0 0 0 / 0.55);
+  }
+  .arco-book__front img,
+  .arco-book__front picture {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .arco-book__sheen {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      100deg,
+      rgb(255 255 255 / 0.22) 0%,
+      transparent 9%,
+      transparent 60%,
+      rgb(255 255 255 / 0.08) 75%,
+      transparent 90%
+    );
+    mix-blend-mode: screen;
+    pointer-events: none;
+  }
+  .arco-book__spine {
+    top: 0;
+    bottom: 0;
+    left: calc(var(--t) / -2);
+    width: var(--t);
+    transform: rotateY(-90deg);
+    background: linear-gradient(90deg, #1b150b, #3b2c12 45%, #120e07);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border-radius: 3px 0 0 3px;
+  }
+  .arco-book__spine span {
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    color: var(--ed-accent);
+    font-size: 9px;
+    white-space: nowrap;
+  }
+  .arco-book__pages {
+    top: 4px;
+    bottom: 4px;
+    right: calc(var(--t) / -2 + 2px);
+    width: calc(var(--t) - 4px);
+    transform: rotateY(90deg);
+    background: repeating-linear-gradient(90deg, #efe9db 0 1px, #d9d1bd 1px 2px);
+  }
+  .arco-book__typo {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 22px 18px;
+    background:
+      radial-gradient(120% 70% at 20% 0%, rgb(232 200 116 / 0.35), transparent 60%),
+      linear-gradient(160deg, #2a1f0c, #0c0a06 70%);
+    color: #fff;
+  }
+  .arco-book__typo .ed-mono {
+    color: var(--ed-accent);
+  }
+  .arco-book__typo-t {
+    font-family: var(--ed-display);
+    font-weight: 600;
+    line-height: 0.95;
+    font-size: calc(var(--w) * 0.15);
+    letter-spacing: -0.04em;
+  }
+  .arco-floor {
+    position: absolute;
+    left: 10%;
+    right: 10%;
+    bottom: 4%;
+    height: 40px;
+    background: radial-gradient(closest-side, rgb(232 200 116 / 0.16), transparent);
+    filter: blur(6px);
+  }
+
+  /* ---------------- pasos ---------------- */
+  .arco-steps {
+    grid-area: steps;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid var(--ed-line-strong);
+  }
+  .arco-step {
+    display: grid;
+    grid-template-columns: 48px minmax(0, 1fr);
+    grid-template-areas:
+      'i label'
+      'i book'
+      'i line';
+    column-gap: 18px;
+    padding: clamp(16px, 2.2vh, 26px) 0;
+    border-bottom: 1px solid var(--ed-line-strong);
+    color: inherit;
+    text-decoration: none;
+    transition: opacity 0.6s var(--ed-expo);
+  }
+  .arco-index {
+    grid-area: i;
+    color: var(--ed-accent);
+    padding-top: 0.6em;
+  }
+  .arco-label {
+    grid-area: label;
+    font-family: var(--ed-display);
+    font-weight: 560;
+    font-size: clamp(2.125rem, 1.1rem + 3vw, 4.5rem);
+    line-height: 1;
+    letter-spacing: -0.045em;
+    transition: color 0.6s var(--ed-expo), transform 0.8s var(--ed-expo);
+    transform-origin: left center;
+  }
+  .arco-book-name {
+    grid-area: book;
+    margin-top: 10px;
+    color: rgb(255 255 255 / 0.8);
+  }
+  .arco-book-name em {
+    font-style: normal;
+    color: rgb(255 255 255 / 0.45);
+  }
+  .arco-line {
+    grid-area: line;
+    margin: 6px 0 0;
+    font-size: 15px;
+    line-height: 1.5;
+    color: rgb(255 255 255 / 0.62);
+    max-width: 40ch;
+  }
+  .arco-step:hover .arco-label {
+    color: var(--ed-accent);
+  }
+
+  /* ---------------- progreso ---------------- */
+  .arco-progress {
+    grid-area: prog;
+    display: none;
+    align-items: center;
+    gap: 16px;
+    color: rgb(255 255 255 / 0.5);
+  }
+  .arco-progress__bar {
+    flex: 1;
+    height: 1px;
+    background: var(--ed-line-strong);
+    overflow: hidden;
+  }
+  .arco-progress__bar i {
+    display: block;
+    height: 100%;
+    background: var(--ed-accent);
+    transform-origin: left;
+    transform: scaleX(var(--pin, 0));
+  }
+  .arco-progress__n {
+    display: inline-flex;
+    gap: 2px;
+  }
+  .arco-progress__n b {
+    display: none;
+    font-weight: 500;
+    color: var(--ed-accent);
+  }
+  .arco[data-step='0'] .arco-progress__n b:nth-child(1),
+  .arco[data-step='1'] .arco-progress__n b:nth-child(2),
+  .arco[data-step='2'] .arco-progress__n b:nth-child(3) {
+    display: inline;
+  }
+
+  /* ---------------- modo pin (sólo con JS y con motion) ---------------- */
+  @media (prefers-reduced-motion: no-preference) {
+    :global(html.ed-on) .arco {
+      height: 340vh;
+    }
+    :global(html.ed-on) .arco .arco-sticky {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      height: 100svh;
+      align-content: center;
+    }
+    :global(html.ed-on) .arco .arco-progress {
+      display: flex;
+    }
+    :global(html.ed-on) .arco .arco-step {
+      opacity: 0.32;
+    }
+    :global(html.ed-on) .arco[data-step='0'] .arco-step[data-i='0'],
+    :global(html.ed-on) .arco[data-step='1'] .arco-step[data-i='1'],
+    :global(html.ed-on) .arco[data-step='2'] .arco-step[data-i='2'],
+    :global(html.ed-on) .arco .arco-step:hover,
+    :global(html.ed-on) .arco .arco-step:focus-visible {
+      opacity: 1;
+    }
+    :global(html.ed-on) .arco[data-step='0'] .arco-step[data-i='0'] .arco-label,
+    :global(html.ed-on) .arco[data-step='1'] .arco-step[data-i='1'] .arco-label,
+    :global(html.ed-on) .arco[data-step='2'] .arco-step[data-i='2'] .arco-label {
+      color: var(--ed-accent);
+    }
+    .arco-book {
+      transition: opacity 0.2s linear;
+    }
+  }
+
+  /* reduced-motion o sin JS: tapas en fila, sin giro */
+  @media (prefers-reduced-motion: reduce) {
+    .arco-book {
+      transform: translateX(calc((var(--i) - 1) * var(--w) * 1.08));
+      opacity: 1;
+    }
+  }
+  :global(html:not(.ed-on)) .arco-book {
+    transform: translateX(calc((var(--i) - 1) * var(--w) * 1.08)) rotateY(-14deg);
+    opacity: 1;
+  }
+
+  /* ---------------- móvil ---------------- */
+  @media (max-width: 860px) {
+    .arco-sticky {
+      grid-template-columns: 1fr;
+      grid-template-areas:
+        'stage'
+        'steps'
+        'prog';
+      gap: 14px;
+    }
+    .arco-stage {
+      height: clamp(240px, 38vh, 360px);
+    }
+    .arco-book {
+      --w: clamp(120px, 34vw, 190px);
+      --t: 16px;
+    }
+    .arco-step {
+      grid-template-columns: 34px minmax(0, 1fr);
+      padding: 10px 0;
+    }
+    .arco-label {
+      font-size: clamp(1.9rem, 1rem + 5vw, 2.75rem);
+    }
+    .arco-line {
+      font-size: 13.5px;
+    }
+    .arco-book-name {
+      margin-top: 6px;
+    }
+  }
+  @media (max-width: 860px) and (prefers-reduced-motion: no-preference) {
+    :global(html.ed-on) .arco .arco-sticky {
+      align-content: start;
+      padding-top: 72px;
+    }
+    /* en el teléfono la línea del paso inactivo se pliega para que entre */
+    :global(html.ed-on) .arco .arco-step .arco-line {
+      display: none;
+    }
+    :global(html.ed-on) .arco[data-step='0'] .arco-step[data-i='0'] .arco-line,
+    :global(html.ed-on) .arco[data-step='1'] .arco-step[data-i='1'] .arco-line,
+    :global(html.ed-on) .arco[data-step='2'] .arco-step[data-i='2'] .arco-line {
+      display: block;
+    }
+  }
+</style>
+
+<script>
+  import "./ed";
+</script>

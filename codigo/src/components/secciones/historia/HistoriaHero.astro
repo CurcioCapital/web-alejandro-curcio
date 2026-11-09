@@ -1,0 +1,227 @@
+---
+/**
+ * HistoriaHero.astro — héroe de /historia (rediseño 21/10/2026).
+ *
+ * Mismo contenido que el SectionPhoto anterior (kicker, título, bajada, CTA,
+ * foto padre-hijo-barco con sus dos recortes): cambia el TRATAMIENTO.
+ * Display condensado gigante + los dos años del kicker («1945–2026») como
+ * numerales enormes decorativos que se separan con el scroll (data-scrub →
+ * --p). Los años son aria-hidden: el dato ya está en el kicker.
+ *
+ * OJO sufijos invertidos: «-v» es el HORIZONTAL (2048×1366) y «-h» el
+ * vertical. Ver LEEME-TRASPASO.md.
+ */
+import BlurImage from '../../BlurImage.astro';
+
+interface Props {
+  id: string;
+  kicker: string;
+  title: string;
+  sub: string;
+  ctaHref: string;
+  ctaLabel: string;
+  imgId: string;
+  imgIdNarrow?: string;
+  imgAlt: string;
+  yearA: string;
+  yearB: string;
+}
+
+const { id, kicker, title, sub, ctaHref, ctaLabel, imgId, imgIdNarrow, imgAlt, yearA, yearB } = Astro.props;
+---
+
+<section id={id} class="hh pa-grid" data-scrub>
+  <div class="hh-years" aria-hidden="true">
+    <span class="hh-year hh-year--a pa-display">{yearA}</span>
+    <span class="hh-year hh-year--b pa-display">{yearB}</span>
+  </div>
+
+  <div class="wrap hh-inner">
+    <div class="hh-top">
+      <p class="pa-kick"><span class="pa-idx">[ 01 ]</span>{kicker}</p>
+      <span class="pa-mono pa-scrollcue hh-cue" aria-hidden="true"><i></i>Scroll</span>
+    </div>
+
+    <h1 class="hh-title pa-display" data-split="lines">{title}</h1>
+
+    <figure class="hh-photo pa-crop" data-reveal="mask">
+      <div class="pa-media hh-photo-media">
+        <div class="hh-photo-par" data-parallax="-0.08">
+          <BlurImage id={imgId} idNarrow={imgIdNarrow} alt={imgAlt} eager sizes="(max-width: 860px) 100vw, 46vw" />
+        </div>
+      </div>
+      <figcaption class="pa-mono hh-photo-tag" aria-hidden="true">
+        <span>{yearA}</span><span class="hh-photo-rule"></span><span>{yearB}</span>
+      </figcaption>
+    </figure>
+
+    <div class="hh-copy">
+      <p class="pa-lead hh-sub" data-reveal>{sub}</p>
+      <a class="pa-btn" href={ctaHref} data-magnetic data-roll>
+        <span>{ctaLabel}</span>
+        <span class="pa-btn-ico" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M6 13l6 6 6-6"></path></svg>
+        </span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hh {
+    --p: 0;
+    position: relative;
+    min-height: var(--pa-hero-h);
+    padding: var(--pa-hero-pad) 0;
+    background:
+      radial-gradient(70% 50% at 85% 10%, rgb(232 200 116 / 0.09), transparent 60%),
+      var(--pa-bg);
+    overflow: hidden;
+    display: flex;
+  }
+  .hh-inner {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    column-gap: clamp(12px, 1.6vw, 24px);
+    min-height: calc(var(--pa-hero-h) - 2 * var(--pa-hero-pad));
+  }
+  .hh-top {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+  }
+  .hh-cue {
+    color: var(--ink-low, rgb(255 255 255 / 0.45));
+  }
+
+  .hh-title {
+    grid-column: 1 / 8;
+    grid-row: 2;
+    align-self: center;
+    position: relative;
+    z-index: 3;
+    font-size: clamp(48px, min(6.6vw, 12.5vh), 136px);
+    line-height: 0.98;
+    letter-spacing: -0.045em;
+    color: #fff;
+    padding: 3vh 0;
+  }
+
+  .hh-photo {
+    grid-column: 8 / 13;
+    grid-row: 2 / 4;
+    margin: 24px 0 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+  .hh-photo-media {
+    flex: 1;
+    min-height: 280px;
+    border-radius: var(--pa-r-lg);
+  }
+  .hh-photo-media::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, rgb(12 10 6 / 0.55), transparent 45%);
+  }
+  .hh-photo-par {
+    position: absolute;
+    inset: -8% 0;
+  }
+  .hh-photo-par :global(picture),
+  .hh-photo-par :global(img) {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 30%;
+  }
+  .hh-photo-tag {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 14px;
+    color: var(--ink-low, rgb(255 255 255 / 0.45));
+  }
+  .hh-photo-rule {
+    flex: 1;
+    height: 1px;
+    background: var(--pa-line-strong);
+  }
+
+  .hh-copy {
+    grid-column: 1 / 7;
+    grid-row: 3;
+    display: grid;
+    gap: 28px;
+    justify-items: start;
+    align-self: end;
+  }
+  .hh-sub {
+    max-width: 46ch;
+  }
+
+  /* Años gigantes: se abren hacia los costados mientras el héroe sale. */
+  .hh-years {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+  }
+  .hh-year {
+    position: absolute;
+    font-size: clamp(150px, 24vw, 440px);
+    line-height: 0.8;
+    color: transparent;
+    -webkit-text-stroke: 1px rgb(232 200 116 / 0.2);
+    letter-spacing: -0.05em;
+    will-change: transform;
+  }
+  .hh-year--a {
+    top: 12%;
+    left: -1vw;
+    transform: translate3d(calc(var(--p) * -16vw), 0, 0);
+  }
+  .hh-year--b {
+    bottom: -4%;
+    right: -1vw;
+    transform: translate3d(calc(var(--p) * 16vw), 0, 0);
+  }
+
+  @media (max-width: 860px) {
+    .hh-inner {
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+      min-height: 0;
+    }
+    .hh-title {
+      padding: 2vh 0 0;
+      font-size: clamp(40px, 10.6vw, 80px);
+    }
+    .hh-photo {
+      margin: 0;
+    }
+    .hh-photo-media {
+      flex: none;
+      aspect-ratio: 4 / 4.6;
+    }
+    .hh-year {
+      font-size: 46vw;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hh-year--a,
+    .hh-year--b {
+      transform: none;
+    }
+  }
+</style>

@@ -1,0 +1,47 @@
+---
+/**
+ * PillButton.astro — pill CTA, the site's only button shape.
+ * Usage: <PillButton href="/libros">Ver libros</PillButton>
+ *
+ * Rediseño 21/10/2026: en hover un relleno circular crece desde el punto
+ * por donde entra el cursor (CSS en styles/refresh.css; el origen lo
+ * escribe un listener delegado en Header.astro). El label lleva data-roll
+ * y el <a> data-magnetic: los inicializa el agente de motion
+ * (src/scripts). Props y textos sin cambios.
+ */
+interface Props {
+  href: string;
+  variant?: 'default' | 'outline' | 'dark';
+  arrow?: 'right' | 'down';
+  class?: string;
+}
+
+const { href, variant = 'default', arrow = 'right', class: className = '' } = Astro.props;
+const variantClass =
+  variant === 'outline' ? 'pill--outline' : variant === 'dark' ? 'pill--dark' : '';
+// href="#" marks a channel/link not yet confirmed (see Footer.astro,
+// ChannelCard.astro) — render inert rather than a link that jumps to "#".
+const isPending = href === '#';
+---
+
+<a
+  class:list={['pill', variantClass, className]}
+  href={isPending ? undefined : href}
+  aria-disabled={isPending ? 'true' : undefined}
+  data-magnetic={isPending ? undefined : ''}
+>
+  <span class="pill-label" data-roll={isPending ? undefined : ''}><slot /></span>
+  {
+    arrow === 'down' ? (
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+        <line x1="12" y1="5" x2="12" y2="19" />
+        <polyline points="19 12 12 19 5 12" />
+      </svg>
+    ) : (
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+        <line x1="5" y1="12" x2="19" y2="12" />
+        <polyline points="12 5 19 12 12 19" />
+      </svg>
+    )
+  }
+</a>

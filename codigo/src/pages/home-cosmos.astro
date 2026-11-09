@@ -1,0 +1,483 @@
+---
+/**
+ * home-cosmos.astro — TERCERA VERSIÓN DE COMPARACIÓN. No reemplaza nada.
+ *
+ * Pedido de Dolores (07/09/2026): «me gusta también que se vaya armando
+ * mientras vas scrolleando, tipo cosmos.uy — hacelo sobre otra versión para
+ * ver cómo queda».
+ *
+ * QUÉ HACE COSMOS.UY (medido, no de memoria): GSAP + ScrollTrigger + Lenis +
+ * SplitType. Sin scroll-snap. Su vocabulario es máscara que se abre, líneas
+ * de titular que suben escalonadas, parallax dentro del marco y una galería
+ * pinneada. Todo eso está reproducido acá sin dependencias — el motor está
+ * en src/scripts/ensamblado.ts y explica por qué.
+ *
+ * El contenido es el mismo material verificado de siempre. El cierre —los
+ * libros y el chat— usa los MISMOS componentes que el home, así que las tres
+ * versiones terminan igual y la comparación es sobre la mecánica, no sobre
+ * el contenido.
+ */
+import Base from '../layouts/Base.astro';
+import BlurImage from '../components/BlurImage.astro';
+import ArcoLibros from '../components/secciones/home/ArcoLibros.astro';
+import PreguntaleAle from '../components/secciones/home/PreguntaleAle.astro';
+
+const facetas = [
+  { n: '01', word: 'Empresario', linea: 'Ayax S.A. y Curcio Capital', href: '/negocios',
+    video: '/media/video/bz4x-card.mp4', poster: '/media/video/bz4x-card-poster.jpg',
+    alt: 'Alejandro Curcio en el lanzamiento del Toyota bZ4X' },
+  { n: '02', word: 'Deportista', linea: 'Toyota Gazoo Racing Uruguay', href: '/deportista',
+    video: '/media/video/drift-park-card.mp4', poster: '/media/video/drift-park-card-poster.jpg',
+    alt: 'Casco de Alejandro Curcio en el Toyota Drift Park' },
+  { n: '03', word: 'Aventurero', linea: 'Récord Guinness, 2024', href: '/aventura',
+    foto: '/media/img/guinness-03-1280.jpg',
+    alt: 'Alejandro Curcio en el barril de hielo del récord Guinness 2024' },
+  { n: '04', word: 'Pensador', linea: 'Dos libros publicados', href: '/libros',
+    video: '/media/video/toolbook-aftermovie-card.mp4', poster: '/media/video/toolbook-aftermovie-card-poster.jpg',
+    alt: 'Presentación del libro Toolbook' },
+  { n: '05', word: 'Solidario', linea: 'Drift Arena Solidario, Teletón', href: '/negocios',
+    video: '/media/video/drift-solidario-card.mp4', poster: '/media/video/drift-solidario-card-poster.jpg',
+    alt: 'Drift Arena Solidario, noviembre de 2024' },
+  { n: '06', word: 'Legado', linea: 'AYAX, desde 1945', href: '/historia',
+    video: '/media/video/fiat600r-card.mp4', poster: '/media/video/fiat600r-card-poster.jpg',
+    alt: 'Alejandro Curcio y la anécdota del Fiat 600R' },
+];
+
+// Hitos con fuente y fecha — los mismos de 05 — Hechos verificados.md.
+// `pie` dice qué muestra REALMENTE la imagen. No tenemos foto de 1945 ni de
+// 1968: la que acompaña es material de archivo de la casa, y el pie lo
+// aclara en vez de dejar que la imagen insinúe que documenta el hito.
+const hitos = [
+  { anio: '1945', titulo: 'Enero', texto: 'Emilio J. Curcio funda Ayax S.A. con 22 años, dedicada desde el inicio a la industria y el comercio automotriz.',
+    img: 'padre-hijo-barco-v', alt: 'Alejandro Curcio junto a su hijo Lucca Curcio con un trofeo en forma de barco',
+    pie: 'Alejandro y Lucca Curcio, tercera y cuarta generación.' },
+  { anio: '1968', titulo: 'Toyota', texto: 'Ayax obtiene la representación de Toyota. Con ella llegan valores que no se negocian: respeto, disciplina, mejora continua.',
+    img: 'gala-quinteto', alt: 'La familia Curcio en la gala por los 80 años de Ayax',
+    pie: 'La familia Curcio en la gala por los 80 años de Ayax, 2025.' },
+  { anio: '2021', titulo: 'Cannes Lions', texto: 'HY Project —un sistema de sonido para híbridos y eléctricos que regenera plantas— gana en Cannes junto a The Electric Factory.',
+    src: '/media/video/hyproject-moma-poster.jpg', alt: 'El HY Project expuesto en el MoMA de Nueva York',
+    pie: 'El HY Project, expuesto en el MoMA de Nueva York.' },
+  { anio: '2024', titulo: 'Guinness', texto: 'Récord mundial de baño de hielo simultáneo. La filosofía japonesa aplicada al cuerpo, no sólo a la empresa.',
+    img: 'guinness-05', alt: 'Récord Guinness de baño de hielo simultáneo, Montevideo, abril de 2024',
+    pie: 'Montevideo, 13 de abril de 2024.' },
+];
+---
+
+<Base
+  title="Alejandro Curcio — versión que se arma"
+  description="Tercera versión de comparación: la página se ensambla mientras scrolleás. No reemplaza el home."
+>
+  <div class="cos">
+    <div class="aviso">
+      <strong>Tercera versión.</strong> La página se arma mientras scrolleás — la mecánica de
+      cosmos.uy. El home actual sigue en <a href="/">/</a> y la versión Tony en <a href="/home-tony">/home-tony</a>.
+    </div>
+
+    <!-- ═══ 1 · HERO ═══ El video se destapa con máscara y el titular sube
+         línea por línea. Es el gesto de apertura de cosmos. -->
+    <section class="cos-hero">
+      <div class="cos-hero-marco" data-ens>
+        <video class="cos-hero-video" src="/media/video/sucesion-hero-loop-1600.mp4"
+          poster="/media/video/sucesion-poster.jpg" autoplay muted loop playsinline></video>
+        <span class="cos-hero-scrim"></span>
+      </div>
+      <div class="cos-hero-copy">
+        <h1 class="cos-h1" data-ens="titular">El verdadero capital se forja.</h1>
+        <p class="cos-hero-pie" data-ens>Ochenta años de Ayax. Tres libros. Un sistema.</p>
+      </div>
+    </section>
+
+    <!-- ═══ 2 · MANIFIESTO ═══ Sólo tipografía: acá el ensamblado se ve
+         limpio, sin imagen que distraiga. -->
+    <section class="cos-manifiesto">
+      <p class="cos-lead" data-ens="titular">
+        No construyó autoridad para después hacer cosas. Hizo las cosas durante cuarenta años y
+        recién ahora las cuenta.
+      </p>
+    </section>
+
+    <!-- ═══ 3 · GALERÍA PINNEADA ═══ El equivalente al gallery_component de
+         cosmos (position:sticky, top:0): el título queda fijo mientras las
+         facetas desfilan al costado. -->
+    <section class="cos-galeria">
+      <div class="cos-galeria-fijo">
+        <span class="cos-kicker" data-ens>Por dónde entrar</span>
+        <h2 class="cos-h2" data-ens="titular">Una vida. Seis facetas.</h2>
+        <p class="cos-galeria-nota" data-ens>Ninguna explica sola a la anterior.</p>
+      </div>
+
+      <div class="cos-galeria-lista">
+        {facetas.map((f, i) => (
+          <a class="cos-faceta" href={f.href}>
+            <div class="cos-faceta-marco" data-ens>
+              {f.video ? (
+                <video src={f.video} poster={f.poster} muted loop playsinline preload="none" data-cos-video></video>
+              ) : (
+                <img src={f.foto} alt={f.alt} loading="lazy" decoding="async" />
+              )}
+            </div>
+            <div class="cos-faceta-pie" data-ens style={`transition-delay:${120 + i * 40}ms`}>
+              <span class="cos-faceta-n">{f.n}</span>
+              <span class="cos-faceta-word">{f.word}</span>
+              <span class="cos-faceta-linea">{f.linea}</span>
+            </div>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <!-- ═══ 4 · HITOS CON PARALLAX ═══ La imagen se mueve dentro de su marco
+         mientras pasa, y el año entra desfasado. Es el bloque «hito_img» de
+         cosmos, con nuestros datos verificados. -->
+    <section class="cos-hitos">
+      <div class="cos-hitos-head">
+        <span class="cos-kicker" data-ens>El expediente</span>
+        <h2 class="cos-h2" data-ens="titular">Cada dato tiene fuente y fecha.</h2>
+      </div>
+
+      {hitos.map((h, i) => (
+        <article class:list={['cos-hito', i % 2 === 1 && 'cos-hito--inv']}>
+          <div class="cos-hito-marco" data-ens>
+            <div class="cos-hito-media" data-ens-parallax="70">
+              <BlurImage id={h.img} src={h.src} kind="img" alt={h.alt} />
+            </div>
+          </div>
+          <div class="cos-hito-texto">
+            <span class="cos-hito-anio" data-ens>{h.anio}</span>
+            <h3 class="cos-hito-titulo" data-ens="titular">{h.titulo}</h3>
+            <p class="cos-hito-p" data-ens>{h.texto}</p>
+            <span class="cos-hito-pie" data-ens>{h.pie}</span>
+          </div>
+        </article>
+      ))}
+    </section>
+
+    <!-- ═══ 5 · LIBROS Y CHAT ═══ Los mismos componentes que el home. -->
+    <ArcoLibros />
+    <PreguntaleAle />
+  </div>
+</Base>
+
+<style>
+  .cos {
+    --cos-edge: clamp(20px, 5vw, 72px);
+    --cos-oro: var(--color-cobalt-bright, #d9a93c);
+    background: var(--color-cap-2, #0a0805);
+    color: var(--ink-hi);
+  }
+
+  .aviso {
+    background: rgb(var(--accent-rgb) / 0.14);
+    border-bottom: 1px solid rgb(var(--accent-rgb) / 0.3);
+    color: var(--ink-hi);
+    font-size: 13.5px;
+    text-align: center;
+    padding: 12px 20px;
+  }
+  .aviso a { color: var(--cos-oro); text-decoration: underline; }
+
+  /* ── el ensamblado ─────────────────────────────────────────────────
+     OJO CON LA ESPECIFICIDAD. Astro agrega su atributo de scope a cada
+     selector que NO va envuelto en :global(). Si el estado inicial se
+     escribe suelto y el final con :global(), el inicial queda más
+     específico y la clase .ens-visto no puede ganarle nunca: todo se
+     queda enmascarado para siempre. Por eso los dos estados se escriben
+     con la MISMA forma, y el final va después.
+
+     El estado inicial cuelga de html.ens-on, que lo pone el JS: si el
+     script falla, la página se ve entera en vez de quedar invisible. */
+  :global(html.ens-on) .cos :global([data-ens]) {
+    opacity: 0;
+    clip-path: inset(100% 0 0 0);
+    transition:
+      opacity 900ms var(--ease-out, cubic-bezier(0.22, 1, 0.36, 1)),
+      clip-path 1100ms var(--ease-out, cubic-bezier(0.22, 1, 0.36, 1));
+  }
+  :global(html.ens-on) .cos :global([data-ens].ens-visto) {
+    opacity: 1;
+    clip-path: inset(0 0 0 0);
+  }
+
+  /* Los titulares no llevan máscara propia: la hacen sus líneas, que suben
+     desde abajo de su marco. */
+  :global(html.ens-on) .cos :global([data-ens='titular']) {
+    opacity: 1;
+    clip-path: none;
+  }
+  .cos :global(.ens-linea) {
+    display: block;
+    overflow: hidden;
+  }
+  .cos :global(.ens-linea-i) {
+    display: block;
+    transform: translateY(112%);
+  }
+  :global(html.ens-on) .cos :global([data-ens='titular'].ens-visto .ens-linea-i) {
+    transform: translateY(0);
+  }
+  :global(html.ens-on) .cos :global(.ens-linea-i) {
+    transition: transform 1000ms var(--ease-out, cubic-bezier(0.22, 1, 0.36, 1));
+  }
+
+  .cos :global([data-ens-parallax]) {
+    will-change: transform;
+  }
+
+  /* ── tipografía ───────────────────────────────────────────────────── */
+  .cos-h1 {
+    font-size: clamp(2.6rem, 1.2rem + 5.4vw, 6rem);
+    font-weight: 700;
+    line-height: 0.94;
+    letter-spacing: -0.038em;
+    margin: 0;
+  }
+  .cos-h2 {
+    font-size: clamp(1.9rem, 1.2rem + 2.8vw, 3.6rem);
+    font-weight: 700;
+    line-height: 1.02;
+    letter-spacing: -0.03em;
+    margin: 12px 0 0;
+  }
+  .cos-kicker {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--cos-oro);
+  }
+
+  /* ── 1 · hero ─────────────────────────────────────────────────────── */
+  .cos-hero {
+    padding: clamp(24px, 3vw, 44px) var(--cos-edge) clamp(56px, 7vw, 110px);
+  }
+  .cos-hero-marco {
+    position: relative;
+    border-radius: var(--radius-sheet, 24px);
+    overflow: hidden;
+    aspect-ratio: 16 / 9;
+    background: #111;
+  }
+  .cos-hero-video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 14%;
+  }
+  .cos-hero-scrim {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(0deg, rgba(6, 7, 10, 0.62) 0%, transparent 52%);
+  }
+  .cos-hero-copy {
+    margin-top: clamp(28px, 4vw, 52px);
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+  .cos-hero-pie {
+    font-size: var(--text-lead, 1.05rem);
+    color: var(--ink-mid);
+    margin: 0;
+  }
+
+  /* ── 2 · manifiesto ───────────────────────────────────────────────── */
+  .cos-manifiesto {
+    padding: clamp(60px, 9vw, 150px) var(--cos-edge);
+    border-top: 1px solid var(--color-line, rgba(255, 255, 255, 0.1));
+  }
+  .cos-lead {
+    font-size: clamp(1.4rem, 0.9rem + 2.2vw, 2.8rem);
+    font-weight: 600;
+    line-height: 1.22;
+    letter-spacing: -0.028em;
+    max-width: 24ch;
+    margin: 0;
+  }
+
+  /* ── 3 · galería pinneada ─────────────────────────────────────────── */
+  .cos-galeria {
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    gap: clamp(32px, 5vw, 80px);
+    padding: 0 var(--cos-edge) clamp(60px, 8vw, 120px);
+    align-items: start;
+  }
+  .cos-galeria-fijo {
+    position: sticky;
+    top: clamp(90px, 12vh, 140px);
+    padding-top: clamp(40px, 6vw, 90px);
+  }
+  .cos-galeria-nota {
+    margin: 16px 0 0;
+    color: var(--ink-low);
+    font-size: 14.5px;
+  }
+  .cos-galeria-lista {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(40px, 6vw, 96px);
+    padding-top: clamp(40px, 6vw, 90px);
+  }
+  .cos-faceta {
+    display: block;
+  }
+  .cos-faceta-marco {
+    position: relative;
+    aspect-ratio: 4 / 3;
+    border-radius: 14px;
+    overflow: hidden;
+    background: #14151a;
+  }
+  .cos-faceta-marco video,
+  .cos-faceta-marco img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 900ms var(--ease-out, cubic-bezier(0.22, 1, 0.36, 1));
+  }
+  .cos-faceta:hover .cos-faceta-marco video,
+  .cos-faceta:hover .cos-faceta-marco img {
+    transform: scale(1.04);
+  }
+  .cos-faceta-pie {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    column-gap: 16px;
+    align-items: baseline;
+    margin-top: 18px;
+    padding-top: 16px;
+    border-top: 1px solid var(--color-line, rgba(255, 255, 255, 0.12));
+  }
+  .cos-faceta-n {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--cos-oro);
+    font-variant-numeric: tabular-nums;
+  }
+  .cos-faceta-word {
+    font-size: clamp(1.4rem, 1rem + 1.4vw, 2.1rem);
+    font-weight: 700;
+    letter-spacing: -0.026em;
+  }
+  .cos-faceta-linea {
+    grid-column: 2;
+    font-size: 13.5px;
+    color: var(--ink-low);
+    margin-top: 4px;
+  }
+
+  /* ── 4 · hitos con parallax ───────────────────────────────────────── */
+  .cos-hitos {
+    padding: clamp(60px, 8vw, 130px) var(--cos-edge);
+    border-top: 1px solid var(--color-line, rgba(255, 255, 255, 0.1));
+  }
+  .cos-hitos-head {
+    margin-bottom: clamp(40px, 6vw, 88px);
+  }
+  .cos-hito {
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+    gap: clamp(28px, 4vw, 72px);
+    align-items: center;
+  }
+  .cos-hito + .cos-hito {
+    margin-top: clamp(56px, 8vw, 132px);
+  }
+  .cos-hito--inv .cos-hito-marco {
+    order: 2;
+  }
+  /* El marco recorta; el medio adentro es más alto y se desplaza: así el
+     parallax no deja franjas vacías arriba ni abajo. */
+  .cos-hito-marco {
+    position: relative;
+    aspect-ratio: 5 / 4;
+    border-radius: 16px;
+    overflow: hidden;
+    background: #14151a;
+  }
+  .cos-hito-media {
+    position: absolute;
+    inset: -12% 0;
+  }
+  .cos-hito-media :global(picture) {
+    position: absolute;
+    inset: 0;
+  }
+  .cos-hito-media :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .cos-hito-anio {
+    display: block;
+    font-size: clamp(2.6rem, 1.5rem + 3.6vw, 4.6rem);
+    font-weight: 700;
+    line-height: 0.9;
+    letter-spacing: -0.04em;
+    color: var(--cos-oro);
+    font-variant-numeric: tabular-nums;
+  }
+  .cos-hito-titulo {
+    font-size: clamp(1.3rem, 1rem + 1.2vw, 1.9rem);
+    font-weight: 600;
+    letter-spacing: -0.024em;
+    margin: 14px 0 0;
+  }
+  .cos-hito-pie {
+    display: block;
+    margin-top: 16px;
+    font-size: 12.5px;
+    letter-spacing: 0.02em;
+    color: var(--ink-low);
+  }
+  .cos-hito-p {
+    margin: 12px 0 0;
+    font-size: 15.5px;
+    line-height: 1.6;
+    color: var(--ink-mid);
+    max-width: 42ch;
+  }
+
+  @media (max-width: 900px) {
+    .cos-galeria,
+    .cos-hito {
+      grid-template-columns: 1fr;
+    }
+    .cos-galeria-fijo {
+      position: static;
+      padding-bottom: 8px;
+    }
+    .cos-hito--inv .cos-hito-marco {
+      order: 0;
+    }
+  }
+</style>
+
+<script>
+  import { iniciarEnsamblado } from '../scripts/ensamblado';
+
+  iniciarEnsamblado();
+
+  /* Los videos de las facetas sólo corren mientras se ven. Sin
+     IntersectionObserver: en el panel de preview no dispara. */
+  const videos = Array.from(document.querySelectorAll<HTMLVideoElement>('[data-cos-video]'));
+  let raf = 0;
+  const revisar = () => {
+    raf = 0;
+    for (const v of videos) {
+      const r = v.getBoundingClientRect();
+      const dentro = r.bottom > -80 && r.top < window.innerHeight + 80;
+      if (dentro) {
+        if (v.paused) v.play().catch(() => {});
+      } else if (!v.paused) {
+        v.pause();
+      }
+    }
+  };
+  addEventListener('scroll', () => { if (!raf) raf = requestAnimationFrame(revisar); }, { passive: true });
+  revisar();
+</script>

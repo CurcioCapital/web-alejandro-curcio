@@ -1,0 +1,206 @@
+---
+/**
+ * index.astro — home page, the Home v2 "film": 4 chapters on a continuous
+ * canvas of stacked sheets (see Especificación — Home v2) that travels
+ * ink night → dark stage → warm dawn → noche dorada.
+ *
+ * NOTA (2026-08-27): el acento de identidad está en PRUEBA DE DORADO.
+ * Para volver al azul ver el bloque de tokens en styles/tokens.css.
+ *
+ *   1. Apertura   — (21/10/2026: ahora HeroRetrato, ver abajo; lo que sigue es la historia) compact InsetHeroCard con el titular solo
+ *                   sobre el video. No CTA: el scroll es el CTA.
+ *                   La cinta de medios (El País, Cannes, Guinness…) que
+ *                   corría al pie de la tarjeta se quitó el 28/09/2026.
+ *                   VIDEO (27/09/2026): es el aftermovie de los 80 años
+ *                   de Ayax, recorte de alfombra roja. Historia del cambio,
+ *                   por si alguien lo revisa:
+ *                     · Estaba el discurso de sucesión: luz media 21/255.
+ *                       Lo que se leía como «todo negro» era falta de LUZ,
+ *                       no de color — su saturación ya era 0.82, alta.
+ *                     · Se probó un corte del escenario azul (fiat600r):
+ *                       más luz, pero se pidió volver a los 80 años.
+ *                   El corte va de 0,5s a 6,2s del card de 10s: a los 7s
+ *                   entra un plano de producto que rompía el loop. Ese
+ *                   card es lo ÚNICO que hay en disco de los 80 años, y
+ *                   está a 1280x720 — el máster 4K vive en el Dropbox de
+ *                   JD Producciones. Con él se puede rehacer a 1600+.
+ *   2. Facetas    — carrusel horizontal con la anatomía del de Tony
+ *                   Robbins: encabezado con título + enlace + flechas,
+ *                   tarjetas verticales con el texto adentro, puntos
+ *                   abajo. Antes era un cilindro 3D (FacetasCarousel3D,
+ *                   que sigue en el repo por si hay que volver).
+ *   3. El Arco    — the three books on the light sheet; covers cascade in
+ *                   from the right (translateX scrub via motion.ts, no
+ *                   pin, no snap) toward the single orange object of the
+ *                   site (CEO DE TU VIDA) + the cobalt rule.
+ *   4. Preguntale — cobalt-night closing sheet: native input + 3 chips
+ *                   that redirect to /preguntale?q=…. Stillness closes.
+ *
+ * Sheet classes (.sheet / .sheet--cap-N / .sheet--flush / .sheet-seam /
+ * .sheet--glow-top) live in components.css; motion tokens in tokens.css;
+ * shared scroll physics in src/scripts/motion.ts.
+ */
+import Base from '../layouts/Base.astro';
+import HeroRetrato from '../components/secciones/home/HeroRetrato.astro';
+import FacetasCarrusel from '../components/secciones/home/FacetasCarrusel.astro';
+import QuienEs from '../components/secciones/home/QuienEs.astro';
+import ArcoLibros from '../components/secciones/home/ArcoLibros.astro';
+import PreguntaleAle from '../components/secciones/home/PreguntaleAle.astro';
+
+// Facetas → 3D cylinder carousel (FacetasCarousel3D). Each card is word +
+// one short verified quote (src/data/quotes.json / vault sources). Video
+// cards use the 720x1280 -card cuts (10s, no audio) with their own
+// posters; Aventurero/Solidario only exist as photos.
+// «Deportista» reemplazó a «Piloto» (31/08/2026): la solapa de Toolbook lo
+// llama «Piloto de Toyota Gazoo Racing Drift», pero desde AYAX indicaron que
+// no corresponde usarlo — sugiere que corre profesionalmente. Ver la nota en
+// 05 — Hechos verificados.md. La cita sigue siendo la de Forbes 2025.
+const facetas = [
+	{
+		index: '01',
+		word: 'Empresario',
+		linea: 'Ayax S.A. y Curcio Capital',
+		quote: 'La crisis, al final, se había convertido en una oportunidad.',
+		quoteSource: 'Capital de Vida',
+		exploreLabel: 'Explorar Negocios',
+		exploreHref: '/negocios',
+		// Lanzamiento del bZ4X (2026), no el discurso de sucesión: ese clip ya
+		// aparecía en el hero de la home Y en el de /negocios, tres veces el
+		// mismo material. Este además muestra el auto, que es el negocio.
+		videoSrc: '/media/video/bz4x-card.mp4',
+		poster: '/media/video/bz4x-card-poster.jpg',
+		alt: 'Alejandro Curcio hablando en el lanzamiento del Toyota bZ4X, el primer SUV eléctrico japonés en Uruguay',
+	},
+	{
+		index: '02',
+		word: 'Deportista',
+		linea: 'Toyota Gazoo Racing Uruguay',
+		quote: 'En el fondo lo que me encanta es la aventura del descubrimiento y la curiosidad por generar valor donde otros aún no lo ven.',
+		quoteSource: 'Forbes Uruguay, 2025',
+		exploreLabel: 'Explorar Aventura',
+		exploreHref: '/deportista',
+		videoSrc: '/media/video/drift-park-card.mp4',
+		poster: '/media/video/drift-park-card-poster.jpg',
+		alt: 'Casco de Alejandro Curcio con los logos de Curcio Capital y Toyota Gazoo Racing Uruguay, en el Toyota Drift Park',
+	},
+	{
+		index: '03',
+		word: 'Aventurero',
+		linea: 'Monte Fuji, Japón',
+		quote: 'La montaña y los negocios tienen mucho en común.',
+		quoteSource: 'Pilar «El Negocio»',
+		exploreLabel: 'Explorar Aventura',
+		exploreHref: '/aventura',
+		// Única foto propia de la subida (ruta Gotemba). El video del hielo
+		// pasó a Solidario junto con el récord Guinness.
+		photoSrc: '/media/img/fuji-referencia-1280.webp',
+		alt: 'Alejandro Curcio y su grupo al pie del torii de la ruta Gotemba del Monte Fuji',
+	},
+	{
+		index: '04',
+		word: 'Pensador',
+		linea: 'Dos libros publicados',
+		quote: 'La felicidad no es algo que uno busca, sino algo que uno se permite.',
+		quoteSource: 'Capital de Vida',
+		exploreLabel: 'Explorar Libros',
+		exploreHref: '/libros',
+		videoSrc: '/media/video/toolbook-aftermovie-card.mp4',
+		poster: '/media/video/toolbook-aftermovie-card-poster.jpg',
+		alt: 'Aftermovie de la presentación del libro Toolbook',
+	},
+	{
+		index: '05',
+		word: 'Solidario',
+		linea: 'Récord Guinness, 2024',
+		quote: 'El éxito corporativo está vacío si no logramos democratizar las oportunidades y mejorar el ecosistema a nuestro alrededor.',
+		quoteSource: 'Pilar «La Figura»',
+		exploreLabel: 'Explorar Solidario',
+		exploreHref: '/solidario',
+		// Video propio de AYAX (Dropbox TOYOTA 2024 / ICE Challenge). Hasta el
+		// 14/10/2026 esta faceta era la ÚNICA con foto fija: no había video
+		// usable: los únicos clips de hielo eran proxies de 204x360 del
+		// prototipo viejo. Dolores pasó el máster y de ahí sale este corte.
+		videoSrc: '/media/video/guinness-card.mp4',
+		poster: '/media/video/guinness-card-poster.jpg',
+		alt: 'Alejandro Curcio dentro del barril de hielo en el récord Guinness Ice Challenge 2024',
+	},
+];
+
+---
+
+<Base
+	title="Alejandro Curcio"
+	description="Alejandro Curcio — empresario, piloto, aventurero, pensador, solidario, padre. El verdadero capital se forja."
+>
+	<!-- ============ CAPÍTULO 1 — APERTURA (21/10/2026) ============
+	     Héroe «como landonorris.com» (pedido del cliente): nombre en display
+	     gigante con profundidad, retrato de traje al centro y, bajo el
+	     cursor, la versión piloto GR. Titular: lockup trébol + «Capital de
+	     Vida» (cambio aprobado por el cliente el 21/10/2026). El
+	     loop de los 80 años (fondo del héroe anterior, sin texto ni
+	     créditos) queda como mini-card. Ver HeroRetrato.astro. -->
+	<section class="chapter-hero">
+		<HeroRetrato
+			title="Capital de Vida"
+			videoSrc="/media/video/gala80-hero-loop.mp4"
+			poster="/media/video/gala80-hero-loop-poster.jpg"
+			focus="50% 45%"
+		/>
+	</section>
+
+	<!-- ============ CAPÍTULO 2 — FACETAS (dark stage #08090F) ============
+	     Carrusel con la anatomía del de Tony Robbins (referencia de Dolores,
+	     27/09/2026): encabezado con título + enlace + flechas, tarjetas
+	     verticales con el texto adentro, y puntos abajo. Reemplazó al
+	     cilindro 3D — FacetasCarousel3D.astro sigue en el repo, así que
+	     volver atrás es cambiar el import y el bloque de abajo. -->
+	<section id="facetas" class="sheet sheet--cap-2 sheet--flush facetas-section">
+		<FacetasCarrusel
+			facetas={facetas}
+			titulo="Una vida. Cinco facetas."
+			enlaceLabel="Elegí por dónde entrar"
+			enlaceHref="/historia"
+		/>
+	</section>
+
+	<!-- ============ QUIÉN ES ============
+	     Va DESPUÉS de las facetas y ANTES de los libros: el carrusel abre
+	     seis puertas sin decir nunca quién es el tipo, y el lector pide la
+	     respuesta corta justo ahí, antes de que le ofrezcan un libro. -->
+	<QuienEs />
+
+	<!-- ============ CAPÍTULO 3 — EL ARCO (cobalt dawn) ============
+	     No light sheet: the chapter stays in the film's dark thread but the
+	     canvas RISES — a cobalt dawn gradient lifts the page out of black,
+	     with a warm ember glow behind the CEO cover. Covers cascade in from
+	     the right on scroll (translateX + opacity via motion.ts, offsets
+	     96/160/224px, no pin, no snap); CEO DE TU VIDA travels farthest,
+	     lands last, and is the site's only orange object. -->
+	<ArcoLibros />
+
+	<PreguntaleAle />
+</Base>
+
+<style>
+	/* ============ Capítulo 1 — apertura ============ */
+	.chapter-hero {
+		padding: 0;
+		background: var(--color-black, #0c0a06);
+	}
+
+	.facetas-section {
+		padding-top: clamp(72px, 9vw, 140px);
+		padding-bottom: clamp(56px, 7vw, 110px);
+	}
+
+	/* Los libros suben como una lámina con esquinas redondeadas sobre la
+	   hoja hueso de «Quién es» (sticky stacking). Sólo en el home: el
+	   componente también vive en /home-tony y /home-cosmos. */
+	:global(#libros.arco-section) {
+		position: relative;
+		z-index: 1;
+		margin-top: calc(-1 * var(--radius-xl, 40px));
+		border-radius: var(--radius-xl, 40px) var(--radius-xl, 40px) 0 0;
+		overflow: clip;
+	}
+</style>

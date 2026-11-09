@@ -1,0 +1,157 @@
+---
+/**
+ * kit-demo.astro — acceptance test for src/components/kit/. Exercises every
+ * kit component with real site media. Hidden route: not linked from nav,
+ * reachable directly at /kit-demo. Kept in the site as a living QA page.
+ */
+import Base from '../layouts/Base.astro';
+import Carousel from '../components/kit/Carousel.astro';
+import HoverPlayCard from '../components/kit/HoverPlayCard.astro';
+import VideoModal from '../components/kit/VideoModal.astro';
+import QuoteRotator from '../components/kit/QuoteRotator.astro';
+import Ticker from '../components/kit/Ticker.astro';
+import Accordion from '../components/kit/Accordion.astro';
+import quotesData from '../data/quotes.json';
+import pressData from '../data/press.json';
+
+const carouselCards = [
+  { title: 'Brindis AYAX 80 años', poster: '/media/video/brindis-poster.jpg' },
+  { title: 'Anuncio de sucesión', poster: '/media/video/sucesion-poster.jpg' },
+  { title: 'El cordón Andon', poster: '/media/video/chispa-poster.jpg' },
+  { title: 'Mi padre y el Fiat 600R', poster: '/media/video/fiat600r-poster.jpg' },
+  { title: 'El HY Project y el MoMA', poster: '/media/video/hyproject-moma-poster.jpg' },
+  { title: 'Toolbook — aftermovie', poster: '/media/video/toolbook-aftermovie-poster.jpg' },
+];
+
+// Three verified quotes from src/data/quotes.json, paired with guinness
+// portraits (public/media/img/guinness-0{1,2,3}) as stand-in avatars.
+const quoteItems = [
+  quotesData.find((q) => q.text.startsWith('El dinero es una invención')),
+  quotesData.find((q) => q.text.startsWith('No hay nada más poderoso')),
+  quotesData.find((q) => q.text.startsWith('El verdadero capital de una persona')),
+].map((q, i) => ({
+  quote: q!.text,
+  author: 'Alejandro Curcio',
+  detail: q!.source,
+  avatarSrc: `/media/img/guinness-0${i + 1}-640.jpg`,
+}));
+
+const pressNames = Array.from(new Set(pressData.map((p) => p.medium)));
+
+const faqItems = [
+  {
+    q: '¿Quién construyó este kit de interacciones?',
+    a: 'Es el kit compartido de src/components/kit/ — seis componentes autocontenidos (Carousel, HoverPlayCard, VideoModal, QuoteRotator, Ticker, Accordion) listos para usar en cualquier página del sitio de Alejandro Curcio.',
+  },
+  {
+    q: '¿De dónde salen los comportamientos medidos?',
+    a: 'Del análisis en vivo de tonyrobbins.com (carrusel Swiper, video-en-hover, modal Radix, testimonios auto-rotativos, acordeón FAQ) — timings y easings reproducidos a partir de getComputedStyle y las instancias JS reales, no estimados a ojo.',
+  },
+  {
+    q: '¿Qué se mejoró respecto del sitio original?',
+    a: 'El botón de cierre (X) del modal de video, que Robbins no tiene visible; el estado disabled de las flechas del carrusel al llegar al límite; y el click-to-jump en los avatares del selector de testimonios, que en Robbins solo rota por temporizador.',
+  },
+  {
+    q: '¿Esta página forma parte del sitio final?',
+    a: 'Sí, queda como ruta oculta (no enlazada desde el nav) que sirve de test de aceptación del kit — se puede visitar directamente en /kit-demo.',
+  },
+];
+---
+
+<Base title="Kit demo — Alejandro Curcio" description="Test de aceptación del kit de interacciones compartido.">
+  <section class="wrap" style="padding: 64px 0 24px;">
+    <span class="kicker">Kit de interacciones</span>
+    <h2 class="section-title" style="max-width: none;">src/components/kit/</h2>
+    <p class="section-lead">
+      Página oculta de aceptación: cada componente del kit compartido, ejercitado con media real del
+      sitio.
+    </p>
+  </section>
+
+  <!-- 1. Carousel -->
+  <section class="wrap" style="padding: 40px 0;">
+    <h2 class="section-title" style="font-size: 28px; margin-bottom: 12px;">Carousel</h2>
+    <p class="section-lead" style="margin-bottom: 32px;">
+      Scroll-snap horizontal, flechas circulares con estado disabled, drag con momentum, autoplay + dots.
+    </p>
+    <Carousel dots autoplay autoplayDelay={4500} ariaLabel="Momentos de Alejandro Curcio">
+      {
+        carouselCards.map((c) => (
+          <div
+            style="width: 260px; aspect-ratio: 3/4; border-radius: 18px; overflow: hidden; position: relative; background: #111;"
+          >
+            <img
+              src={c.poster}
+              alt={c.title}
+              style="width:100%; height:100%; object-fit:cover; display:block;"
+              loading="lazy"
+            />
+            <div
+              style="position:absolute; inset:0; background: linear-gradient(to top, rgba(0,0,0,.75), transparent 55%); display:flex; align-items:flex-end; padding: 16px;"
+            >
+              <span style="color:#fff; font-size:14px; font-weight:600;">{c.title}</span>
+            </div>
+          </div>
+        ))
+      }
+    </Carousel>
+  </section>
+
+  <!-- 2. HoverPlayCard -->
+  <section class="wrap" style="padding: 40px 0;">
+    <h2 class="section-title" style="font-size: 28px; margin-bottom: 12px;">HoverPlayCard</h2>
+    <p class="section-lead" style="margin-bottom: 32px;">
+      Video muted en loop que arranca en hover (mouse) o al 60% en viewport (touch), sin resetear al salir.
+    </p>
+    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; max-width: 720px;">
+      <HoverPlayCard src="/media/video/brindis.mp4" poster="/media/video/brindis-poster.jpg" alt="Brindis AYAX 80 años">
+        <h3 style="font-size: 18px; font-weight: 600;">Brindis AYAX 80 años</h3>
+      </HoverPlayCard>
+      <HoverPlayCard src="/media/video/fiat600r.mp4" poster="/media/video/fiat600r-poster.jpg" alt="El Fiat 600R">
+        <h3 style="font-size: 18px; font-weight: 600;">El Fiat 600R</h3>
+      </HoverPlayCard>
+    </div>
+  </section>
+
+  <!-- 3. VideoModal -->
+  <section class="wrap" style="padding: 40px 0;">
+    <h2 class="section-title" style="font-size: 28px; margin-bottom: 12px;">VideoModal</h2>
+    <p class="section-lead" style="margin-bottom: 32px;">
+      Overlay negro 90%, zoom-in-95% + fade en 150ms, cierre con Escape o con la X (agregada — Robbins no la tiene).
+    </p>
+    <div style="max-width: 420px;">
+      <VideoModal src="/media/video/sucesion.mp4" poster="/media/video/sucesion-poster.jpg" label="Anuncio de sucesión — gala 80 años AYAX" />
+    </div>
+  </section>
+
+  <!-- 4. QuoteRotator -->
+  <section class="white" style="margin: 40px var(--edge);">
+    <h2 class="section-title" style="font-size: 28px; margin-bottom: 12px;">QuoteRotator</h2>
+    <p class="section-lead" style="margin-bottom: 32px;">
+      Crossfade de 500ms, ~3s de permanencia, pausa en hover, click en avatar salta a esa cita (mejora sobre Robbins).
+    </p>
+    <QuoteRotator items={quoteItems} dwell={3200} />
+  </section>
+
+  <!-- 5. Ticker -->
+  <section class="wrap" style="padding: 40px 0;">
+    <h2 class="section-title" style="font-size: 28px; margin-bottom: 12px;">Ticker</h2>
+    <p class="section-lead" style="margin-bottom: 32px;">Marquee de medios de prensa, pausa en hover, loop continuo sin costura.</p>
+    <Ticker speed={26}>
+      {
+        pressNames.map((name) => (
+          <span style="font-size: 14px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; opacity: 0.55; white-space: nowrap;">
+            {name}
+          </span>
+        ))
+      }
+    </Ticker>
+  </section>
+
+  <!-- 6. Accordion -->
+  <section class="white" style="margin: 0 var(--edge) 64px;">
+    <h2 class="section-title" style="font-size: 28px; margin-bottom: 12px;">Accordion</h2>
+    <p class="section-lead" style="margin-bottom: 32px;">details/summary con max-height animado en 300ms, chevron rota 180°.</p>
+    <Accordion items={faqItems} />
+  </section>
+</Base>

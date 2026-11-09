@@ -1,0 +1,359 @@
+---
+/**
+ * kit/VideoModal.astro — lightbox: trigger slot opens a bg-black/90 dialog,
+ * content zoom-in-95%+fade 150ms, closes on Escape AND an X button (the X
+ * was missing on Robbins — added here). Usage: <VideoModal
+ * src="/media/video/sucesion.mp4" poster="/media/video/sucesion-poster.jpg"
+ * label="Anuncio de sucesión"><Fragment slot="trigger"><img ... /></Fragment></VideoModal>
+ */
+interface Props {
+  src: string;
+  poster?: string;
+  label?: string;
+  class?: string;
+}
+
+const { src, poster, label = 'Video', class: className = '' } = Astro.props;
+---
+
+<div class:list={['kit-video-modal', className]}>
+  <button class="kit-video-modal__trigger" type="button" aria-haspopup="dialog" data-cursor="play">
+    <slot name="trigger">
+      {poster && <img src={poster} alt="" class="kit-video-modal__poster" loading="lazy" />}
+    </slot>
+    <span class="kit-video-modal__play" aria-hidden="true">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M8 5v14l11-7z"></path></svg>
+    </span>
+  </button>
+
+  <div class="kit-video-modal__overlay" hidden>
+    <div class="kit-video-modal__dialog" role="dialog" aria-modal="true" aria-label={label}>
+      <button class="kit-video-modal__close" type="button" aria-label="Cerrar video" data-magnetic="0.3">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5">
+          <line x1="5" y1="5" x2="19" y2="19"></line>
+          <line x1="19" y1="5" x2="5" y2="19"></line>
+        </svg>
+      </button>
+      <video class="kit-video-modal__video" src={src} poster={poster} preload="none" controls playsinline></video>
+    </div>
+  </div>
+</div>
+
+<style>
+  .kit-video-modal {
+    display: contents;
+  }
+  .kit-video-modal__trigger {
+    position: relative;
+    display: block;
+    width: 100%;
+    border: none;
+    padding: 0;
+    margin: 0;
+    background: var(--color-black, #0a0a0a);
+    border-radius: var(--radius-md, 18px);
+    overflow: hidden;
+    cursor: pointer;
+    aspect-ratio: 16 / 10;
+  }
+  .kit-video-modal__poster {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 1.2s var(--ease-expo, cubic-bezier(0.16, 1, 0.3, 1));
+  }
+  .kit-video-modal__trigger:hover .kit-video-modal__poster {
+    transform: scale(1.05);
+  }
+  .kit-video-modal__play {
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    width: 60px;
+    height: 60px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.92);
+    color: var(--color-black, #0a0a0a);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-left: 3px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+    transition:
+      transform 0.6s var(--ease-expo, cubic-bezier(0.16, 1, 0.3, 1)),
+      background var(--dur, 500ms) var(--ease),
+      opacity 0.3s linear;
+  }
+  /* con cursor custom, la burbuja «Play» del cursor reemplaza al botón */
+  :global(html.mo-cursor-on) .kit-video-modal__trigger:hover .kit-video-modal__play {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  .kit-video-modal__trigger:hover .kit-video-modal__play {
+    background: var(--color-cobalt, #d9a93c);
+    color: var(--color-white, #ffffff);
+    transform: scale(1.08);
+  }
+
+  .kit-video-modal__overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9000;
+    background: rgba(0, 0, 0, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--edge, 20px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 150ms var(--ease, cubic-bezier(0.22, 0.61, 0.36, 1));
+  }
+  /* Cerrado (`hidden`): el display:flex de arriba pisa el [hidden] del UA,
+     así que el botón «Cerrar» y los controles del video quedaban en el orden
+     de tabulación (el foco saltaba al modal invisible y movía la página).
+     visibility (no display) para no romper la medición FLIP ni el fundido. */
+  .kit-video-modal__overlay[hidden] {
+    visibility: hidden;
+  }
+  /* Si el modal vive dentro de un reveal con máscara (data-reveal="mask"),
+     el clip-path final del contenedor (inset(0)) también recorta a los
+     descendientes position:fixed: el overlay quedaba encerrado en la
+     tarjeta. Mientras está abierto, sin clip (visualmente idéntico). */
+  :global([data-reveal='mask']:has(.kit-video-modal__overlay:not([hidden]))) {
+    clip-path: none !important;
+  }
+  /* apertura escalada desde la tarjeta (FLIP, lo maneja el JS) */
+  .kit-video-modal__overlay.is-flip {
+    opacity: 1;
+    background: rgba(0, 0, 0, 0);
+    transition: background-color 0.7s linear;
+  }
+  .kit-video-modal__overlay.is-flip.is-open {
+    background: rgba(0, 0, 0, 0.9);
+  }
+  .kit-video-modal__overlay.is-flip .kit-video-modal__dialog {
+    opacity: 1;
+    transform-origin: 0 0;
+    transition:
+      transform 0.95s var(--ease-quart, cubic-bezier(0.76, 0, 0.24, 1)),
+      clip-path 0.95s var(--ease-quart, cubic-bezier(0.76, 0, 0.24, 1));
+  }
+  .kit-video-modal__overlay.is-flip .kit-video-modal__close {
+    opacity: 0;
+    transition: opacity 0.3s linear;
+  }
+  .kit-video-modal__overlay.is-flip.is-settled .kit-video-modal__close {
+    opacity: 1;
+  }
+  .kit-video-modal__overlay.is-open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .kit-video-modal__dialog {
+    position: relative;
+    width: 100%;
+    max-width: 1120px;
+    aspect-ratio: 16 / 9;
+    border-radius: var(--radius-lg, 24px);
+    overflow: hidden;
+    background: var(--color-black, #0a0a0a);
+    transform: scale(0.95);
+    opacity: 0;
+    transition: transform 150ms var(--ease, cubic-bezier(0.22, 0.61, 0.36, 1)), opacity 150ms var(--ease, cubic-bezier(0.22, 0.61, 0.36, 1));
+  }
+  .kit-video-modal__overlay.is-open .kit-video-modal__dialog {
+    transform: scale(1);
+    opacity: 1;
+  }
+  .kit-video-modal__video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    background: var(--color-black, #0a0a0a);
+  }
+  .kit-video-modal__close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    z-index: 2;
+    width: 38px;
+    height: 38px;
+    border-radius: 999px;
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.12);
+    color: var(--color-white, #ffffff);
+    cursor: pointer;
+    backdrop-filter: blur(6px);
+    transition: background var(--dur, 500ms) var(--ease);
+  }
+  .kit-video-modal__close:hover {
+    background: var(--color-cobalt, #d9a93c);
+  }
+  /* Área táctil ≥ 48×48 (WCAG 2.5.5 / 2.5.8) sin cambiar el tamaño visual
+     del botón (38px): un pseudo-elemento invisible centrado que recibe el
+     toque. Cabe dentro del diálogo (top/right 16px > 5px de sobrante). */
+  .kit-video-modal__close::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 48px;
+    height: 48px;
+    translate: -50% -50%;
+    border-radius: 999px;
+  }
+</style>
+
+<script>
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function wire(root: HTMLElement) {
+    const trigger = root.querySelector<HTMLButtonElement>('.kit-video-modal__trigger');
+    const overlay = root.querySelector<HTMLElement>('.kit-video-modal__overlay');
+    const dialog = root.querySelector<HTMLElement>('.kit-video-modal__dialog');
+    const closeBtn = root.querySelector<HTMLButtonElement>('.kit-video-modal__close');
+    const video = root.querySelector<HTMLVideoElement>('.kit-video-modal__video');
+    if (!trigger || !overlay || !dialog || !closeBtn || !video) return;
+
+    let lastFocused: HTMLElement | null = null;
+    let isOpen = false;
+
+    // Trigger sólo con imagen (alt="") → botón sin nombre accesible.
+    // Reusa el label del diálogo (mismo texto, no se agrega contenido).
+    if (!trigger.textContent?.trim() && !trigger.hasAttribute('aria-label')) {
+      const name = dialog.getAttribute('aria-label');
+      if (name) trigger.setAttribute('aria-label', name);
+    }
+
+    function focusables() {
+      return Array.from(
+        dialog!.querySelectorAll<HTMLElement>(
+          'button, [href], video[controls], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        )
+      );
+    }
+
+    function onKeydown(e: KeyboardEvent) {
+      if (e.key === 'Escape') {
+        close();
+        return;
+      }
+      if (e.key === 'Tab') {
+        const items = focusables();
+        if (!items.length) return;
+        const first = items[0];
+        const last = items[items.length - 1];
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus({ preventScroll: true });
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus({ preventScroll: true });
+        }
+      }
+    }
+
+    /* Transform + clip-path que hacen coincidir el diálogo (en su lugar
+       final) con el rectángulo de la tarjeta: escala uniforme tipo «cover»
+       y recorte del sobrante, así el video nunca se deforma. */
+    function fromCard() {
+      const d = dialog!.getBoundingClientRect();
+      const t = trigger!.getBoundingClientRect();
+      const sc = Math.max(t.width / d.width, t.height / d.height);
+      const ix = Math.max(0, (d.width - t.width / sc) / 2);
+      const iy = Math.max(0, (d.height - t.height / sc) / 2);
+      const tx = t.left - d.left - ix * sc;
+      const ty = t.top - d.top - iy * sc;
+      const r = parseFloat(getComputedStyle(trigger!).borderTopLeftRadius) / sc || 0;
+      return {
+        transform: `translate(${tx}px, ${ty}px) scale(${sc})`,
+        clip: `inset(${iy}px ${ix}px round ${r}px)`,
+      };
+    }
+    const useFlip = () => !reduced && document.documentElement.classList.contains('mo');
+
+    function open() {
+      if (isOpen) return;
+      isOpen = true;
+      lastFocused = document.activeElement as HTMLElement;
+      // Portal al <body>: así ningún ancestro con transform/clip/z-index
+      // (parallax, máscaras, footer) puede encerrar o tapar el modal.
+      if (overlay!.parentElement !== document.body) document.body.appendChild(overlay!);
+      overlay!.hidden = false;
+      document.body.style.overflow = 'hidden'; // Lenis se frena solo (observer en mo/scroll.ts)
+      document.addEventListener('keydown', onKeydown);
+
+      if (useFlip()) {
+        overlay!.classList.add('is-flip');
+        overlay!.classList.remove('is-settled');
+        dialog!.style.transition = 'none';
+        dialog!.style.transform = 'none';
+        dialog!.style.clipPath = 'none';
+        const f = fromCard();
+        dialog!.style.transform = f.transform;
+        dialog!.style.clipPath = f.clip;
+        void dialog!.offsetWidth;
+        dialog!.style.transition = '';
+        requestAnimationFrame(() => {
+          overlay!.classList.add('is-open');
+          dialog!.style.transform = 'none';
+          dialog!.style.clipPath = 'inset(0px 0px round 0px)';
+        });
+        setTimeout(() => isOpen && overlay!.classList.add('is-settled'), 750);
+      } else {
+        requestAnimationFrame(() => overlay!.classList.add('is-open'));
+      }
+      closeBtn!.focus({ preventScroll: true });
+      // lo pidió el usuario con un click en «play»: arranca solo
+      video!.play().catch(() => {});
+    }
+
+    function close() {
+      if (!isOpen) return;
+      isOpen = false;
+      document.removeEventListener('keydown', onKeydown);
+      video!.pause();
+      const finish = () => {
+        if (isOpen || overlay!.hidden) return; // se reabrió o ya cerró
+        overlay!.hidden = true;
+        overlay!.classList.remove('is-flip', 'is-settled');
+        dialog!.style.transform = '';
+        dialog!.style.clipPath = '';
+        document.body.style.overflow = '';
+      };
+      if (overlay!.classList.contains('is-flip')) {
+        overlay!.classList.remove('is-settled');
+        const f = fromCard();
+        dialog!.style.transform = f.transform;
+        dialog!.style.clipPath = f.clip;
+        overlay!.classList.remove('is-open');
+        setTimeout(finish, 980);
+      } else {
+        overlay!.classList.remove('is-open');
+        const onEnd = (ev: TransitionEvent) => {
+          if (ev.propertyName !== 'opacity') return;
+          finish();
+          overlay!.removeEventListener('transitionend', onEnd);
+        };
+        overlay!.addEventListener('transitionend', onEnd);
+        setTimeout(finish, 400);
+      }
+      lastFocused?.focus({ preventScroll: true });
+    }
+
+    trigger.addEventListener('click', open);
+    closeBtn.addEventListener('click', close);
+    // Click on the dark backdrop (outside the dialog) also closes — a
+    // reasonable addition; Robbins only confirmed Escape.
+    overlay.addEventListener('click', (e) => {
+      if (e.target === overlay) close();
+    });
+  }
+
+  document.querySelectorAll<HTMLElement>('.kit-video-modal').forEach(wire);
+</script>

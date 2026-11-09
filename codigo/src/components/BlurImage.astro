@@ -1,0 +1,102 @@
+---
+/**
+ * BlurImage.astro — blur-up <picture> wrapper for media manifest assets
+ * (public/media/{img,covers}/{id}-{width}.{avif,webp,jpg}). Usage:
+ * <BlurImage id="guinness-03" kind="img" alt="..." eager />
+ * For single-file assets with no width/format variants (e.g. video
+ * posters at /media/video/{id}-poster.jpg), pass `src` directly instead
+ * of `id`/`kind` — it renders a plain blur-up <img>, no <picture>.
+ */
+interface Props {
+  id?: string; // manifest asset id, e.g. "guinness-03" or "capital-de-vida-front"
+  alt: string;
+  kind?: 'img' | 'cover'; // maps to /media/img/ or /media/covers/
+  width?: 640 | 1280 | 2048; // <img> fallback width (largest source still offered via srcset)
+  sizes?: string;
+  eager?: boolean; // set for above-the-fold / LCP images
+  class?: string;
+  src?: string; // escape hatch: raw public path for single-file assets (e.g. video posters)
+  style?: string; // p. ej. object-position, para encuadrar un sujeto descentrado
+  /** Dirección de arte: id del recorte a servir en pantallas angostas.
+   *  Un recorte apaisado en un teléfono deja al sujeto llenando el cuadro y
+   *  la copia se le monta encima; con esto se sirve el recorte vertical.
+   *  Ver el hero de /historia. */
+  idNarrow?: string;
+  /** Ancho hasta el que se usa idNarrow. */
+  narrowUpTo?: number;
+}
+
+const {
+  id,
+  alt,
+  kind = 'img',
+  width = 1280,
+  sizes = '100vw',
+  eager = false,
+  class: className = '',
+  src,
+  style,
+  idNarrow,
+  narrowUpTo = 720,
+} = Astro.props;
+
+const dir = kind === 'cover' ? 'covers' : 'img';
+const base = id ? `/media/${dir}/${id}` : '';
+const widths = [640, 1280, 2048] as const;
+const avifSrcset = widths.map((w) => `${base}-${w}.avif ${w}w`).join(', ');
+const webpSrcset = widths.map((w) => `${base}-${w}.webp ${w}w`).join(', ');
+const jpgSrc = src ?? `${base}-${width}.jpg`;
+
+const narrowBase = idNarrow ? `/media/${dir}/${idNarrow}` : '';
+const narrowMedia = `(max-width: ${narrowUpTo}px)`;
+const narrowAvif = idNarrow ? widths.map((w) => `${narrowBase}-${w}.avif ${w}w`).join(', ') : '';
+const narrowWebp = idNarrow ? widths.map((w) => `${narrowBase}-${w}.webp ${w}w`).join(', ') : '';
+const narrowJpg = idNarrow ? widths.map((w) => `${narrowBase}-${w}.jpg ${w}w`).join(', ') : '';
+---
+
+{
+  src ? (
+    <img
+      src={src}
+      alt={alt}
+      class:list={['blur-up', className]}
+      style={style}
+      loading={eager ? 'eager' : 'lazy'}
+      fetchpriority={eager ? 'high' : 'auto'}
+      decoding="async"
+    />
+  ) : (
+    <picture>
+      {/* Los recortes angostos van PRIMERO: el navegador toma el primer
+          <source> cuyo media coincida. */}
+      {idNarrow && <source type="image/avif" media={narrowMedia} srcset={narrowAvif} sizes={sizes} />}
+      {idNarrow && <source type="image/webp" media={narrowMedia} srcset={narrowWebp} sizes={sizes} />}
+      {idNarrow && <source type="image/jpeg" media={narrowMedia} srcset={narrowJpg} sizes={sizes} />}
+      <source type="image/avif" srcset={avifSrcset} sizes={sizes} />
+      <source type="image/webp" srcset={webpSrcset} sizes={sizes} />
+      <img
+        src={jpgSrc}
+        alt={alt}
+        class:list={['blur-up', className]}
+        style={style}
+        loading={eager ? 'eager' : 'lazy'}
+        fetchpriority={eager ? 'high' : 'auto'}
+        decoding="async"
+      />
+    </picture>
+  )
+}
+
+<script>
+  // Once each blur-up <img> finishes loading (any source, avif/webp/jpg),
+  // add .is-loaded so tokens.css transitions the blur out. Runs once for
+  // every BlurImage instance on the page (Astro dedupes this script tag).
+  function wire(img: HTMLImageElement) {
+    if (img.complete && img.naturalWidth > 0) {
+      img.classList.add('is-loaded');
+      return;
+    }
+    img.addEventListener('load', () => img.classList.add('is-loaded'), { once: true });
+  }
+  document.querySelectorAll<HTMLImageElement>('img.blur-up').forEach(wire);
+</script>

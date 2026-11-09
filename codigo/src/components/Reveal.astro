@@ -1,0 +1,47 @@
+---
+/**
+ * Reveal.astro — scroll-reveal wrapper (translateY + opacity de .reveal en
+ * tokens.css). El motor de motion global (src/scripts/mo/engine.ts, sin
+ * IntersectionObserver) le agrega .in-view + .is-in al entrar en pantalla;
+ * este componente sólo marca el elemento y opcionalmente lo escalona.
+ * Uso: <Reveal stagger={i}><PillarRow ... /></Reveal>
+ *      <Reveal mask><img ... /></Reveal>  → reveal con clip-path
+ *      (equivale a data-reveal="mask": de abajo hacia arriba + scale 1.15→1).
+ *
+ * IMPORTANTE — ...rest (31/08/2026). Antes este componente sólo declaraba
+ * as/id/stagger/class y descartaba todo lo demás. Astro pasa el atributo de
+ * scope de estilos (data-astro-cid-*) como una prop más al componente hijo,
+ * así que al no reenviarlo NUNCA llegaba al DOM: toda regla scopeada que
+ * apuntara a una clase pasada por <Reveal class="..."> quedaba muerta.
+ * Eso rompía por completo el layout de la línea de tiempo de /historia
+ * (.tl-*, que sólo existe en estilos scopeados) y silenciosamente también
+ * .fuego-card, .arco-step, .ceo-climax, .channel-card, .protocol-step y
+ * .pa-chat. También descartaba href, con lo cual <Reveal as="a" href>
+ * en ArcoColumns generaba un ancla que no navegaba.
+ * Si algo pasado a <Reveal> no aparece en el HTML, mirá acá primero.
+ */
+interface Props {
+  as?: string;
+  id?: string;
+  stagger?: number; // índice dentro de un grupo — suma stagger*80ms de delay
+  mask?: boolean; // reveal con máscara (clip-path) en vez de fade + rise
+  class?: string;
+  [key: string]: unknown;
+}
+
+const { as: Tag = 'div', id, stagger, mask = false, class: className = '', ...rest } = Astro.props;
+const style = stagger ? `transition-delay:${stagger * 80}ms` : undefined;
+---
+
+{
+  mask ? (
+    <Tag id={id} class:list={[className]} data-reveal="mask" style={style} {...rest}>
+      <slot />
+    </Tag>
+  ) : (
+    <Tag id={id} class:list={['reveal', className]} style={style} {...rest}>
+      <slot />
+    </Tag>
+  )
+}
+

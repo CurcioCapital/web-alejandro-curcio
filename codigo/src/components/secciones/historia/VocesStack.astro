@@ -1,0 +1,442 @@
+---
+/**
+ * VocesStack.astro — /historia, sección 05 «En sus propias palabras».
+ *
+ * REDISEÑO 22/10/2026 — pedido de cliente: las citas se veían vacías.
+ * Reemplaza al QuoteRotator (que rotaba solo) por una secuencia de tarjetas
+ * apiladas: cada cita es una tarjeta completa con una foto ya usada en el
+ * sitio, la cita grande en serif, índice mono «01 / 04» y la palabra del
+ * tema (Padre · Crisis · Legado, del título de la sección).
+ *
+ *  · DESKTOP (≥900px de ancho, ≥620px de alto, sin reduced-motion): las
+ *    tarjetas son sticky y se apilan una sobre otra con el scroll. El script
+ *    escala/oscurece la que queda debajo, hace entrar la foto y llena la
+ *    barra de progreso. Sin JS el apilado sticky funciona igual (CSS puro)
+ *    y cada barra muestra su tramo.
+ *  · MÓVIL / reduced-motion: lista simple, una tarjeta debajo de la otra.
+ *  · Nada rota solo: avanza sólo con el scroll del usuario.
+ *
+ * Mismas cuatro citas, mismos autores y detalles, en el mismo orden
+ * (rotatorItems de historia.astro). Las fotos son decorativas (alt="").
+ * Mecánica: scroll + getBoundingClientRect + rAF (sin IntersectionObserver).
+ */
+import BlurImage from '../../BlurImage.astro';
+
+interface VozItem {
+  quote: string;
+  author: string;
+  detail?: string;
+}
+interface VozScene {
+  theme: string; // palabra decorativa del tema
+  photoId?: string; // id del manifest (/media/img)
+  photoSrc?: string; // ruta directa (posters de /media/video)
+  position?: string; // object-position del encuadre
+}
+
+interface Props {
+  items: VozItem[];
+  scenes: VozScene[];
+}
+
+const { items, scenes } = Astro.props;
+const n = items.length;
+const pad = (v: number) => String(v).padStart(2, '0');
+---
+
+<div class="vx" data-vx style={`--vx-n:${n}`}>
+  <ol class="vx-list" role="list">
+    {
+      items.map((item, i) => {
+        const s = scenes[i] ?? { theme: '' };
+        const len = item.quote.length;
+        const size = len > 110 ? 'l' : len > 40 ? 'm' : 's';
+        return (
+          <li class="vx-card" style={`--i:${i};--d:${((i + 1) / n).toFixed(3)}`} data-vx-card>
+            <article class="vx-inner">
+              <div class="vx-media">
+                <div class="vx-media-in">
+                  <BlurImage
+                    id={s.photoId}
+                    src={s.photoSrc}
+                    alt=""
+                    sizes="(min-width: 900px) 46vw, 100vw"
+                    style={s.position ? `object-position:${s.position}` : undefined}
+                  />
+                </div>
+                <span class="vx-shade" aria-hidden="true" />
+                <span class="vx-theme" aria-hidden="true">
+                  {s.theme}
+                </span>
+              </div>
+              <figure class:list={['vx-body', `vx-body--${size}`]}>
+                <div class="vx-top" aria-hidden="true">
+                  <span class="vx-idx">
+                    <b>{pad(i + 1)}</b> / {pad(n)}
+                  </span>
+                  <span class="vx-word">{s.theme}</span>
+                </div>
+                <div class="vx-q">
+                  <span class="vx-mark" aria-hidden="true">
+                    &ldquo;
+                  </span>
+                  <blockquote class="vx-quote">
+                    <p>{item.quote}</p>
+                  </blockquote>
+                </div>
+                <figcaption class="vx-cap">
+                  <span class="vx-author">{item.author}</span>
+                  {item.detail && <span class="vx-detail">{item.detail}</span>}
+                </figcaption>
+                <div class="vx-bar" aria-hidden="true">
+                  <span class="vx-fill" />
+                  {items.map((_, t) => (
+                    <span class="vx-tick" style={`left:${((t / n) * 100).toFixed(2)}%`} />
+                  ))}
+                </div>
+              </figure>
+              <span class="vx-veil" aria-hidden="true" />
+            </article>
+          </li>
+        );
+      })
+    }
+  </ol>
+</div>
+
+<style>
+  .vx {
+    --vx-step: 16px; /* desfase de cada tarjeta apilada */
+    --vx-top: var(--pa-head-clear, 100px);
+    --vx-r: var(--pa-r-lg, 28px);
+    position: relative;
+  }
+  .vx-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 20px;
+  }
+  .vx-card {
+    position: relative;
+    transform-origin: 50% 0;
+  }
+  .vx-inner {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    border-radius: var(--vx-r);
+    overflow: hidden;
+    background: var(--pa-bg-2, #17130b);
+    box-shadow:
+      inset 0 0 0 1px var(--pa-line-strong, rgb(255 255 255 / 0.16)),
+      0 -24px 60px -20px rgb(0 0 0 / 0.55);
+  }
+
+  /* ---------- foto ---------- */
+  .vx-media {
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: 4 / 3;
+    background: #0c0a06;
+  }
+  .vx-media-in {
+    position: absolute;
+    inset: 0;
+    transform: scale(calc(1.12 - 0.12 * var(--e, 1)));
+    transform-origin: 50% 40%;
+    will-change: transform;
+  }
+  .vx-media-in :global(picture),
+  .vx-media-in :global(img) {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .vx-shade {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgb(12 10 6 / 0) 55%, rgb(12 10 6 / 0.75) 100%);
+    pointer-events: none;
+  }
+  /* palabra del tema, enorme, al pie de la foto (las caras quedan arriba) */
+  .vx-theme {
+    position: absolute;
+    left: clamp(16px, 2.4vw, 32px);
+    bottom: clamp(10px, 1.6vw, 22px);
+    font-family: var(--pa-display);
+    font-weight: var(--display-wght, 560);
+    letter-spacing: var(--display-track, -0.035em);
+    line-height: 0.9;
+    font-size: clamp(64px, 9.5vw, 168px);
+    color: transparent;
+    -webkit-text-stroke: 1px rgb(232 200 116 / 0.85);
+    pointer-events: none;
+  }
+
+  /* ---------- texto ---------- */
+  .vx-body {
+    position: relative;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    padding: 22px 20px 26px;
+    min-width: 0;
+  }
+  .vx-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    font-family: var(--pa-mono);
+    font-size: 11.5px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-low, rgb(255 255 255 / 0.55));
+  }
+  .vx-idx b {
+    font-weight: 500;
+    color: var(--pa-accent);
+  }
+  .vx-word {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--pa-accent);
+  }
+  .vx-word::before {
+    content: '';
+    width: 28px;
+    height: 1px;
+    background: currentColor;
+  }
+  .vx-mark {
+    font-family: var(--pa-serif);
+    font-style: italic;
+    font-size: 88px;
+    line-height: 0.5;
+    height: 0.34em;
+    margin-top: 8px;
+    color: var(--pa-accent);
+  }
+  .vx-q {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+  .vx-quote {
+    margin: 0;
+  }
+  .vx-quote p {
+    margin: 0;
+    font-family: var(--pa-serif);
+    font-style: italic;
+    font-weight: 400;
+    font-size: clamp(34px, 1rem + 4.4vw, 100px);
+    line-height: 1;
+    letter-spacing: -0.005em;
+    color: var(--ink-hi, #fff);
+    text-wrap: balance;
+  }
+  .vx-body--m .vx-quote p {
+    font-size: clamp(30px, 1rem + 2.9vw, 74px);
+    line-height: 1.04;
+  }
+  .vx-body--l .vx-quote p {
+    font-size: clamp(24px, 0.9rem + 1.75vw, 48px);
+    line-height: 1.12;
+    text-wrap: pretty;
+  }
+  .vx-cap {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-family: var(--pa-mono);
+    font-size: 11.5px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    line-height: 1.45;
+    text-transform: uppercase;
+  }
+  .vx-author {
+    color: var(--ink-hi, rgb(255 255 255 / 0.92));
+  }
+  .vx-detail {
+    color: var(--ink-low, rgb(255 255 255 / 0.55));
+  }
+  .vx-bar {
+    position: relative;
+    height: 2px;
+    margin-top: 6px;
+    background: var(--pa-line-strong, rgb(255 255 255 / 0.16));
+  }
+  .vx-fill {
+    position: absolute;
+    inset: 0;
+    background: var(--pa-accent);
+    transform-origin: 0 50%;
+    transform: scaleX(var(--vx-p, var(--d)));
+  }
+  .vx-tick {
+    position: absolute;
+    top: -3px;
+    width: 1px;
+    height: 8px;
+    background: rgb(255 255 255 / 0.35);
+  }
+  .vx-fill + .vx-tick {
+    display: none;
+  }
+  /* velo de la tarjeta que queda debajo (lo maneja --k desde el script) */
+  .vx-veil {
+    position: absolute;
+    inset: 0;
+    background: #0c0a06;
+    opacity: calc(var(--k, 0) * 0.62);
+    pointer-events: none;
+  }
+
+  @media (min-width: 640px) and (max-width: 899px) {
+    .vx-media {
+      aspect-ratio: 16 / 10;
+    }
+    .vx-body {
+      padding: 28px 28px 32px;
+    }
+  }
+
+  /* ---------- desktop: split foto | cita ---------- */
+  @media (min-width: 900px) {
+    .vx-inner {
+      grid-template-columns: minmax(0, 46fr) minmax(0, 54fr);
+      min-height: 560px;
+    }
+    .vx-media {
+      aspect-ratio: auto;
+      min-height: 100%;
+    }
+    .vx-body {
+      justify-content: space-between;
+      padding: clamp(28px, 3vw, 48px) clamp(28px, 3.4vw, 56px) clamp(28px, 3vw, 44px);
+      gap: 22px;
+    }
+    .vx-q {
+      flex: 1;
+      justify-content: center;
+      padding: 12px 0;
+    }
+  }
+
+  /* ---------- desktop con lugar: apilado sticky ---------- */
+  @media (min-width: 900px) and (min-height: 620px) and (prefers-reduced-motion: no-preference) {
+    .vx-list {
+      gap: 14vh;
+      padding-bottom: 18vh;
+    }
+    .vx-card {
+      position: sticky;
+      top: calc(var(--vx-top) + var(--i) * var(--vx-step));
+    }
+    .vx-inner {
+      height: min(
+        calc(100svh - var(--vx-top) - 32px - (var(--vx-n) - 1) * var(--vx-step)),
+        800px
+      );
+      min-height: 520px;
+    }
+    .vx.is-live .vx-card {
+      transform: scale(calc(1 - var(--k, 0) * 0.06));
+      will-change: transform;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .vx-media-in {
+      transform: none;
+    }
+  }
+</style>
+
+<script>
+  const MQ = '(min-width: 900px) and (min-height: 620px) and (prefers-reduced-motion: no-preference)';
+
+  function wire(root: HTMLElement) {
+    const cards = [...root.querySelectorAll<HTMLElement>('[data-vx-card]')];
+    const list = root.querySelector<HTMLElement>('.vx-list')!;
+    if (!cards.length) return;
+    const mq = matchMedia(MQ);
+    const reduced = matchMedia('(prefers-reduced-motion: reduce)');
+    let raf = 0;
+    let live = false;
+
+    function clear() {
+      root.classList.remove('is-live');
+      root.style.removeProperty('--vx-p');
+      cards.forEach((c) => {
+        c.style.removeProperty('--k');
+        c.style.removeProperty('--e');
+      });
+    }
+
+    function paint() {
+      raf = 0;
+      if (!mq.matches) {
+        if (live) clear();
+        live = false;
+        if (reduced.matches) return;
+        // lista simple (móvil): la foto se asienta al entrar
+        const vh0 = window.innerHeight;
+        const ts = cards.map((c) => c.getBoundingClientRect().top);
+        cards.forEach((c, i) => {
+          const e = Math.min(1, Math.max(0, (vh0 - ts[i]) / (vh0 * 0.7)));
+          c.style.setProperty('--e', e.toFixed(3));
+        });
+        return;
+      }
+      if (!live) root.classList.add('is-live');
+      live = true;
+      const vh = window.innerHeight;
+      // lecturas
+      const tops = cards.map((c) => c.getBoundingClientRect().top);
+      const sticks = cards.map((c) => parseFloat(getComputedStyle(c).top) || 0);
+      const hs = cards.map((c) => c.offsetHeight);
+      // escrituras
+      cards.forEach((c, i) => {
+        const e = Math.min(1, Math.max(0, 1 - (tops[i] - sticks[i]) / vh));
+        c.style.setProperty('--e', e.toFixed(3));
+        const nx = i + 1 < cards.length ? i + 1 : -1;
+        let k = 0;
+        if (nx > 0) {
+          k = Math.min(1, Math.max(0, 1 - (tops[nx] - sticks[nx]) / hs[i]));
+        }
+        c.style.setProperty('--k', k.toFixed(3));
+      });
+      // progreso global: 0 cuando la primera se pega, 1 cuando llega la última.
+      // Se calcula con la posición natural (sin sticky) de la última tarjeta.
+      const gap = parseFloat(getComputedStyle(list).rowGap) || 0;
+      let natural = 0;
+      for (let i = 0; i < cards.length - 1; i++) natural += hs[i] + gap;
+      const travel = natural - (sticks[sticks.length - 1] - sticks[0]);
+      const scrolled = sticks[0] - root.getBoundingClientRect().top;
+      const p = travel > 0 ? Math.min(1, Math.max(0, scrolled / travel)) : 0;
+      // Cada tarjeta muestra su propio tramo como mínimo: la barra nunca
+      // retrocede por debajo del índice de la tarjeta que se está leyendo.
+      root.style.setProperty('--vx-p', Math.max(p, 1 / cards.length).toFixed(4));
+    }
+
+    const schedule = () => {
+      if (!raf) raf = requestAnimationFrame(paint);
+    };
+    window.addEventListener('scroll', schedule, { passive: true });
+    window.addEventListener('resize', schedule);
+    mq.addEventListener?.('change', schedule);
+    window.addEventListener('load', schedule);
+    schedule();
+  }
+
+  document.querySelectorAll<HTMLElement>('[data-vx]').forEach(wire);
+</script>

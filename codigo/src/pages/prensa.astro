@@ -1,0 +1,197 @@
+---
+/**
+ * prensa.astro — Prensa section page. Direct build on the shared
+ * design-system components (SectionPhoto/SectionWhite/PillButton/Reveal)
+ * + copy from sitio-copy/prensa.md + data/press.json (45 entries: 23
+ * "Alta" priority rendered as the year-grouped list, the remaining 22
+ * behind "Ver todo") + media/manifest.json (gala-alfombra, guinness-02).
+ * Section builders specific to this page live in
+ * components/secciones/prensa/ (AwardsRow, PressList, PressStats) — see
+ * their own headers for what each renders.
+ */
+import Base from '../layouts/Base.astro';
+import '../components/secciones/libros/ed.css';
+import EdSection from '../components/secciones/libros/EdSection.astro';
+import EdHero from '../components/secciones/libros/EdHero.astro';
+import AwardsRow from '../components/secciones/prensa/AwardsRow.astro';
+import PressList from '../components/secciones/prensa/PressList.astro';
+import PressStats from '../components/secciones/prensa/PressStats.astro';
+import press from '../data/press.json';
+
+const priorityCount = press.filter((item) => item.priority === 'Alta').length;
+const totalCount = press.length;
+
+const awards = [
+  {
+    year: '2024',
+    name: 'Récord Guinness World Records™',
+    detail: 'Ice Challenge — organizado por Curcio Capital',
+    photoId: 'guinness-02',
+    photoAlt: 'Participante ingresando a un barril de hielo durante el récord Guinness Ice Challenge 2024',
+  },
+  {
+    year: '2022',
+    name: 'Empresario del Año',
+    detail: 'Medalla de Oro — InfoNegocios',
+  },
+  {
+    year: '2021',
+    name: 'Cannes Lions',
+    detail: 'HY Project, junto a The Electric Factory',
+  },
+];
+
+const stats = [
+  { value: String(totalCount), label: 'Notas relevadas · 2005–2026' },
+  { value: '16', label: 'Notas en El País' },
+  { value: '9', label: 'Notas en El Observador' },
+  { value: '6', label: 'Notas en Forbes Uruguay' },
+  { value: '35', label: 'Con su voz directa' },
+];
+---
+
+<Base
+	title="Prensa — Alejandro Curcio"
+	description="Más de 40 notas relevadas entre 2005 y 2026. Esto es lo que se dijo, y lo que se dijo importa."
+>
+	<h1 class="visually-hidden">Prensa — Alejandro Curcio</h1>
+
+	<!-- HERO -->
+	<EdHero
+		id="hero"
+		variant="split"
+		landscape
+		imgId="gala-alfombra"
+		imgAlt="Alejandro Curcio en la alfombra roja bajo la marquesina AYAX 80 años, con prensa cubriendo el evento en el Teatro Solís del Sodre"
+		kicker="Prensa · 2005–2026"
+		title="Prensa"
+		hideTitle
+		sub="Más de 40 notas relevadas entre 2005 y 2026. Esto es lo que se dijo, y lo que se dijo importa."
+		ctaHref="#lista"
+		ctaLabel="Ver la prensa"
+		ctaArrow="down"
+		titleSize="xl"
+		focus="50% 45%"
+		n="00"
+		eager
+	/>
+
+	<!-- RECONOCIMIENTOS -->
+	<EdSection
+		id="reconocimientos"
+		n="01"
+		tone="light"
+		sheet
+		kicker="Reconocimientos"
+		title="Lo que no admite discusión."
+		lead="Tres reconocimientos, tres oficios distintos: el negocio, la aventura física, la creatividad publicitaria. Ninguno se hereda — se gana."
+	>
+		<AwardsRow awards={awards} />
+	</EdSection>
+
+	<!-- LISTA DE PRENSA -->
+	<EdSection
+		id="lista"
+		n="02"
+		tone="light"
+		kicker="La selección"
+		title="Tres décadas de oficio, en sus propias palabras."
+		lead={`${priorityCount} notas destacadas, filtradas de ${totalCount} relevadas entre 2005 y 2026. La prensa no cuenta una historia lineal — cuenta intentos, caídas, reinvenciones.`}
+		class="prensa-lista"
+	>
+		<PressList items={press} />
+	</EdSection>
+
+	<!-- HABLAN LOS HECHOS -->
+	<EdSection
+		id="hechos"
+		n="03"
+		sheet
+		kicker="Hablan los hechos"
+		title="Los números no opinan."
+		lead="Estas notas recorren tres décadas de oficio: crisis que templaron, libros que abrieron preguntas, una empresa que cumplió 80 años sin jubilarse. No hay acá una biografía armada por otros; hay un diálogo público sostenido en el tiempo, con nombres, fechas y decisiones concretas."
+	>
+		<PressStats stats={stats} />
+	</EdSection>
+
+	<!-- CTA -->
+	<section class="ed-sec ed-sec--2 ed-sec--sheet ed-grid prensa-cta">
+		<div class="ed-wrap">
+			<div class="prensa-cta__top ed-mono">
+				<span class="prensa-cta__k">Prensa</span>
+				<span aria-hidden="true">[ 04 ]</span>
+			</div>
+			<h2 class="ed-display prensa-cta__t" data-split="lines">¿Sos periodista? Hablemos directamente.</h2>
+			<div class="prensa-cta__foot">
+				<p class="final-cta-sub" data-reveal>
+					Sin gabinete de prensa ni respuestas guionadas. Para entrevistas, notas o verificar un dato,
+					el canal es directo.
+				</p>
+				<a class="ed-btn" href="/seguime" data-magnetic data-roll>
+					<span>Contacto de prensa</span>
+					<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+						<line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline>
+					</svg>
+				</a>
+			</div>
+		</div>
+	</section>
+</Base>
+
+<style>
+	/* Reconocimientos → La selección: mismo fondo, así que el aire de las dos
+	   secciones se sumaba en un bloque vacío de ~340px. */
+	:global(#reconocimientos) {
+		padding-bottom: clamp(48px, 6vw, 88px);
+	}
+	:global(#lista) {
+		padding-top: clamp(24px, 3vw, 48px);
+	}
+	/* En teléfono el recorte vertical deja a Alejandro (izquierda) cortado:
+	   se corre el encuadre hacia él. */
+
+	.visually-hidden {
+		position: absolute;
+		width: 1px;
+		height: 1px;
+		padding: 0;
+		margin: -1px;
+		overflow: hidden;
+		clip: rect(0, 0, 0, 0);
+		white-space: nowrap;
+		border: 0;
+	}
+	.prensa-lista {
+		padding-top: clamp(32px, 5vw, 72px);
+	}
+	.prensa-cta__top {
+		display: flex;
+		justify-content: space-between;
+		padding-bottom: 14px;
+		border-bottom: 1px solid var(--ed-line-strong);
+		color: rgb(255 255 255 / 0.45);
+	}
+	.prensa-cta__k {
+		color: var(--ed-accent);
+	}
+	.prensa-cta__t {
+		margin-top: clamp(32px, 5vw, 72px);
+		font-size: clamp(3rem, 1rem + 8vw, 11rem);
+		max-width: 12ch;
+	}
+	.prensa-cta__foot {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: flex-end;
+		justify-content: space-between;
+		gap: 28px;
+		margin-top: clamp(32px, 5vw, 64px);
+	}
+	.final-cta-sub {
+		font-size: var(--text-lead, 1.25rem);
+		line-height: 1.6;
+		color: rgba(255, 255, 255, 0.72);
+		max-width: 46ch;
+		margin: 0;
+	}
+</style>

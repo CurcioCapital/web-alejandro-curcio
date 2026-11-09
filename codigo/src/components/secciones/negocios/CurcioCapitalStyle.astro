@@ -1,0 +1,147 @@
+---
+/**
+ * CurcioCapitalStyle.astro — Negocios-only. Typographic block for Curcio
+ * Capital's "sello": three pillars, two sets of 3C, the mission line.
+ * Deliberately text-only (no photo asset exists for Curcio Capital) —
+ * "tipográfico elegante" per the section brief. Lives under
+ * secciones/negocios/, not the shared component set.
+ */
+interface Pillar {
+  title: string;
+  description: string;
+}
+
+interface Props {
+  pillars: Pillar[];
+  selfC: string[];
+  clientC: string[];
+  mission: string;
+}
+
+const { pillars, selfC, clientC, mission } = Astro.props;
+---
+
+<div class="cc-block">
+  <div class="cc-pillars">
+    {
+      pillars.map((p, i) => (
+        <div class="cc-pillar">
+          <span class="cc-pillar-idx">{`0${i + 1}`}</span>
+          <span class="cc-pillar-title">{p.title}</span>
+          <p class="cc-pillar-desc">{p.description}</p>
+        </div>
+      ))
+    }
+  </div>
+
+  <div class="cc-c-rows">
+    <div class="cc-c-row">
+      <span class="cc-c-label">Hacia adentro</span>
+      <div class="cc-c-words">
+        {selfC.map((w) => <span class="cc-c-word">{w}</span>)}
+      </div>
+    </div>
+    <div class="cc-c-row">
+      <span class="cc-c-label">Hacia el cliente</span>
+      <div class="cc-c-words">
+        {clientC.map((w) => <span class="cc-c-word">{w}</span>)}
+      </div>
+    </div>
+  </div>
+
+  <p class="cc-mission">{mission}</p>
+</div>
+
+<style>
+  .cc-block {
+    margin-top: 48px;
+    padding-top: 40px;
+    border-top: 1px solid var(--color-line-dark);
+  }
+  .cc-pillars {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 40px;
+    margin-bottom: 56px;
+  }
+  .cc-pillar-idx {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: rgba(10, 10, 10, 0.35);
+    font-variant-numeric: tabular-nums;
+    margin-bottom: 14px;
+  }
+  .cc-pillar-title {
+    display: block;
+    font-size: clamp(19px, 2vw, 23px);
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    color: var(--color-black);
+    margin-bottom: 10px;
+  }
+  .cc-pillar-desc {
+    font-size: 14.5px;
+    line-height: 1.55;
+    color: rgba(10, 10, 10, 0.65);
+    max-width: 32ch;
+  }
+
+  .cc-c-rows {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-bottom: 48px;
+  }
+  .cc-c-row {
+    display: flex;
+    align-items: baseline;
+    gap: 24px;
+    flex-wrap: wrap;
+    padding: 18px 0;
+    border-top: 1px solid var(--color-line-dark);
+  }
+  .cc-c-label {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: rgba(10, 10, 10, 0.4);
+    width: 140px;
+    flex-shrink: 0;
+  }
+  .cc-c-words {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 28px;
+  }
+  .cc-c-word {
+    font-size: clamp(20px, 2.4vw, 28px);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: var(--color-black);
+  }
+
+  .cc-mission {
+    font-size: clamp(20px, 2.6vw, 30px);
+    font-weight: 600;
+    line-height: 1.3;
+    letter-spacing: -0.02em;
+    color: var(--color-black);
+    max-width: 30ch;
+  }
+
+  @media (max-width: 900px) {
+    .cc-pillars {
+      grid-template-columns: 1fr;
+      gap: 32px;
+    }
+    .cc-c-row {
+      flex-direction: column;
+      gap: 12px;
+    }
+    .cc-c-label {
+      width: auto;
+    }
+  }
+</style>

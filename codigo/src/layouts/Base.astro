@@ -1,0 +1,216 @@
+---
+/**
+ * Base.astro — the HTML shell every page renders through.
+ *
+ * P1 scope: full chrome from the approved design direction (dirección D) —
+ * cobalt announcement ribbon, sticky black nav, and footer — wraps every
+ * page's <slot /> in <main id="top">. Section builders only need to
+ * provide the page body; Header/Footer/tokens are handled here.
+ */
+import '../styles/global.css';
+// Mono "tech" para kickers/metadatos/contadores (token --font-mono).
+import '@fontsource-variable/jetbrains-mono';
+// Estados y piezas del sistema de motion global (src/scripts/mo/*).
+import '../scripts/motion.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+
+interface Props {
+  title?: string;
+  description?: string;
+  /** Imagen LCP a precargar en esta página (opcional, sin default global).
+   *  En la home, si no se pasa, se precarga el retrato del hero. */
+  preloadImage?: { href: string; srcset?: string; sizes?: string } | false;
+}
+
+const {
+  title = 'Alejandro Curcio',
+  description = 'Alejandro Curcio — empresario, piloto, aventurero, pensador, solidario, padre. El verdadero capital se forja.',
+  preloadImage,
+} = Astro.props;
+
+const isHome = Astro.url.pathname === '/' || Astro.url.pathname === '/index.html';
+const lcp =
+  preloadImage === false
+    ? null
+    : preloadImage ??
+      (isHome
+        ? {
+            href: '/media/img/hero-ale-traje-1280.webp',
+            srcset: [720, 1280, 1800].map((w) => `/media/img/hero-ale-traje-${w}.webp ${w}w`).join(', '),
+            sizes: '(max-width: 720px) 92vw, 46vw',
+          }
+        : null);
+---
+
+<!doctype html>
+<html lang="es">
+	<head>
+		<meta charset="utf-8" />
+		<!-- Motion: decide ANTES del primer pintado qué estados iniciales
+		     aplican. html.js = hay JS; html.mo = además hay movimiento (sin
+		     prefers-reduced-motion) — de esa clase cuelgan todos los estados
+		     ocultos, así que sin JS la página se ve entera. mo-preload: primera
+		     visita de la sesión; mo-enter: venimos de la cortina de otra página.
+		     Failsafe: si el motor no arranca en 6s, se quita todo y se ve. -->
+		<script is:inline>
+			(function () {
+				var d = document.documentElement;
+				d.classList.add('js');
+				// Aterrizar siempre arriba (o en el #ancla): el navegador no
+				// restaura posiciones viejas. Lo completa mo/scroll.ts.
+				try { if ('scrollRestoration' in history) history.scrollRestoration = 'manual'; } catch (e) {}
+				if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+				d.classList.add('mo');
+				try {
+					var s = window.sessionStorage;
+					if (s.getItem('mo:curtain')) {
+						s.removeItem('mo:curtain');
+						d.classList.add('mo-enter');
+					} else if (!s.getItem('mo:visited')) {
+						d.classList.add('mo-preload');
+					}
+					s.setItem('mo:visited', '1');
+				} catch (e) {}
+				setTimeout(function () {
+					if (window.__motionReady) return;
+					d.classList.remove('mo', 'mo-preload', 'mo-enter');
+					d.classList.add('mo-fail');
+				}, 6000);
+			})();
+		</script>
+		<!-- Trébol de Alejandro, SIN fondo: el trazo sobre transparente.
+		     Reemplaza el cohete que traía Astro por defecto.
+		     Va en dos versiones porque un trébol negro sobre transparente
+		     desaparece en las pestañas oscuras: el navegador elige según
+		     prefers-color-scheme. El apple-touch-icon queda en negro porque
+		     iOS ignora la media query y compone sobre fondo claro. -->
+		<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" media="(prefers-color-scheme: light)" />
+		<link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png" media="(prefers-color-scheme: light)" />
+		<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32-dark.png" media="(prefers-color-scheme: dark)" />
+		<link rel="icon" type="image/png" sizes="192x192" href="/favicon-192-dark.png" media="(prefers-color-scheme: dark)" />
+		<!-- Sin media query: fallback para navegadores que no la soportan. -->
+		<link rel="icon" type="image/png" sizes="180x180" href="/favicon-180.png" />
+		<link rel="apple-touch-icon" sizes="180x180" href="/favicon-180.png" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="generator" content={Astro.generator} />
+		<meta name="description" content={description} />
+		<title>{title}</title>
+
+		<!-- Fonts — self-hosted (see /public/fonts/). Archivo Variable
+		     (wght 100-900, wdth 62-125, latin subset ~90KB) for everything +
+		     Instrument Serif italic 400 (~22KB) only for quotes/emotive
+		     moments. The two critical files are preloaded; metric fallbacks
+		     (fontaine-style overrides over Arial/Georgia, computed from the
+		     fonts' real metrics) keep CLS at ~0 while they load. -->
+		<link
+			rel="preload"
+			as="font"
+			type="font/woff2"
+			href="/fonts/archivo-variable-latin.woff2"
+			crossorigin
+		/>
+		<link
+			rel="preload"
+			as="font"
+			type="font/woff2"
+			href="/fonts/instrument-serif-latin-400-italic.woff2"
+			crossorigin
+		/>
+		<!-- Imagen LCP por página (prop preloadImage). En la home: el retrato
+		     del hero, con el mismo srcset/sizes que HeroRetrato para que el
+		     navegador use exactamente el archivo precargado. -->
+		{lcp && (
+			<link
+				rel="preload"
+				as="image"
+				href={lcp.href}
+				imagesrcset={lcp.srcset}
+				imagesizes={lcp.sizes}
+				fetchpriority="high"
+			/>
+		)}
+		<style is:global>
+			/* Archivo Variable — the single grotesk for the whole site. */
+			@font-face {
+				font-family: 'Archivo Variable';
+				font-style: normal;
+				font-display: swap;
+				font-weight: 100 900;
+				font-stretch: 62% 125%;
+				src: url('/fonts/archivo-variable-latin.woff2') format('woff2-variations');
+			}
+			/* Instrument Serif — italic 400 ONLY, for quotes. */
+			@font-face {
+				font-family: 'Instrument Serif';
+				font-style: italic;
+				font-display: swap;
+				font-weight: 400;
+				src: url('/fonts/instrument-serif-latin-400-italic.woff2') format('woff2');
+			}
+			@font-face {
+				font-family: 'Instrument Serif';
+				font-style: normal;
+				font-display: swap;
+				font-weight: 400;
+				src: url('/fonts/instrument-serif-latin-400-normal.woff2') format('woff2');
+			}
+			/* Metric fallbacks — Arial/Georgia adjusted to the web fonts'
+			   metrics so the swap doesn't shift layout. */
+			@font-face {
+				font-family: 'Archivo Fallback';
+				src: local('Arial');
+				size-adjust: 98.7%;
+				ascent-override: 88.96%;
+				descent-override: 21.28%;
+				line-gap-override: 0%;
+			}
+			@font-face {
+				font-family: 'Instrument Serif Fallback';
+				src: local('Georgia');
+				size-adjust: 76.49%;
+				ascent-override: 129.43%;
+				descent-override: 40.53%;
+				line-gap-override: 0%;
+			}
+		</style>
+	</head>
+	<body>
+		<!-- Preloader (primera visita de la sesión) y cortina de transición:
+		     decorativos, sólo visibles con html.mo-preload / html.mo-enter|leave. -->
+		<div class="mo-preloader" aria-hidden="true">
+			<div class="mo-preloader__row">
+				<span class="mo-preloader__meta">Alejandro Curcio</span>
+				<span class="mo-preloader__meta">Cargando</span>
+			</div>
+			<div class="mo-preloader__row">
+				<span class="mo-preloader__count">000</span>
+				<span class="mo-preloader__meta">%</span>
+			</div>
+			<div class="mo-preloader__bar"></div>
+		</div>
+		<div class="mo-curtain" aria-hidden="true">
+			<div class="mo-curtain__panel">
+				<img class="mo-curtain__mark" src="/favicon-192-dark.png" alt="" width="44" height="44" />
+			</div>
+		</div>
+
+		<Header />
+		<main id="top">
+			<slot />
+		</main>
+		<Footer />
+
+		<!-- Grano global: lo pone el design system en body::after
+		     (src/styles/system.css). No se agrega una segunda capa acá. -->
+
+		<script>
+			// Sistema de motion global: Lenis, reveals, split, parallax, scrub,
+			// cursor, magnético, marquesinas, roll, contadores, cortina y
+			// preloader. API en /docs-motion-api.md. Reemplaza al antiguo
+			// IntersectionObserver de .reveal (que no disparaba en el preview).
+			import { initMotion } from '../scripts/motion';
+			initMotion();
+		</script>
+	</body>
+</html>

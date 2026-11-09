@@ -1,0 +1,144 @@
+---
+/**
+ * kit/HoverPlayCard.astro — rounded media card, muted looped video plays on
+ * hover (Robbins §2). Usage: <HoverPlayCard src="/media/video/brindis.mp4"
+ * poster="/media/video/brindis-poster.jpg"><h3>Título</h3></HoverPlayCard>
+ */
+interface Props {
+  src: string; // video mp4 path
+  poster?: string;
+  alt?: string;
+  rounded?: 'sm' | 'md' | 'lg';
+  class?: string;
+}
+
+const { src, poster, alt = '', rounded = 'md', class: className = '' } = Astro.props;
+---
+
+<div class:list={['kit-hover-card', `kit-hover-card--${rounded}`, className]}>
+  <video
+    class="kit-hover-card__video"
+    src={src}
+    poster={poster}
+    muted
+    loop
+    playsinline
+    preload="metadata"
+    aria-label={alt}
+  ></video>
+  <div class="kit-hover-card__scrim"></div>
+  <div class="kit-hover-card__content"><slot /></div>
+</div>
+
+<style>
+  .kit-hover-card {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--radius-md, 18px);
+    background: var(--color-black, #0a0a0a);
+    aspect-ratio: 3 / 4;
+  }
+  .kit-hover-card--sm {
+    border-radius: var(--radius-sm, 12px);
+  }
+  .kit-hover-card--lg {
+    border-radius: var(--radius-lg, 24px);
+  }
+  .kit-hover-card__video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: scale 1.2s var(--ease-expo, cubic-bezier(0.16, 1, 0.3, 1)), filter 0.6s linear;
+  }
+  :global(html.mo) .kit-hover-card__video {
+    filter: saturate(0.85) brightness(0.9);
+  }
+  :global(html.mo) .kit-hover-card.is-playing .kit-hover-card__video {
+    scale: 1.04;
+    filter: none;
+  }
+  .kit-hover-card__content {
+    transition: translate 0.8s var(--ease-expo, cubic-bezier(0.16, 1, 0.3, 1));
+  }
+  :global(html.mo) .kit-hover-card.is-playing .kit-hover-card__content {
+    translate: 0 -6px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .kit-hover-card__video,
+    .kit-hover-card__content {
+      transition: none;
+      scale: none !important;
+      translate: none !important;
+    }
+  }
+  .kit-hover-card__scrim {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0) 55%);
+    pointer-events: none;
+  }
+  .kit-hover-card__content {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 2;
+    padding: 22px;
+    color: var(--color-white, #ffffff);
+  }
+</style>
+
+<script>
+  // Mouse: play en hover, pausa al salir (sin rebobinar). Táctil: play
+  // mientras ≥60% de la tarjeta está en pantalla — medido con scroll +
+  // getBoundingClientRect (no IntersectionObserver: no dispara en el preview).
+  // Con reduced-motion, en táctil no hay autoplay.
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const touch = matchMedia('(hover: none) and (pointer: coarse)').matches;
+
+  const touchCards: { card: HTMLElement; video: HTMLVideoElement; playing: boolean }[] = [];
+
+  function setPlaying(card: HTMLElement, video: HTMLVideoElement, on: boolean) {
+    card.classList.toggle('is-playing', on);
+    if (on) video.play().catch(() => card.classList.remove('is-playing'));
+    else video.pause();
+  }
+
+  function wire(card: HTMLElement) {
+    const video = card.querySelector<HTMLVideoElement>('.kit-hover-card__video');
+    if (!video) return;
+    if (touch) {
+      if (!reduced) touchCards.push({ card, video, playing: false });
+      return;
+    }
+    card.addEventListener('mouseenter', () => setPlaying(card, video, true));
+    card.addEventListener('mouseleave', () => setPlaying(card, video, false));
+  }
+
+  document.querySelectorAll<HTMLElement>('.kit-hover-card').forEach(wire);
+
+  if (touchCards.length) {
+    let raf = 0;
+    const check = () => {
+      raf = 0;
+      const vh = innerHeight;
+      for (const t of touchCards) {
+        const r = t.card.getBoundingClientRect();
+        const visible = Math.max(0, Math.min(r.bottom, vh) - Math.max(r.top, 0));
+        const on = r.height > 0 && visible / Math.min(r.height, vh) >= 0.6;
+        if (on !== t.playing) {
+          t.playing = on;
+          setPlaying(t.card, t.video, on);
+        }
+      }
+    };
+    const schedule = () => {
+      if (!raf) raf = requestAnimationFrame(check);
+    };
+    addEventListener('scroll', schedule, { passive: true });
+    addEventListener('resize', schedule, { passive: true });
+    schedule();
+  }
+</script>

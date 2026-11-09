@@ -1,0 +1,115 @@
+---
+/**
+ * ApuestaCard.astro — Negocios-only. One card in the "grid de apuestas"
+ * (El Nido / HY Project / Toyota bZ4X): built from the shared <MediaCard>
+ * + <Reveal>, styled to match index.astro's .books-grid/.book-card
+ * pattern (same shared CSS classes, reused here rather than duplicated).
+ * Lives under secciones/negocios/, not the shared component set.
+ */
+import Reveal from '../../Reveal.astro';
+import MediaCard from '../../MediaCard.astro';
+
+interface Quote {
+  text: string;
+  attribution: string;
+}
+
+interface Props {
+  eyebrow: string;
+  title: string;
+  mediaId?: string;
+  mediaSrc?: string;
+  mediaAlt?: string;
+  typographicKicker?: string; // when no real photo exists — MediaCard typographic mode
+  typographicTitle?: string;
+  body: string;
+  quotes?: Quote[];
+  linkHref?: string;
+  linkLabel?: string;
+  stagger?: number;
+}
+
+const {
+  eyebrow,
+  title,
+  mediaId,
+  mediaSrc,
+  mediaAlt = '',
+  typographicKicker,
+  typographicTitle,
+  body,
+  quotes = [],
+  linkHref,
+  linkLabel,
+  stagger = 0,
+} = Astro.props;
+
+const isTypographic = !mediaId && !mediaSrc;
+---
+
+<Reveal as="div" class="apuesta-card" stagger={stagger}>
+  {
+    isTypographic ? (
+      <MediaCard typographic>
+        <span class="tk">{typographicKicker}</span>
+        <span class="tt" set:html={typographicTitle} />
+      </MediaCard>
+    ) : (
+      <MediaCard id={mediaId} src={mediaSrc} kind="img" alt={mediaAlt} />
+    )
+  }
+  <span class="book-year">{eyebrow}</span>
+  <span class="book-title">{title}</span>
+  <p class="book-line">{body}</p>
+  {
+    quotes.length > 0 && (
+      <div class="apuesta-quotes">
+        {quotes.map((q) => (
+          <blockquote class="apuesta-quote">
+            <p>&ldquo;{q.text}&rdquo;</p>
+            <cite>{q.attribution}</cite>
+          </blockquote>
+        ))}
+      </div>
+    )
+  }
+  {
+    linkHref && linkLabel && (
+      <a class="book-link" href={linkHref}>
+        {linkLabel}
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <line x1="5" y1="12" x2="19" y2="12" />
+          <polyline points="12 5 19 12 12 19" />
+        </svg>
+      </a>
+    )
+  }
+</Reveal>
+
+<style>
+  .apuesta-quotes {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin: 4px 0 2px;
+  }
+  .apuesta-quote {
+    padding-left: 14px;
+    border-left: 2px solid var(--color-cobalt);
+  }
+  .apuesta-quote p {
+    font-size: 13.5px;
+    line-height: 1.5;
+    font-weight: 500;
+    color: rgba(10, 10, 10, 0.82);
+  }
+  .apuesta-quote cite {
+    display: block;
+    margin-top: 6px;
+    font-style: normal;
+    font-size: 11.5px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: rgba(10, 10, 10, 0.45);
+  }
+</style>

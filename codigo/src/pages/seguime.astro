@@ -1,0 +1,244 @@
+---
+/**
+ * seguime.astro — Seguime / Contacto section. Instagram (@alecurcio_
+ * capitaldevida) is the protagonist: it's the real, unscripted channel
+ * where Capital de Vida gets lived day to day, and everything else on
+ * the site (books, chat, press) points back to it rather than competing
+ * with it. Copy: sitio-copy/seguime.md. Channels: Web/Ecosistema Digital
+ * Actual.md — only the four confirmed there render as cards; hrefs stay
+ * "#" with a TODO next to each until an official profile URL is
+ * confirmed (no fabricated URLs). Media: public/media/manifest.json.
+ * D8: forjado, no heredado — no framing here touches inheritance either.
+ */
+import Base from '../layouts/Base.astro';
+import '../components/secciones/libros/ed.css';
+import EdSection from '../components/secciones/libros/EdSection.astro';
+import EdHero from '../components/secciones/libros/EdHero.astro';
+import ChannelCard from '../components/secciones/seguime/ChannelCard.astro';
+
+// Marquesina: SÓLO los handles que ya figuran en las tarjetas de abajo.
+const handles = ['@alecurcio_capitaldevida', 'Alejandro Curcio - Capital de Vida', '@curciocapital', 'Alejandro Curcio'];
+---
+
+<Base
+	title="Seguime — Alejandro Curcio"
+	description="Instagram, YouTube, libros y charlas. Un solo lugar para cada cosa."
+>
+	<!-- HERO -->
+	<EdHero
+		id="hero"
+		variant="split"
+		imgId="ale-biblioteca"
+		imgAlt="Alejandro Curcio en su oficina, frente a una biblioteca"
+		focus="56% 18%"
+		kicker="Seguime"
+		title="Seguime donde hablo sin guion."
+		sub="Instagram, YouTube, libros y charlas. Un solo lugar para cada cosa."
+		ctaHref="#canales"
+		ctaLabel="Ver los canales"
+		ctaArrow="down"
+		titleTag="h1"
+		titleSize="md"
+		n="00"
+		eager
+	/>
+
+	<!-- MARQUESINA DE HANDLES (decorativa: los mismos handles de las tarjetas) -->
+	<div class="handles" aria-hidden="true">
+		<div class="handles-track" data-marquee data-marquee-speed="70">
+			{
+				handles.map((h) => (
+					<span class="handles-item">
+						<span class="handles-h">{h}</span>
+						<span class="handles-dot">✦</span>
+					</span>
+				))
+			}
+		</div>
+	</div>
+
+	<!-- CANALES -->
+	<EdSection
+		id="canales"
+		n="01"
+		kicker="Dónde seguirlo"
+		title="Instagram es donde pasa la conversación real."
+		lead="Más de 375.000 personas siguen ahí el día a día de Capital de Vida. Lo que después se convierte en libro, podcast o charla, primero se piensa en una tarjeta o un reel. La web no compite con Instagram: lo usa como puerta de entrada, y el resto aparece solo."
+	>
+		<div class="channels-grid">
+			<!-- TODO: confirmar URL exacta del perfil (@alecurcio_capitaldevida) antes de reemplazar este href="#" -->
+			<ChannelCard
+				featured
+				kicker="Canal principal"
+				platform="Instagram"
+				handle="@alecurcio_capitaldevida"
+				stat="375.000+ seguidores"
+				description="Tarjetas y reels sin filtro corporativo — el lugar donde el concepto de Capital de Vida se vuelve concreto y diario. Lo que después se convierte en libro, podcast o charla, primero se piensa acá."
+				ctaLabel="Seguir en Instagram"
+				ctaHref="#"
+				stagger={0}
+			/>
+
+			<!-- TODO: confirmar URL exacta del canal ("Alejandro Curcio - Capital de Vida") antes de reemplazar este href="#" -->
+			<ChannelCard
+				kicker="Las conversaciones largas"
+				platform="YouTube"
+				handle="Alejandro Curcio - Capital de Vida"
+				description="Podcasts y entrevistas, con apariciones de Nando Parrado y Berch Rupenian. Donde Instagram muestra la idea, acá se desarrolla."
+				ctaLabel="Mirá el canal"
+				ctaHref="#"
+				stagger={1}
+			/>
+
+			<!-- TODO: confirmar URL exacta del perfil (@curciocapital) antes de reemplazar este href="#" -->
+			<ChannelCard
+				kicker="Canal institucional"
+				platform="Instagram"
+				handle="@curciocapital"
+				description="Empresa, inversiones y contenido corporativo de Curcio Capital. Un enfoque distinto al canal personal — ninguno reemplaza al otro."
+				ctaLabel="Ver perfil"
+				ctaHref="#"
+				stagger={2}
+			/>
+
+			<!-- TODO: confirmar URL exacta del perfil de LinkedIn antes de reemplazar este href="#" -->
+			<ChannelCard
+				kicker="Perfil profesional"
+				platform="LinkedIn"
+				handle="Alejandro Curcio"
+				description="Perfil personal, como presidente de Curcio Capital."
+				ctaLabel="Conectar en LinkedIn"
+				ctaHref="#"
+				stagger={3}
+			/>
+		</div>
+	</EdSection>
+
+	<!-- PRENSA Y SPEAKING (sin formulario) -->
+	<EdSection
+		n="02"
+		tone="light"
+		sheet
+		kicker="Prensa y conferencias"
+		title="Habla en eventos, no en formularios."
+		lead="Movilidad, sostenibilidad e hidrógeno: los temas que lo llevaron a los MeetUps de la FIUM y a charlas del sector."
+	>
+		<div class="press-note ed-crop" data-reveal>
+			<span class="press-note-k ed-mono" aria-hidden="true">&gt;_</span>
+			<p>Si sos de prensa o querés invitarlo a hablar, escribí por los canales de arriba: Instagram, YouTube o LinkedIn.</p>
+		</div>
+		{/* TODO: reemplazar por un mailto:prensa@... directo apenas el equipo confirme la casilla oficial de prensa. Nada inventado hasta entonces. */}
+	</EdSection>
+
+	<!-- CIERRE DE SITIO -->
+	<EdHero
+		id="cierre"
+		variant="cta"
+		imgId="fuji-referencia"
+		imgAlt="Monte Fuji, entrada Gotemba"
+		kicker="CEO DE TU VIDA"
+		title="El arco se cierra en el tercer libro."
+		sub="Instagram muestra el día a día. YouTube lo desarrolla. El libro lo convierte en método — noviembre 2026."
+		ctaHref="/libros"
+		ctaLabel="Conocé el libro"
+		titleSize="md"
+		n="03"
+	/>
+
+	<div class="back-home">
+		<a href="/" data-roll>Volver al inicio</a>
+	</div>
+</Base>
+
+<style>
+	.handles {
+		position: relative;
+		overflow: hidden;
+		background: var(--ed-accent);
+		color: var(--ed-ink);
+		border-block: 1px solid rgb(12 10 6 / 0.2);
+		padding: 18px 0;
+	}
+	.handles-track {
+		display: flex;
+		gap: 0;
+		white-space: nowrap;
+	}
+	.handles-item {
+		display: inline-flex;
+		align-items: center;
+		gap: 28px;
+		padding-right: 28px;
+		flex: none;
+	}
+	.handles-h {
+		font-family: var(--ed-display);
+		font-weight: 540;
+		font-size: clamp(2rem, 1rem + 3.4vw, 4.5rem);
+		line-height: 1.05;
+		letter-spacing: -0.045em;
+	}
+	.handles-dot {
+		font-size: clamp(1rem, 0.8rem + 1vw, 1.75rem);
+	}
+	.channels-grid {
+		display: grid;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		gap: clamp(16px, 2vw, 28px);
+		margin-top: clamp(48px, 6vw, 96px);
+	}
+	.channels-grid > :global(.channel-card--featured) {
+		grid-column: 1 / -1;
+	}
+	@media (max-width: 900px) {
+		.channels-grid {
+			grid-template-columns: 1fr;
+		}
+	}
+
+	.press-note {
+		display: flex;
+		gap: 18px;
+		align-items: baseline;
+		margin-top: clamp(40px, 5vw, 72px);
+		max-width: 900px;
+		padding: clamp(22px, 3vw, 40px);
+		border-radius: 18px;
+		background: rgb(12 10 6 / 0.04);
+		border: 1px solid rgb(12 10 6 / 0.14);
+	}
+	.press-note-k {
+		color: var(--ed-accent-ink);
+		flex: none;
+	}
+	.press-note p {
+		margin: 0;
+		font-family: var(--ed-serif);
+		font-style: italic;
+		font-size: clamp(1.5rem, 1rem + 1.6vw, 2.5rem);
+		line-height: 1.15;
+		color: var(--ed-ink);
+	}
+
+	.back-home {
+		text-align: center;
+		padding: 48px var(--ed-gutter) 24px;
+		background: var(--ed-bg);
+	}
+	.back-home a {
+		display: inline-flex;
+		align-items: center;
+		min-height: 44px;
+		padding: 0 12px;
+		font-family: var(--ed-mono);
+		font-size: 12px;
+		font-weight: 600;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: rgba(255, 255, 255, 0.6);
+		transition: color 0.3s var(--ed-expo);
+	}
+	.back-home a:hover {
+		color: var(--ed-accent);
+	}
+</style>

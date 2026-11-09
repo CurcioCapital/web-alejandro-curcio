@@ -1,0 +1,52 @@
+---
+/**
+ * PillarRow.astro — one row of the "facetas" pattern: index, giant word,
+ * description, "Explorar X →" link, and a real photo card. Usage:
+ * <PillarRow index="01" word="Empresario" description="..." exploreLabel="Explorar Negocios"
+ *   exploreHref="/negocios" photoId="gala-quinteto" photoAlt="..." />
+ */
+import Reveal from './Reveal.astro';
+import BlurImage from './BlurImage.astro';
+
+interface Props {
+  index: string; // "01".."06"
+  word: string;
+  description: string;
+  exploreLabel: string;
+  exploreHref: string;
+  photoId?: string; // manifest asset id (img/cover)
+  photoSrc?: string; // raw public path escape hatch (e.g. a video poster jpg)
+  photoAlt: string;
+  photoKind?: 'img' | 'cover';
+}
+
+const {
+  index,
+  word,
+  description,
+  exploreLabel,
+  exploreHref,
+  photoId,
+  photoSrc,
+  photoAlt,
+  photoKind = 'img',
+} = Astro.props;
+---
+
+<Reveal as="div" class="pillar-row">
+  <span class="pillar-idx">{index}</span>
+  <div class="pillar-main">
+    <span class="pillar-word">{word}</span>
+    <p class="pillar-desc">{description}</p>
+    <a class="pillar-explore" href={exploreHref}>
+      {exploreLabel}
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <line x1="5" y1="12" x2="19" y2="12"></line>
+        <polyline points="12 5 19 12 12 19"></polyline>
+      </svg>
+    </a>
+  </div>
+  <div class="pillar-photo u-crop">
+    <BlurImage id={photoId} src={photoSrc} alt={photoAlt} kind={photoKind} />
+  </div>
+</Reveal>

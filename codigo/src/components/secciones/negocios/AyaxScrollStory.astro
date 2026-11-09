@@ -1,0 +1,348 @@
+---
+/**
+ * AyaxScrollStory.astro — /negocios. El relato de AYAX como CAPÍTULOS
+ * pineados con scrub (rediseño 21/10/2026, referencia landonorris.com).
+ *
+ * MECÁNICA: contenedor alto (una pantalla por momento + una) con escenario
+ * sticky de 100vh. El progreso lineal elige el capítulo activo y, además,
+ * cada capítulo expone su progreso local como --lp (0→1) para el scrub:
+ * barra de segmentos tipo telemetría, deriva vertical del numeral gigante.
+ * Cambios de capítulo: máscara (clip-path) + translate, sólo transform /
+ * opacity / clip-path.
+ *
+ * Robustez (igual que antes):
+ * - Sin JS: `is-pinned` lo pone el script; hasta entonces todo apilado.
+ * - PRM y ≤860px: no se pinea; quedan apilados con su propio ritmo.
+ * - Las cifras (slot «ultimo») van DESPUÉS del recorrido pineado, en flujo
+ *   normal, para que data-counter cuente cuando de verdad se ven.
+ *
+ * El momento «Dos crisis» lleva el mismo tratamiento de peso que las
+ * crisis de /historia (dorado + trama): nunca más chico que las victorias.
+ */
+export interface Beat {
+  year: string;
+  title: string;
+  body: string;
+  note?: string;
+}
+
+interface Props {
+  beats: Beat[];
+  label?: string;
+}
+
+const { beats, label = 'La historia de AYAX' } = Astro.props;
+const pad2 = (n: number) => String(n).padStart(2, '0');
+const isCrisis = (b: Beat) => /crisis/i.test(b.year);
+// largo de la palabra más larga del numeral: escala el cuerpo para que
+// «Pioneros» o «Dos crisis» entren sin achicar el peso visual.
+const longest = (s: string) => Math.max(4, ...s.split(/\s+/).map((w) => w.length));
+---
+
+<section class="pin" data-pin style={`--beats: ${beats.length}`} aria-label={label}>
+  <div class="pin-stage">
+    <div class="pin-hud" aria-hidden="true">
+      <span class="pa-mono pin-hud-l">AYAX · 1945 — 2026</span>
+      <div class="pin-segs">
+        {beats.map((_, i) => <span class="pin-seg" data-seg={i}><i /></span>)}
+      </div>
+      <span class="pa-mono pin-hud-r"><b data-pin-count>01</b> / {pad2(beats.length)}</span>
+    </div>
+
+    <div class="pin-beats">
+      {
+        beats.map((b, i) => (
+          <article class:list={['pin-beat', i === 0 && 'is-on', isCrisis(b) && 'is-crisis']} data-beat={i} style={`--len:${longest(b.year)}`}>
+            <div class="pin-big">
+              <span class="pin-idx pa-mono" aria-hidden="true">
+                [ {pad2(i + 1)} ]
+              </span>
+              <span class="pin-year pa-display">{b.year}</span>
+            </div>
+            <div class="pin-copy">
+              <h3 class="pin-title pa-display" set:html={b.title} />
+              <p class="pin-body">{b.body}</p>
+              {b.note && <p class="pin-note pa-mono">{b.note}</p>}
+            </div>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>
+<div class="pin-extra"><slot name="ultimo" /></div>
+
+<style>
+  .pin {
+    position: relative;
+    --lp: 0;
+  }
+
+  /* ---------- HUD ---------- */
+  .pin-hud {
+    display: none;
+  }
+  .pin-segs {
+    display: flex;
+    gap: 6px;
+    flex: 1;
+    max-width: 520px;
+  }
+  .pin-seg {
+    position: relative;
+    flex: 1;
+    height: 2px;
+    background: rgb(255 255 255 / 0.16);
+    overflow: hidden;
+  }
+  .pin-seg i {
+    position: absolute;
+    inset: 0;
+    background: var(--pa-accent, #e8c874);
+    transform-origin: 0 50%;
+    transform: scaleX(0);
+  }
+  .pin-seg.is-done i {
+    transform: scaleX(1);
+  }
+  .pin-seg.is-on i {
+    transform: scaleX(var(--lp));
+  }
+
+  /* ---------- momento (apilado: sin JS / móvil / PRM) ---------- */
+  .pin-beat {
+    display: grid;
+    grid-template-columns: minmax(0, 6fr) minmax(0, 5fr);
+    gap: 24px clamp(28px, 5vw, 96px);
+    align-items: end;
+    padding: clamp(48px, 7vw, 96px) 0;
+    border-top: 1px solid var(--pa-line, rgb(255 255 255 / 0.08));
+  }
+  .pin-idx {
+    display: block;
+    color: var(--ink-low, rgb(255 255 255 / 0.45));
+    margin-bottom: 14px;
+  }
+  .pin-year {
+    display: block;
+    font-size: clamp(64px, 9.6vw, 176px);
+    line-height: 0.88;
+    letter-spacing: -0.05em;
+    color: #fff;
+    font-variant-numeric: tabular-nums;
+    overflow-wrap: anywhere;
+  }
+  .is-crisis .pin-year {
+    background: var(--oro-degrade, linear-gradient(135deg, #b8892a 0%, #e8c874 46%, #c9992f 100%));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: var(--pa-accent, #e8c874);
+  }
+  .pin-beat.is-crisis {
+    border-top-color: rgb(232 200 116 / 0.5);
+    background: repeating-linear-gradient(-45deg, rgb(232 200 116 / 0.045) 0 1px, transparent 1px 11px);
+  }
+  .pin-copy {
+    max-width: 48ch;
+    padding-bottom: 6px;
+  }
+  .pin-title {
+    font-size: clamp(28px, 2.8vw, 50px);
+    line-height: 1.04;
+    letter-spacing: -0.035em;
+    color: #fff;
+  }
+  .pin-body {
+    font-size: var(--text-lead, 18px);
+    line-height: 1.6;
+    color: var(--ink-mid, rgb(255 255 255 / 0.65));
+    margin: 22px 0 0;
+  }
+  .pin-note {
+    margin: 18px 0 0;
+    color: var(--ink-low, rgb(255 255 255 / 0.5));
+    text-transform: none;
+    letter-spacing: 0.02em;
+    font-size: 11.5px;
+  }
+  .pin-extra {
+    margin-top: clamp(40px, 6vw, 88px);
+  }
+
+  /* ---------- pineado ---------- */
+  .pin.is-pinned {
+    height: calc((var(--beats) + 1) * 100vh);
+  }
+  .pin.is-pinned .pin-stage {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr);
+    padding-top: var(--pa-head-clear, 110px);
+    padding-bottom: clamp(28px, 5vh, 56px);
+    overflow: hidden;
+  }
+  .pin.is-pinned .pin-hud {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid var(--pa-line, rgb(255 255 255 / 0.08));
+  }
+  .pin-hud-l,
+  .pin-hud-r {
+    color: var(--ink-low, rgb(255 255 255 / 0.45));
+    white-space: nowrap;
+  }
+  .pin-hud-r b {
+    color: var(--pa-accent, #e8c874);
+    font-weight: 600;
+  }
+  .pin.is-pinned .pin-beats {
+    position: relative;
+  }
+  .pin.is-pinned .pin-beat {
+    position: absolute;
+    inset: 0;
+    padding: 0;
+    border: 0;
+    background: none;
+    align-items: center;
+    pointer-events: none;
+  }
+  .pin.is-pinned .pin-beat.is-crisis::before {
+    content: '';
+    position: absolute;
+    inset: 8% -2vw;
+    background: repeating-linear-gradient(-45deg, rgb(232 200 116 / 0.05) 0 1px, transparent 1px 11px);
+    border-top: 1px solid rgb(232 200 116 / 0.45);
+    border-bottom: 1px solid rgb(232 200 116 / 0.45);
+    opacity: 0;
+    transition: opacity 600ms var(--pa-ease, ease);
+    z-index: -1;
+  }
+  .pin.is-pinned .pin-beat.is-crisis.is-on::before {
+    opacity: 1;
+  }
+  .pin.is-pinned .pin-year {
+    font-size: min(30vh, 19vw, calc(80vw / var(--len, 4)));
+    clip-path: inset(0 0 100% 0);
+    transform: translate3d(0, 30%, 0);
+    transition:
+      clip-path 900ms var(--pa-ease, ease),
+      transform 900ms var(--pa-ease, ease);
+  }
+  .pin.is-pinned .pin-beat.is-on .pin-year {
+    clip-path: inset(-4% -2% -6% -2%);
+    transform: translate3d(0, calc(var(--lp) * -8%), 0);
+    transition:
+      clip-path 900ms var(--pa-ease, ease),
+      transform 120ms linear;
+  }
+  .pin.is-pinned .pin-beat.is-past .pin-year {
+    clip-path: inset(100% 0 0 0);
+    transform: translate3d(0, -30%, 0);
+  }
+  .pin.is-pinned .pin-idx,
+  .pin.is-pinned .pin-copy > * {
+    opacity: 0;
+    transform: translate3d(0, 28px, 0);
+    transition:
+      opacity 500ms var(--pa-ease, ease),
+      transform 700ms var(--pa-ease, ease);
+  }
+  .pin.is-pinned .pin-beat.is-on .pin-idx,
+  .pin.is-pinned .pin-beat.is-on .pin-copy > * {
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+  }
+  .pin.is-pinned .pin-beat.is-on .pin-copy > :nth-child(2) {
+    transition-delay: 80ms;
+  }
+  .pin.is-pinned .pin-beat.is-on .pin-copy > :nth-child(3) {
+    transition-delay: 160ms;
+  }
+  .pin.is-pinned .pin-beat.is-past .pin-copy > * {
+    transform: translate3d(0, -28px, 0);
+  }
+
+  @media (max-width: 860px) {
+    .pin-beat {
+      grid-template-columns: 1fr;
+      align-items: start;
+    }
+    .pin-year {
+      font-size: min(140px, 24vw, calc(150vw / var(--len, 4)));
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .pin-year,
+    .pin-copy > * {
+      transition: none !important;
+    }
+  }
+</style>
+
+<script>
+  const PIN_MIN_WIDTH = 861;
+  const prm = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  document.querySelectorAll<HTMLElement>('[data-pin]').forEach((root) => {
+    const beats = [...root.querySelectorAll<HTMLElement>('[data-beat]')];
+    const segs = [...root.querySelectorAll<HTMLElement>('[data-seg]')];
+    const count = root.querySelector<HTMLElement>('[data-pin-count]');
+    if (!beats.length) return;
+    let raf = 0;
+    let lastIdx = -1;
+
+    // Una sola función decide TODO el estado en cada frame (idempotente).
+    function paint() {
+      raf = 0;
+      const pinear = window.innerWidth >= PIN_MIN_WIDTH && !prm.matches;
+      root.classList.toggle('is-pinned', pinear);
+
+      if (!pinear) {
+        beats.forEach((b) => {
+          b.classList.remove('is-on', 'is-past');
+          b.removeAttribute('aria-hidden');
+        });
+        lastIdx = -1;
+        return;
+      }
+
+      const r = root.getBoundingClientRect();
+      const travel = r.height - window.innerHeight;
+      const p = travel > 0 ? Math.min(1, Math.max(0, -r.top / travel)) : 0;
+      const n = beats.length;
+      const raw = p * n;
+      const idx = Math.min(n - 1, Math.floor(raw));
+      const lp = Math.min(1, raw - idx);
+      root.style.setProperty('--lp', lp.toFixed(3));
+
+      if (idx !== lastIdx) {
+        beats.forEach((b, i) => {
+          b.classList.toggle('is-on', i === idx);
+          b.classList.toggle('is-past', i < idx);
+          b.setAttribute('aria-hidden', i === idx ? 'false' : 'true');
+        });
+        segs.forEach((s, i) => {
+          s.classList.toggle('is-on', i === idx);
+          s.classList.toggle('is-done', i < idx);
+        });
+        if (count) count.textContent = String(idx + 1).padStart(2, '0');
+        lastIdx = idx;
+      }
+    }
+
+    const schedule = () => {
+      if (!raf) raf = requestAnimationFrame(paint);
+    };
+    window.addEventListener('scroll', schedule, { passive: true });
+    window.addEventListener('resize', schedule, { passive: true });
+    prm.addEventListener('change', schedule);
+    schedule();
+  });
+</script>

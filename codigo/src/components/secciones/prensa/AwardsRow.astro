@@ -1,0 +1,151 @@
+---
+/**
+ * AwardsRow.astro — prensa-only. Franja de reconocimientos: año / premio /
+ * detalle. Rediseño 21/10/2026: el año va ENORME en display condensado y
+ * cuenta desde 0 al entrar (data-counter del motion global — el número
+ * final es exactamente el del texto). Grilla de líneas finas, etiquetas
+ * mono numeradas y la única foto que existe (Guinness) como insignia con
+ * crop-marks. Uso:
+ * <AwardsRow awards={[{ year: "2024", name: "...", detail: "...", photoId: "guinness-02", photoAlt: "..." }]} />
+ */
+import BlurImage from '../../BlurImage.astro';
+
+interface Award {
+  year: string;
+  name: string;
+  detail: string;
+  photoId?: string;
+  photoAlt?: string;
+}
+
+interface Props {
+  awards: Award[];
+}
+
+const { awards } = Astro.props;
+---
+
+<div class="awards-row">
+  {
+    awards.map((award, i) => (
+      <div class="award-item" data-ed-spot data-reveal style={`--i:${i}`}>
+        <div class="award-top ed-mono">
+          <span aria-hidden="true">{`0${i + 1}`}</span>
+          {award.photoId && (
+            <div class="award-photo ed-crop">
+              <BlurImage id={award.photoId} alt={award.photoAlt ?? ''} kind="img" width={640} sizes="72px" />
+            </div>
+          )}
+        </div>
+        <span class="award-year" data-counter>{award.year}</span>
+        <span class="award-name">{award.name}</span>
+        <span class="award-detail ed-mono">{award.detail}</span>
+      </div>
+    ))
+  }
+</div>
+
+<style>
+  .awards-row {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    margin-top: clamp(48px, 6vw, 96px);
+    border-top: 1px solid rgb(12 10 6 / 0.2);
+    border-bottom: 1px solid rgb(12 10 6 / 0.2);
+  }
+  .award-item {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding: 24px clamp(16px, 2vw, 32px) 32px;
+    min-height: 420px;
+    isolation: isolate;
+    transition-delay: calc(var(--i, 0) * 90ms);
+  }
+  .award-item + .award-item {
+    border-left: 1px solid rgb(12 10 6 / 0.2);
+  }
+  .award-item:first-child {
+    padding-left: 0;
+  }
+  .award-item::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: radial-gradient(300px circle at var(--mx, 50%) var(--my, 50%), rgb(143 106 21 / 0.12), transparent 70%);
+    opacity: 0;
+    transition: opacity 0.5s var(--ed-expo);
+  }
+  .award-item:hover::before {
+    opacity: 1;
+  }
+  .award-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    color: var(--ed-accent-ink);
+    margin-bottom: auto;
+    min-height: 72px;
+  }
+  .award-photo {
+    width: 72px;
+    height: 72px;
+    border-radius: 10px;
+  }
+  .award-photo :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 10px;
+  }
+  .award-year {
+    display: block;
+    margin-top: 48px;
+    font-family: var(--ed-display);
+    font-weight: 560;
+    font-size: clamp(4.5rem, 2rem + 6.5vw, 9.5rem);
+    line-height: 0.95;
+    letter-spacing: -0.055em;
+    color: var(--ed-ink);
+    font-variant-numeric: tabular-nums;
+  }
+  .award-name {
+    display: block;
+    margin-top: 22px;
+    font-family: var(--ed-display);
+    letter-spacing: -0.035em;
+    font-weight: 560;
+    font-size: clamp(1.25rem, 1rem + 0.8vw, 1.75rem);
+    line-height: 1.08;
+    color: var(--ed-ink);
+    min-height: 2.16em; /* dos líneas: los años quedan alineados */
+  }
+  .award-detail {
+    display: block;
+    margin-top: 12px;
+    color: rgb(12 10 6 / 0.62);
+    text-transform: none;
+    letter-spacing: 0.02em;
+    font-size: 12.5px;
+  }
+  @media (max-width: 860px) {
+    .awards-row {
+      grid-template-columns: 1fr;
+    }
+    .award-item {
+      min-height: 0;
+      padding: 24px 0 32px;
+    }
+    .award-name {
+      min-height: 0;
+    }
+    .award-item + .award-item {
+      border-left: 0;
+      border-top: 1px solid rgb(12 10 6 / 0.2);
+    }
+    .award-year {
+      margin-top: 24px;
+    }
+  }
+</style>

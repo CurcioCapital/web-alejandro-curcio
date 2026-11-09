@@ -1,0 +1,383 @@
+---
+/**
+ * GuinnessSeal.astro — Aventura-only. La ficha del récord Guinness.
+ *
+ * Tercera versión. La primera era un recuadro blanco chico; la segunda, una
+ * tarjeta tipo credencial — las dos quedaron, en palabras de Dolores,
+ * «pobres» y «muy Claude»: una caja con borde redondeado y texto adentro.
+ * Esta no es una caja: es una franja editorial donde el dato manda. El
+ * protagonista es la cifra, que cuenta al entrar en pantalla.
+ *
+ * Todos los números salen de la nota OFICIAL de Guinness World Records
+ * (ver «05 — Hechos verificados.md» § Récord Guinness — Ice Challenge 2024).
+ * Hasta el 14/10/2026 el sitio no tenía la cifra y por eso no la mostraba.
+ *
+ * Hecha para lámina OSCURA, la única donde se usa (SectionWhite dark).
+ */
+interface Props {
+  /** Participantes homologados. El número grande. */
+  participantes: number;
+  minutos: number;
+  grados: number;
+  piscinas: number;
+  recordAnterior: number;
+  recordAnteriorNota: string;
+  beneficiario: string;
+  beneficiarioNota: string;
+}
+
+const {
+  participantes,
+  minutos,
+  grados,
+  piscinas,
+  recordAnterior,
+  recordAnteriorNota,
+  beneficiario,
+  beneficiarioNota,
+} = Astro.props;
+
+const nf = new Intl.NumberFormat('es-UY');
+
+const datos = [
+  { etiqueta: 'Minutos sumergido', valor: minutos, nota: 'el mínimo para entrar en el conteo' },
+  { etiqueta: 'Temperatura', valor: grados, sufijo: '°', nota: 'máximo admitido en el agua' },
+  { etiqueta: 'Piscinas con hielo', valor: piscinas, nota: 'montadas en el predio' },
+  { etiqueta: 'Récord anterior', valor: recordAnterior, nota: recordAnteriorNota },
+];
+---
+
+<section class="gw" aria-label="Datos del récord Guinness">
+  <p class="gw-credito">
+    <span class="gw-credito-marca">Guinness World Records&trade;</span>
+    <span class="gw-credito-sep" aria-hidden="true"></span>
+    <span>Récord homologado</span>
+  </p>
+
+  <div class="gw-cifra">
+    <!-- El valor final va en el HTML: si el script no corre, el número
+         correcto igual se ve. El JS lo baja a 0 sólo cuando va a animarlo. -->
+    <span class="gw-numero" data-gw-cuenta={participantes}>{nf.format(participantes)}</span>
+
+    <!-- Sello animado: decorativo, repite las dos líneas del crédito. -->
+    <div class="gw-sello" aria-hidden="true">
+      <svg viewBox="0 0 200 200" class="gw-sello-svg">
+        <defs>
+          <path id="gw-circ" d="M100 100 m-78 0 a78 78 0 1 1 156 0 a78 78 0 1 1 -156 0" />
+        </defs>
+        <circle cx="100" cy="100" r="96" class="gw-sello-ring" />
+        <circle cx="100" cy="100" r="60" class="gw-sello-ring gw-sello-ring--in" />
+        <g class="gw-sello-rot">
+          <text class="gw-sello-txt"><textPath href="#gw-circ" textLength="480">Guinness World Records™ · Récord homologado · Guinness World Records™ · Récord homologado ·</textPath></text>
+        </g>
+        <g class="gw-sello-star"><path d="M100 70 l7.6 20.4 21.8 1 -17 13.6 5.8 21 -18.2 -12 -18.2 12 5.8 -21 -17 -13.6 21.8 -1z" /></g>
+      </svg>
+    </div>
+
+    <p class="gw-leyenda">
+      personas con el cuerpo sumergido<br /> en agua helada <strong>al mismo tiempo</strong>
+    </p>
+  </div>
+
+  <dl class="gw-datos">
+    {
+      datos.map((d, i) => (
+        <div class="gw-dato">
+          <span class="gw-dato-idx" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+          <dt>{d.etiqueta}</dt>
+          <dd>
+            <span data-gw-cuenta={d.valor}>{nf.format(d.valor)}</span>{d.sufijo}
+          </dd>
+          <p class="gw-nota">{d.nota}</p>
+        </div>
+      ))
+    }
+  </dl>
+
+  <p class="gw-beneficio">
+    <span class="gw-beneficio-etiqueta">A beneficio de</span>
+    <strong>{beneficiario}</strong>
+    <span class="gw-beneficio-nota">{beneficiarioNota}</span>
+  </p>
+</section>
+
+<style>
+  .gw {
+    --gw-mono: var(--font-mono, ui-monospace, Menlo, monospace);
+    --gw-display: var(--font-display, 'Geist Variable', 'Archivo Variable', Arial, sans-serif);
+    --gw-acc: var(--accent, #e8c874);
+    --gw-line: rgb(255 255 255 / 0.14);
+    margin: 0;
+    border-top: 1px solid var(--gw-line);
+    padding-top: 28px;
+  }
+  .gw-credito {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 0;
+    font-family: var(--gw-mono);
+    font-size: 11.5px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-low);
+  }
+  .gw-credito-marca {
+    color: var(--gw-acc);
+  }
+  .gw-credito-sep {
+    width: 40px;
+    height: 1px;
+    background: var(--gw-line);
+  }
+
+  .gw-cifra {
+    position: relative;
+    display: grid;
+    grid-template-columns: auto auto minmax(0, 1fr);
+    align-items: center;
+    gap: 18px clamp(20px, 3vw, 48px);
+    margin-top: 18px;
+  }
+  .gw-numero {
+    font-family: var(--gw-display);
+    font-weight: var(--display-wght, 560);
+    font-size: clamp(112px, 19vw, 330px);
+    line-height: 0.86;
+    letter-spacing: -0.06em;
+    font-variant-numeric: tabular-nums;
+    color: var(--color-cobalt-bright);
+    background: var(--oro-degrade);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .gw-sello {
+    width: clamp(110px, 12vw, 190px);
+    aspect-ratio: 1;
+  }
+  .gw-sello-svg {
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+  }
+  .gw-sello-ring {
+    fill: none;
+    stroke: var(--gw-acc);
+    stroke-width: 1;
+    opacity: 0.6;
+  }
+  .gw-sello-ring--in {
+    stroke-dasharray: 2 4;
+  }
+  .gw-sello-txt {
+    font-family: var(--gw-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    fill: var(--gw-acc);
+  }
+  .gw-sello-rot {
+    transform-origin: 100px 100px;
+    animation: gw-spin 22s linear infinite;
+  }
+  .gw-sello-star path {
+    fill: var(--gw-acc);
+  }
+  .gw-sello-star {
+    transform-origin: 100px 100px;
+    animation: gw-pulse 2.4s var(--ease-expo, ease) infinite;
+  }
+  @keyframes gw-spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  @keyframes gw-pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(0.86); }
+  }
+  .gw-leyenda {
+    margin: 0;
+    font-size: clamp(16px, 1.5vw, 22px);
+    line-height: 1.4;
+    color: var(--ink-mid);
+    max-width: 22ch;
+  }
+  .gw-leyenda strong {
+    font-weight: 600;
+    color: var(--ink-hi);
+  }
+
+  .gw-datos {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    margin: clamp(40px, 5vw, 72px) 0 0;
+    border-top: 1px solid var(--gw-line);
+    border-bottom: 1px solid var(--gw-line);
+  }
+  .gw-dato {
+    position: relative;
+    padding: 26px clamp(16px, 2vw, 32px) 30px;
+    border-left: 1px solid var(--gw-line);
+  }
+  .gw-dato:first-child {
+    padding-left: 0;
+    border-left: 0;
+  }
+  .gw-dato-idx {
+    position: absolute;
+    top: 26px;
+    right: clamp(16px, 2vw, 32px);
+    font-family: var(--gw-mono);
+    font-size: 10.5px;
+    color: var(--ink-low);
+  }
+  .gw-dato dt {
+    font-family: var(--gw-mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--gw-acc);
+  }
+  .gw-dato dd {
+    margin: 18px 0 0;
+    font-family: var(--gw-display);
+    font-weight: var(--display-wght, 560);
+    font-size: clamp(48px, 5.4vw, 100px);
+    line-height: 0.9;
+    letter-spacing: -0.05em;
+    color: #fff;
+    font-variant-numeric: tabular-nums;
+  }
+  .gw-nota {
+    margin: 14px 0 0;
+    font-size: 13px;
+    line-height: 1.4;
+    color: var(--ink-low);
+  }
+
+  .gw-beneficio {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 8px 18px;
+    margin: 0;
+    padding: 26px 0 0;
+    font-size: 16px;
+    color: var(--ink-mid);
+  }
+  .gw-beneficio-etiqueta {
+    font-family: var(--gw-mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--gw-acc);
+  }
+  .gw-beneficio strong {
+    font-family: var(--gw-display);
+    font-weight: var(--display-wght, 560);
+    letter-spacing: -0.03em;
+    font-size: clamp(24px, 2.2vw, 34px);
+    line-height: 1;
+    color: var(--ink-hi);
+  }
+  .gw-beneficio-nota {
+    font-size: 14px;
+    color: var(--ink-low);
+  }
+
+  @media (max-width: 900px) {
+    .gw-cifra {
+      grid-template-columns: auto minmax(0, 1fr);
+    }
+    .gw-leyenda {
+      grid-column: 1 / -1;
+    }
+    .gw-datos {
+      grid-template-columns: 1fr 1fr;
+    }
+    .gw-dato:nth-child(odd) {
+      padding-left: 0;
+      border-left: 0;
+    }
+    .gw-dato:nth-child(n + 3) {
+      border-top: 1px solid var(--gw-line);
+    }
+  }
+  @media (max-width: 560px) {
+    .gw-numero {
+      font-size: 33vw;
+    }
+    .gw-sello {
+      width: 92px;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .gw-sello-rot,
+    .gw-sello-star {
+      animation: none;
+    }
+  }
+</style>
+
+<script>
+  // Contador al entrar en pantalla. Usa scroll + getBoundingClientRect, NO
+  // IntersectionObserver: en el panel de preview de este proyecto el observer
+  // no dispara nunca (la vista se reporta oculta) y los números quedarían en
+  // cero para siempre.
+  const nums = Array.from(document.querySelectorAll<HTMLElement>('[data-gw-cuenta]'));
+  const quieto = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (nums.length && !quieto) {
+    const fmt = new Intl.NumberFormat('es-UY');
+    const DUR = 1100;
+    const pendientes = new Set(nums);
+    const fin = (el: HTMLElement) => Number(el.dataset.gwCuenta || 0);
+
+    const correr = (el: HTMLElement) => {
+      const meta = fin(el);
+      const t0 = performance.now();
+      const paso = (t: number) => {
+        const p = Math.min(1, (t - t0) / DUR);
+        // easeOutQuint: la misma curva que --ease-out del sistema.
+        el.textContent = fmt.format(Math.round(meta * (1 - Math.pow(1 - p, 5))));
+        if (p < 1) requestAnimationFrame(paso);
+        else el.textContent = fmt.format(meta);
+      };
+      el.textContent = '0';
+      requestAnimationFrame(paso);
+    };
+
+    const revisar = () => {
+      pendientes.forEach((el) => {
+        const r = el.getBoundingClientRect();
+        if (r.top >= innerHeight * 0.88) return; // todavía no llegó
+        pendientes.delete(el);
+        // Si el bloque ya quedó ARRIBA del viewport (la página cargó con un
+        // ancla, o el usuario saltó de golpe), no hay nada que mirar: se deja
+        // el valor final. Sin esta rama el número se quedaba en cero.
+        if (r.bottom <= 0) el.textContent = fmt.format(fin(el));
+        else correr(el);
+      });
+      if (!pendientes.size) removeEventListener('scroll', alScroll);
+    };
+
+    let pedido = false;
+    const alScroll = () => {
+      if (pedido) return;
+      pedido = true;
+      requestAnimationFrame(() => {
+        pedido = false;
+        revisar();
+      });
+    };
+
+    addEventListener('scroll', alScroll, { passive: true });
+    // Primera pasada: los que ya están en pantalla arrancan solos. Los demás
+    // recién acá se ponen en cero — si el script muriera antes, el HTML ya
+    // trae el número correcto y no se ve un cero fijo.
+    revisar();
+    pendientes.forEach((el) => (el.textContent = '0'));
+  }
+</script>

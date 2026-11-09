@@ -1,0 +1,143 @@
+---
+/**
+ * ClosingChispaQuote.astro — Libros-only. Cita de cierre sacada del cierre
+ * real de chispa.mp4: la despedida de Alejandro citando a Aristóteles,
+ * transcripta textual en public/media/video/chispa.vtt. Un VideoModal abre
+ * el clip completo.
+ *
+ * Rediseño 21/10/2026: foto a sangre con parallax lento (data-parallax),
+ * máscara de entrada (data-reveal="mask"), la frase en Instrument Serif
+ * enorme partida por líneas, atribución en mono y el disparador del video
+ * como botón con cursor "play".
+ */
+import BlurImage from '../../BlurImage.astro';
+
+interface Props {
+  id?: string;
+}
+
+const { id = 'chispa' } = Astro.props;
+---
+
+<section id={id} class="chispa">
+  <div class="chispa__media" data-reveal="mask">
+    <div class="chispa__img" data-parallax="-0.12">
+      <BlurImage src="/media/video/chispa-poster.jpg" alt="Alejandro Curcio cerrando un stream en vivo" />
+    </div>
+    <div class="chispa__scrim" aria-hidden="true"></div>
+  </div>
+  <div class="chispa__content ed-wrap">
+    <span class="chispa__mark" aria-hidden="true">&ldquo;</span>
+    <blockquote class="chispa__quote" data-split="lines">La sabiduría comienza con la admiración.</blockquote>
+    <span class="chispa__attr ed-mono">Alejandro Curcio, citando a Aristóteles — cierre de stream en vivo</span>
+  </div>
+</section>
+
+<style>
+  .chispa {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    background: var(--ed-bg);
+    color: #fff;
+    min-height: min(110vh, 1040px);
+    display: flex;
+    align-items: flex-end;
+  }
+  /* QA 21/10: `isolation` encierra el z-index del VideoModal (300) dentro de
+     la sección y el footer (posterior en el DOM) quedaba pintado encima del
+     video abierto. Mientras el modal está abierto, la sección sube de capa. */
+  .chispa:has(:global(.kit-video-modal__overlay:not([hidden]))) {
+    z-index: 400;
+  }
+  .chispa__media {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+  }
+  .chispa__img {
+    position: absolute;
+    inset: -12% 0;
+  }
+  .chispa__img :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .chispa__scrim {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(180deg, var(--ed-bg) 0%, rgb(12 10 6 / 0.3) 30%, rgb(12 10 6 / 0.55) 60%, var(--ed-bg) 100%),
+      linear-gradient(90deg, rgb(12 10 6 / 0.7), transparent 70%);
+  }
+  .chispa__content {
+    width: 100%;
+    padding-top: clamp(140px, 20vh, 240px);
+    padding-bottom: clamp(64px, 9vw, 128px);
+  }
+  .chispa__mark {
+    display: block;
+    font-family: var(--ed-serif);
+    font-style: italic;
+    font-size: clamp(90px, 12vw, 200px);
+    line-height: 0.6;
+    height: 0.4em;
+    color: var(--ed-accent);
+  }
+  .chispa__quote {
+    margin: 0;
+    font-family: var(--ed-serif);
+    font-style: italic;
+    font-weight: 400;
+    font-size: clamp(2.75rem, 1rem + 7.4vw, 9.5rem);
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+    max-width: 13ch;
+    text-wrap: balance;
+  }
+  .chispa__attr {
+    display: block;
+    margin-top: 28px;
+    color: rgb(255 255 255 / 0.7);
+  }
+  .chispa__modal {
+    margin-top: 32px;
+  }
+  .chispa__modal :global(.kit-video-modal__trigger) {
+    width: auto;
+    aspect-ratio: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 24px 10px 10px;
+    border-radius: 999px;
+    background: rgb(255 255 255 / 0.1);
+    border: 1px solid rgb(255 255 255 / 0.2);
+    backdrop-filter: blur(8px);
+    transition: background 0.4s var(--ed-expo), border-color 0.4s var(--ed-expo);
+  }
+  .chispa__modal :global(.kit-video-modal__trigger:hover) {
+    background: rgb(232 200 116 / 0.18);
+    border-color: var(--ed-accent);
+  }
+  .chispa__modal :global(.kit-video-modal__play) {
+    position: static;
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+    box-shadow: none;
+    transform: none;
+  }
+  .chispa__trigger-label {
+    order: 2;
+    font-family: var(--ed-mono);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #fff;
+    white-space: nowrap;
+  }
+</style>

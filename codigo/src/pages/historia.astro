@@ -1,0 +1,491 @@
+---
+/**
+ * historia.astro — Historia section. THE centerpiece build: a scroll-driven
+ * 1945→2026 timeline (src/components/secciones/historia/Timeline.astro),
+ * built from the shared design-system components in src/components/
+ * (SectionPhoto, SectionWhite, QuoteOverlay, Reveal, PillButton — see
+ * src/pages/index.astro, the reference for how these compose) + the
+ * interaction kit in src/components/kit/ (VideoModal for the sucesion
+ * speech, HoverPlayCard for the Fiat 600R anecdote, VocesStack (ex QuoteRotator) for the
+ * closing testimonial set, Ticker for the verified-press strip) + a
+ * handful of section-only components under
+ * src/components/secciones/historia/ for the pieces the shared kit
+ * doesn't cover (the timeline itself, the Fiat 600R two-column block).
+ *
+ * Copy source: sitio-copy/historia.md (eras narrative + the verified
+ * quotes_used list — every blockquote below traces to that list, or to
+ * src/data/quotes.json for the QuoteRotator). Every timeline milestone's
+ * year/label/body is pulled directly from src/data/timeline.json (16
+ * entries, all 16 used) rather than retyped, so the two stay in sync.
+ * Depth source: Alejandro/Cronología de Hitos.md, Historia y Biografía.md.
+ * Media: manifest.json — padre-hijo-barco-v (hero). OJO: los sufijos -h/-v
+ * de este asset están INVERTIDOS en el pipeline: «-h» es 2048x3072 (vertical)
+ * y «-v» es 2048x1366 (horizontal). El hero usa el horizontal de verdad, que
+ * es «-v». Al usar «-h» acá se recortaba el 66% de la foto y el hero se veía
+ * negro. Está anotado en 04 — Inventario de material.md.
+ * También: sucesion.mp4/.vtt
+ * (VideoModal, the real 80-years speech), fiat600r.mp4/.vtt (HoverPlayCard,
+ * the father/Fiat 600R anecdote in Alejandro's own words).
+ *
+ * Design law (D8: adversity before surname) — the 1982 and 1999–2001
+ * crisis milestones are flagged `pivot` in the timeline data below, which
+ * gives them the cobalt-weighted year numeral instead of diminishing them;
+ * Era 2 also carries more prose + quote density than any other era on the
+ * page, deliberately, so the crises read as load-bearing, not a footnote.
+ */
+import Base from '../layouts/Base.astro';
+import BlurImage from '../components/BlurImage.astro';
+import Ticker from '../components/kit/Ticker.astro';
+
+import Timeline from '../components/secciones/historia/Timeline.astro';
+import HistoriaHero from '../components/secciones/historia/HistoriaHero.astro';
+import '../components/secciones/historia/pa-kit.css';
+
+import timelineData from '../data/timeline.json';
+
+const M = (year: number) => timelineData.find((m) => m.year === year)!;
+
+const eras = [
+  {
+    id: 'origen',
+    range: '1945–1968',
+    title: 'El origen',
+    blocks: [
+      { type: 'milestone' as const, year: 1945, label: M(1945).title, body: M(1945).body },
+      {
+        type: 'text' as const,
+        text: 'A principios de los sesenta, AYAX construye la primera fábrica uruguaya de ensamblaje para el Fiat 600 R. Bajo Emilio J. Curcio, Fiat llega al 38% del mercado.',
+      },
+      { type: 'milestone' as const, year: 1968, label: M(1968).title, body: M(1968).body },
+      {
+        type: 'text' as const,
+        text: 'Con Toyota llegan valores que no se negocian: respeto, disciplina, mejora continua. Kaizen. A fines de los setenta se suma Suzuki.',
+      },
+    ],
+  },
+  {
+    id: 'crisis',
+    range: '1982–2001',
+    title: 'Las crisis y la entrada de Alejandro',
+    blocks: [
+      { type: 'milestone' as const, year: 1982, label: M(1982).title, body: M(1982).body, pivot: true },
+      {
+        type: 'quote' as const,
+        text: 'Mi padre nunca se da por vencido, incluso teniendo todos los pronósticos en contra.',
+        attribution: 'Alejandro Curcio — Capital de Vida, Cap. 1 — Mi padre y el viento',
+      },
+      {
+        type: 'text' as const,
+        text: 'Eso es lo que Alejandro recibió: conducta observada, no plata servida.',
+      },
+      { type: 'milestone' as const, year: 1995, label: M(1995).title, body: M(1995).body },
+      { type: 'milestone' as const, year: 1999, label: M(1999).title, body: M(1999).body, pivot: true },
+      {
+        type: 'text' as const,
+        text: '2001 es además el año bisagra personal: cáncer de piel, divorcio y casi-quiebra de la empresa, todo mientras está en Japón durante el 11-S.',
+      },
+      {
+        type: 'quote' as const,
+        text: 'El dinero es una invención, no es real; lo único verdadero son las ideas que terminan manifestándose en el mundo real a través de una gran obra.',
+        attribution: 'Alejandro Curcio — Capital de Vida, Cap. 1 — Mi padre y el viento',
+      },
+      {
+        type: 'text' as const,
+        text: '2016: accidente de kitesurf en José Ignacio. Queda varado en el mar sin vela ni tabla, sangrando, lejos de la costa. Sobrevive nadando durante horas.',
+      },
+      {
+        type: 'quote' as const,
+        text: 'Pará —me dije—. Tranquilo. El pánico te mata y el miedo te salva.',
+        attribution: 'Alejandro Curcio — Capital de Vida, Cap. 1 — Mi padre y el viento',
+      },
+      {
+        type: 'text' as const,
+        text: 'De esa experiencia nace después el protocolo de gestión emocional que sistematiza en su primer libro.',
+      },
+    ],
+  },
+  {
+    id: 'transicion',
+    range: '2015–2018',
+    title: 'Transición generacional y consolidación del sistema',
+    blocks: [
+      { type: 'milestone' as const, year: 2015, label: M(2015).title, body: M(2015).body },
+      { type: 'milestone' as const, year: 2017, label: M(2017).title, body: M(2017).body },
+      { type: 'milestone' as const, year: 2018, label: M(2018).title, body: M(2018).body },
+      {
+        type: 'quote' as const,
+        text: 'Dejarle algo valioso a la siguiente generación involucra mucho más que dinero.',
+        attribution: 'Alejandro Curcio — Búsqueda, 23/08/2018',
+      },
+    ],
+  },
+  {
+    id: 'innovacion',
+    range: '2019–2023',
+    title: 'Innovación y liderazgo',
+    blocks: [
+      { type: 'milestone' as const, year: 2019, label: M(2019).title, body: M(2019).body },
+      { type: 'milestone' as const, year: 2020, label: M(2020).title, body: M(2020).body },
+      { type: 'milestone' as const, year: 2021, label: M(2021).title, body: M(2021).body },
+      { type: 'milestone' as const, year: 2022, label: M(2022).title, body: M(2022).body },
+      { type: 'milestone' as const, year: 2023, label: M(2023).title, body: M(2023).body },
+      {
+        type: 'quote' as const,
+        text: 'Nos templaron, nos forjaron, nos afilaron, nos hicieron más duros, pero también mucho más humanos.',
+        attribution: 'Alejandro Curcio — Forbes Uruguay, 13/10/2025',
+      },
+    ],
+  },
+  {
+    id: 'legado',
+    range: '2024–2026',
+    title: 'Legado, transición y presente',
+    blocks: [
+      { type: 'milestone' as const, year: 2024, label: M(2024).title, body: M(2024).body },
+      { type: 'milestone' as const, year: 2025, label: M(2025).title, body: M(2025).body },
+      {
+        type: 'quote' as const,
+        text: 'A mis hijos Luca, Camila y Paulina… este legado es suyo.',
+        attribution: 'Alejandro Curcio — discurso, gala 80 años AYAX, 2025',
+      },
+      {
+        type: 'text' as const,
+        text: 'La misma idea, dicha en otras palabras, un año después:',
+      },
+      {
+        type: 'quote' as const,
+        text: 'Una empresa familiar no se vuelve sostenible porque un apellido se repita, sino porque cada generación entiende que recibe algo que debe mejorar y entregar más fuerte.',
+        attribution: 'Alejandro Curcio — El País, 09/08/2026',
+      },
+      { type: 'milestone' as const, year: 2026, label: M(2026).title, body: M(2026).body },
+      {
+        type: 'quote' as const,
+        text: 'Los fabricantes construyen grandes automóviles; las grandes empresas representantes construyen relaciones que duran toda la vida útil de esos automóviles.',
+        attribution: 'Alejandro Curcio — El País, 09/08/2026',
+      },
+      {
+        type: 'text' as const,
+        text: 'Ochenta años después de aquel enero fundacional, la definición que mejor resume lo que queda es la de Alejandro mismo:',
+      },
+      {
+        type: 'quote' as const,
+        text: 'Es una entidad viva. Yo a veces pienso que es como una construcción colectiva que late.',
+        attribution: 'Alejandro Curcio — El Observador, 11/08/2025',
+      },
+      {
+        type: 'quote' as const,
+        text: 'El nuestro es claro: ser un puente entre un pasado que nos honra y un futuro que nos desafía.',
+        attribution: 'Alejandro Curcio — El Observador, 11/08/2025',
+      },
+    ],
+  },
+];
+
+// Four verified quotes from src/data/quotes.json — padre / crisis / crisis→
+// legado bridge / legado — chosen to not repeat any text already quoted in
+// the timeline above.
+// Sección 05 — una foto ya usada en el sitio y la palabra del tema por cita
+// (mismo orden que rotatorItems): padre / padre / crisis / legado.
+const vocesScenes = [
+  { theme: 'Padre', photoId: 'padre-hijo-barco-v', position: '50% 30%' },
+  { theme: 'Padre', photoId: 'retrato-estudio', position: '50% 18%' },
+  { theme: 'Crisis', photoSrc: '/media/video/sucesion-poster.jpg', position: '42% 40%' },
+  { theme: 'Legado', photoId: 'gala-quinteto', position: '40% 35%' },
+];
+
+const rotatorItems = [
+  {
+    quote: 'Mente fría, corazón caliente.',
+    author: 'Emilio J. Curcio',
+    detail: 'citado por Alejandro Curcio — Capital de Vida, Cap. 3 — Usted parece japonés',
+    avatarSrc: '/media/img/padre-hijo-barco-v-640.jpg',
+  },
+  {
+    quote: '¡Enfocate en vivir, Ale!, grité con todas mis fuerzas.',
+    author: 'Alejandro Curcio',
+    detail: 'Capital de Vida, Cap. 1 — Mi padre y el viento',
+    avatarSrc: '/media/img/retrato-estudio-640.jpg',
+  },
+  {
+    quote: 'La crisis, al final, se había convertido en una oportunidad.',
+    author: 'Alejandro Curcio',
+    detail: 'Capital de Vida, Cap. 4 — El ejemplo y la inspiración',
+    avatarSrc: '/media/img/guinness-03-640.jpg',
+  },
+  {
+    quote:
+      'Para mantener vivos los valores, los principios y el compromiso hacia la mejora continua y la excelencia, es indispensable traspasarlos de la manera más explícita posible a las siguientes generaciones.',
+    author: 'Alejandro Curcio',
+    detail: 'Capital de Vida, Cap. 4 — El ejemplo y la inspiración',
+    avatarSrc: '/media/img/gala-quinteto-640.jpg',
+  },
+];
+
+const pressNames = ['El País', 'Forbes Uruguay', 'El Observador', 'Búsqueda', 'InfoNegocios'];
+---
+
+<Base
+	title="Historia — Alejandro Curcio"
+	description="Ochenta años. Dos crisis. Una sola conducta. La historia de AYAX y de Alejandro Curcio, de 1945 a 2026."
+>
+<div class="pa pa--historia">
+	<div class="section-gap"></div>
+
+	<!-- HERO — display gigante + los dos años del kicker como numerales -->
+	<HistoriaHero
+		id="hero"
+		imgId="padre-hijo-barco-h"
+		imgAlt="Alejandro Curcio junto a su hijo Lucca Curcio, con un trofeo en forma de barco"
+		kicker="Historia · 1945–2026"
+		title="Ochenta años se cuentan por lo construido."
+		sub="La historia de AYAX y de Alejandro Curcio no es la de un apellido que se repite. Es la de una empresa que casi murió dos veces y de un hombre que aprendió a nadar antes de saber que estaba en aguas profundas."
+		ctaHref="#linea-de-tiempo"
+		ctaLabel="Ver la línea de tiempo"
+		yearA="1945"
+		yearB="2026"
+	/>
+
+	<!-- VERIFIED-PRESS STRIP -->
+	<div class="press-ticker-wrap">
+		<div class="wrap press-ticker-inner">
+			<span class="press-ticker-label pa-mono">Cada hito, verificado contra</span>
+			<Ticker speed={24}>
+				{
+					pressNames.map((name) => (
+						<span class="press-ticker-name pa-display">{name}<i aria-hidden="true">✦</i></span>
+					))
+				}
+			</Ticker>
+		</div>
+	</div>
+
+	<div class="section-gap"></div>
+
+	<!-- THE TIMELINE — centerpiece: horizontal pineada en desktop -->
+	<section id="linea-de-tiempo" class="tl-sec">
+		<div class="wrap tl-sec-wrap">
+			<Timeline eras={eras}>
+				<div class="tl-intro" slot="intro">
+					<p class="pa-kick"><span class="pa-idx">[ 02 ]</span>Ochenta años, en orden</p>
+					<h2 class="tl-intro-title pa-display" data-split="chars">1945 → 2026.</h2>
+					<p class="pa-lead tl-intro-lead">Dos crisis casi la matan — 1982 y 1999–2001. Ninguna de las dos se cuenta más chica que las victorias que las rodean.</p>
+					<span class="pa-mono pa-scrollcue tl-intro-cue" aria-hidden="true"><i></i>Scroll</span>
+				</div>
+			</Timeline>
+		</div>
+	</section>
+
+	<div class="section-gap"></div>
+
+</Base>
+
+<style>
+	/* ---------- ticker de prensa ---------- */
+	.press-ticker-wrap {
+		border-top: 1px solid var(--pa-line);
+		border-bottom: 1px solid var(--pa-line);
+		background: var(--pa-bg);
+	}
+	.press-ticker-inner {
+		display: flex;
+		align-items: center;
+		gap: 32px;
+		padding-top: 22px;
+		padding-bottom: 22px;
+	}
+	.press-ticker-label {
+		flex-shrink: 0;
+		color: var(--ink-low, rgba(255, 255, 255, 0.45));
+		padding-right: 28px;
+		border-right: 1px solid var(--pa-line-strong);
+	}
+	.press-ticker-name {
+		display: inline-flex;
+		align-items: center;
+		gap: 56px;
+		font-size: clamp(24px, 2.6vw, 40px);
+		color: rgba(255, 255, 255, 0.82);
+		white-space: nowrap;
+		line-height: 1;
+	}
+	.press-ticker-name i {
+		font-style: normal;
+		font-size: 0.4em;
+		color: var(--pa-accent);
+	}
+	@media (max-width: 640px) {
+		.press-ticker-inner {
+			gap: 18px;
+		}
+		.press-ticker-label {
+			display: none;
+		}
+	}
+
+	/* ---------- línea de tiempo ---------- */
+	.tl-sec {
+		position: relative;
+		background: var(--pa-bg);
+		padding: clamp(88px, 10vw, 140px) 0 clamp(40px, 6vw, 80px);
+	}
+	.tl-intro {
+		display: grid;
+		gap: 26px;
+		justify-items: start;
+	}
+	.tl-intro-title {
+		font-size: clamp(44px, 9vw, 160px);
+		color: #fff;
+		white-space: nowrap;
+	}
+	.tl-intro-lead {
+		max-width: 40ch;
+	}
+	.tl-intro-cue {
+		color: var(--ink-low, rgba(255, 255, 255, 0.45));
+	}
+	/* En horizontal (misma condición que el script de Timeline) la sección
+	   no lleva padding ni ancho máximo: el escenario es la pantalla. */
+	@media (min-width: 1024px) and (prefers-reduced-motion: no-preference) {
+		.tl-sec {
+			padding: 0;
+		}
+		.tl-sec-wrap {
+			max-width: none;
+			padding: 0;
+		}
+		.tl-intro-title {
+			font-size: min(14vw, 34vh);
+		}
+	}
+
+	/* ---------- discurso ---------- */
+	.video-moment {
+		max-width: 1080px;
+		--pa-crop-o: -12px;
+	}
+	.video-moment :global(.kit-video-modal),
+	.video-moment :global(button),
+	.video-moment :global(img) {
+		border-radius: var(--pa-r-lg);
+	}
+	.video-moment-foot {
+		display: flex;
+		align-items: center;
+		gap: 18px;
+		max-width: 1080px;
+		margin-top: 22px;
+	}
+	.video-moment-caption {
+		color: rgba(11, 14, 23, 0.6);
+	}
+	.video-moment-rule {
+		flex: 1;
+		height: 1px;
+		background: var(--pa-line-light);
+	}
+	.video-moment-rec {
+		display: inline-flex;
+		align-items: center;
+		gap: 8px;
+		color: rgba(11, 14, 23, 0.6);
+	}
+	.video-moment-rec i {
+		width: 7px;
+		height: 7px;
+		border-radius: 50%;
+		background: #b8892a;
+		animation: rec 1.6s steps(2, jump-none) infinite;
+	}
+	@keyframes rec {
+		50% {
+			opacity: 0.2;
+		}
+	}
+	.fiat-sec {
+		padding-top: 0;
+	}
+
+	/* ---------- voces ---------- */
+	.voces-sec {
+		background: var(--pa-bg);
+	}
+	.voces-box {
+		position: relative;
+	}
+
+	/* ---------- CTA final ---------- */
+	.metodo {
+		--p: 0;
+		position: relative;
+		min-height: 100svh;
+		display: flex;
+		align-items: flex-end;
+		padding: var(--pa-head-clear) 0 clamp(40px, 6vw, 88px);
+		overflow: hidden;
+		isolation: isolate;
+	}
+	.metodo-media {
+		position: absolute;
+		top: var(--pa-head-clear);
+		bottom: clamp(40px, 6vw, 88px);
+		right: var(--edge, 20px);
+		width: min(46vw, 760px);
+		z-index: -1;
+		overflow: hidden;
+		border-radius: var(--pa-r-lg);
+	}
+	.metodo-media-in {
+		position: absolute;
+		inset: -10% 0;
+	}
+	.metodo-media-in :global(picture),
+	.metodo-media-in :global(img) {
+		display: block;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		object-position: 50% 22%;
+	}
+	.metodo-scrim {
+		position: absolute;
+		inset: 0;
+		background:
+			linear-gradient(0deg, rgba(12, 10, 6, 0.9) 0%, rgba(12, 10, 6, 0.2) 45%, transparent 70%),
+			linear-gradient(90deg, rgba(12, 10, 6, 0.7) 0%, transparent 40%);
+	}
+	@media (max-width: 860px) {
+		.metodo-media {
+			inset: 0;
+			width: auto;
+			border-radius: 0;
+		}
+		.metodo-scrim {
+			background: linear-gradient(0deg, rgba(12, 10, 6, 0.97) 0%, rgba(12, 10, 6, 0.75) 42%, rgba(12, 10, 6, 0.15) 75%);
+		}
+	}
+	.metodo-copy {
+		width: 100%;
+		display: grid;
+		gap: 28px;
+	}
+	.metodo-title {
+		font-size: clamp(44px, 7vw, 136px);
+		color: #fff;
+		max-width: 11ch;
+	}
+	.metodo-foot {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: flex-end;
+		justify-content: space-between;
+		gap: 28px;
+		padding-top: 28px;
+		border-top: 1px solid var(--pa-line-strong);
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.video-moment-rec i {
+			animation: none;
+		}
+	}
+</style>

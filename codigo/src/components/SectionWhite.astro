@@ -1,0 +1,60 @@
+---
+/**
+ * SectionWhite.astro — rounded white section shell (the "white" half of
+ * the alternating black/white rhythm). Usage:
+ * <SectionWhite id="libros" kicker="..." title="..." lead="..."><...body...></SectionWhite>
+ * Pass ctaHref/ctaLabel to get the two-column "intro-head" layout with a
+ * pill on the right (facetas pattern); omit them for a plain stacked head
+ * (books pattern).
+ */
+import Reveal from './Reveal.astro';
+import PillButton from './PillButton.astro';
+
+interface Props {
+  id?: string;
+  kicker: string;
+  title: string;
+  lead?: string;
+  ctaHref?: string;
+  ctaLabel?: string;
+  ctaVariant?: 'default' | 'outline' | 'dark';
+  ctaArrow?: 'right' | 'down';
+  /** Lámina oscura en vez de blanca: fondo negro, texto blanco, kicker
+   *  dorado. Es el KV del resto del sitio; la lámina blanca quedó de las
+   *  páginas interiores viejas. */
+  dark?: boolean;
+}
+
+const {
+  id,
+  kicker,
+  title,
+  lead,
+  ctaHref,
+  ctaLabel,
+  ctaVariant,
+  ctaArrow = 'down',
+  dark = false,
+} = Astro.props;
+
+const hasCta = Boolean(ctaHref && ctaLabel);
+---
+
+<section class:list={['white', dark && 'white--dark']} id={id}>
+  <Reveal class={hasCta ? 'intro-head' : 'section-head'}>
+    <div>
+      <span class="kicker">{kicker}</span>
+      <h2 class="section-title">{title}</h2>
+      {lead && <p class="section-lead">{lead}</p>}
+    </div>
+    {
+      hasCta && (
+        <PillButton href={ctaHref as string} variant={ctaVariant ?? (dark ? 'default' : 'dark')} arrow={ctaArrow}>
+          {ctaLabel}
+        </PillButton>
+      )
+    }
+  </Reveal>
+
+  <slot />
+</section>

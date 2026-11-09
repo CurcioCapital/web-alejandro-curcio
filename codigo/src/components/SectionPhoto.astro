@@ -1,0 +1,72 @@
+---
+/**
+ * SectionPhoto.astro — full-bleed rounded photo section with scrim +
+ * centered kicker/title/sub/CTA (the AYAX / final-CTA pattern). Usage:
+ * <SectionPhoto id="ayax" imgId="sucesion" imgAlt="..." kicker="..." title="..." sub="..."
+ *   ctaHref="/historia" ctaLabel="Conocé la historia" />
+ * Rediseño 21/10/2026: crop-marks, título display, kicker mono y zoom de la
+ * foto atado al scroll (data-scrub → --p, ver refresh.css). Props sin cambios.
+ */
+import Reveal from './Reveal.astro';
+import BlurImage from './BlurImage.astro';
+import PillButton from './PillButton.astro';
+
+interface Props {
+  id?: string;
+  imgId?: string; // manifest asset id (img/cover)
+  imgSrc?: string; // raw public path escape hatch (e.g. a video poster jpg)
+  imgAlt: string;
+  imgKind?: 'img' | 'cover';
+  kicker: string;
+  title: string;
+  sub?: string;
+  ctaHref?: string;
+  ctaLabel?: string;
+  short?: boolean; // final-CTA variant is shorter (min-height 460px)
+  /** Copia al pie e izquierda, con degradé propio. Para fotos con el sujeto
+   *  en el centro, donde la copia centrada se monta sobre los rostros. */
+  plate?: boolean;
+  /** object-position de la foto, ej. "50% 20%". Por defecto centrada. */
+  focus?: string;
+  /** Dirección de arte: id del recorte para pantallas angostas. */
+  imgIdNarrow?: string;
+  /** object-position para ese recorte angosto. */
+  focusNarrow?: string;
+}
+
+const {
+  id,
+  imgId,
+  imgSrc,
+  imgAlt,
+  imgKind = 'img',
+  kicker,
+  title,
+  sub,
+  ctaHref,
+  ctaLabel,
+  short = false,
+  plate = false,
+  focus,
+  imgIdNarrow,
+  focusNarrow,
+} = Astro.props;
+
+const classes = ['photo-section', 'u-crop', short && 'photo-section--short', plate && 'photo-section--plate']
+  .filter(Boolean)
+  .join(' ');
+const style = [focus && `--focus:${focus}`, focusNarrow && `--focus-narrow:${focusNarrow}`]
+  .filter(Boolean)
+  .join(';') || undefined;
+---
+
+<Reveal as="div" id={id} class={classes} style={style} data-scrub>
+  <BlurImage id={imgId} idNarrow={imgIdNarrow} src={imgSrc} alt={imgAlt} kind={imgKind} />
+  <div class="scrim"></div>
+  <div class="photo-content">
+    <span class="kicker">{kicker}</span>
+    <h2 class="photo-title">{title}</h2>
+    {sub && <p class="photo-sub">{sub}</p>}
+    {ctaHref && ctaLabel && <PillButton href={ctaHref}>{ctaLabel}</PillButton>}
+  </div>
+</Reveal>

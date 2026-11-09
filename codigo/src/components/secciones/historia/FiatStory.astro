@@ -1,0 +1,107 @@
+---
+/**
+ * FiatStory.astro — /historia. Bloque «video moment» de la anécdota del
+ * Fiat 600R (Emilio J. Curcio, contada por Alejandro en fiat600r.mp4).
+ * Usa kit/HoverPlayCard (preview mudo en hover). Rediseño 21/10/2026: mismo
+ * texto, tratamiento técnico — tarjeta con radio grande, crop-marks, cursor
+ * «play» y reveal con máscara; en táctil el video arranca al tocar (lo
+ * resuelve HoverPlayCard) y la pista lo dice con el mismo texto de siempre.
+ */
+import HoverPlayCard from '../../kit/HoverPlayCard.astro';
+
+interface Props {
+  eyebrow: string;
+  title: string;
+  body: string;
+  caption: string;
+  videoSrc: string;
+  poster: string;
+  alt: string;
+}
+
+const { eyebrow, title, body, caption, videoSrc, poster, alt } = Astro.props;
+---
+
+<div class="fiat-story">
+  <div class="fiat-story-media pa-crop" data-reveal="mask" data-cursor="play" data-cursor-label="Play">
+    <HoverPlayCard src={videoSrc} poster={poster} alt={alt} rounded="lg">
+      <span class="fiat-story-hint">
+        <span class="fiat-story-play" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="12" height="12"><path d="M7 5v14l12-7z" fill="currentColor"></path></svg>
+        </span>
+        Pasá el mouse para revivir la anécdota
+      </span>
+    </HoverPlayCard>
+  </div>
+  <div class="fiat-story-copy">
+    <span class="pa-kick">{eyebrow}</span>
+    <h3 class="fiat-story-title pa-display" data-split="lines">{title}</h3>
+    <p class="pa-body fiat-story-body" data-reveal>{body}</p>
+    <span class="fiat-story-caption pa-mono">{caption}</span>
+  </div>
+</div>
+
+<style>
+  .fiat-story {
+    display: grid;
+    grid-template-columns: minmax(260px, 420px) minmax(0, 1fr);
+    gap: clamp(36px, 6vw, 110px);
+    align-items: center;
+  }
+  .fiat-story-media {
+    max-width: 420px;
+    --pa-crop-o: -12px;
+  }
+  .fiat-story-media :global(.kit-hover-card) {
+    border-radius: var(--pa-r-lg, 28px);
+  }
+  .fiat-story-hint {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--pa-mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .fiat-story-play {
+    display: grid;
+    place-items: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 999px;
+    background: var(--pa-accent, #e8c874);
+    color: var(--pa-ink, #0b0e17);
+    flex: 0 0 auto;
+  }
+  .fiat-story-copy {
+    display: grid;
+    gap: 26px;
+    justify-items: start;
+  }
+  .fiat-story-title {
+    font-size: clamp(34px, 4.4vw, 76px);
+    max-width: 14ch;
+    color: var(--pa-ink, #0b0e17);
+  }
+  .fiat-story-body {
+    max-width: 52ch;
+  }
+  .fiat-story-caption {
+    color: rgb(11 14 23 / 0.58);
+    padding-top: 18px;
+    border-top: 1px solid var(--pa-line-light, rgb(11 14 23 / 0.1));
+    width: 100%;
+    max-width: 52ch;
+  }
+  @media (max-width: 860px) {
+    .fiat-story {
+      grid-template-columns: 1fr;
+      gap: 40px;
+    }
+    .fiat-story-media {
+      max-width: 340px;
+    }
+  }
+</style>

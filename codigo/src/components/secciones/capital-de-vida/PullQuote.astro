@@ -1,0 +1,40 @@
+---
+/**
+ * PullQuote.astro — Capital de Vida-only. Cita verificada del libro.
+ * Rediseño 21/10/2026: editorial premium — Instrument Serif grande, partida
+ * por líneas (data-split del motion global), comilla dorada enorme y
+ * atribución en mono. `sm` para las citas que van de a pares.
+ * Mantiene la clase .cdv-quote (la usa .cdv-quote-pair en la página).
+ */
+interface Props {
+  quote: string;
+  attribution: string;
+  size?: 'default' | 'sm';
+}
+
+const { quote, attribution, size = 'default' } = Astro.props;
+---
+
+<figure class:list={['ed-quote', 'cdv-quote', size === 'sm' ? 'ed-quote--sm cdv-quote--sm' : 'ed-quote--wide']}>
+  <span class="cdv-quote-mark" aria-hidden="true">&ldquo;</span>
+  <blockquote data-split="lines">{quote}</blockquote>
+  <figcaption class="ed-mono">{attribution}</figcaption>
+</figure>
+
+<style>
+  .cdv-quote-mark {
+    display: block;
+    font-family: var(--ed-serif);
+    font-style: italic;
+    font-size: clamp(64px, 7vw, 120px);
+    line-height: 0.5;
+    height: 0.42em;
+    color: var(--ed-accent);
+  }
+  :global(.ed-sec--light) .cdv-quote-mark {
+    color: var(--ed-accent-ink);
+  }
+  .cdv-quote--sm .cdv-quote-mark {
+    font-size: 56px;
+  }
+</style>

@@ -1,0 +1,530 @@
+---
+/**
+ * ArcoLibros.astro — Capítulo 3 del home: los tres libros.
+ *
+ * REHECHO el 27/09/2026. Dolores: «el diseño de cómo aparecen los libros
+ * está muy Claude, hacelo mucho más pro».
+ *
+ * QUÉ LO HACÍA VER GENÉRICO (y no era el layout, era el contenido):
+ * cada libro llevaba una glosa poética INVENTADA encima del título real
+ * —«Mirar hacia adentro», «Entender lo que viene», «Hacerse cargo»—, el
+ * kicker decía «Tres libros. Un solo arco.» y abajo cerraba con «Primero
+ * sabés quién sos. Después entendés qué viene. Después decidís.». La misma
+ * idea dicha tres veces, en tercetos, sin un solo dato. Eso es exactamente
+ * lo que delata a un texto escrito por una IA.
+ *
+ * LA VERSIÓN PRO ES LA FICHA. Un catálogo de editorial no adorna: pone año,
+ * sello, prólogo, páginas y serie. Todo eso existe y está verificado en
+ * books.json, y además revela algo que las glosas tapaban: los tres libros
+ * son la «Serie Capital de Vida» de Conecta, y el tercero cambia a Grijalbo.
+ * Ese dato SÍ arma un arco, y es cierto.
+ *
+ * Layout: filas de bibliografía con regla entre medio, año grande a la
+ * izquierda, tapa como objeto y ficha a la derecha. Asimétrico y tipográfico
+ * en vez de tres tarjetas iguales.
+ *
+ * Se conserva el scrub de la cascada (data-arco-cover + #libros), que ya
+ * estaba andando.
+ */
+import MediaCard from '../../MediaCard.astro';
+
+const libros = [
+  {
+    anio: '2018',
+    titulo: 'Capital de Vida',
+    sub: 'Legado de valores en la cultura empresarial y familiar',
+    meta: 'Conecta · Prólogo de Hugo Burel · 256 páginas',
+    href: '/capital-de-vida',
+    accion: 'Ver el libro',
+    coverId: 'capital-de-vida-front',
+    ratio: '2048 / 3216',
+    alt: 'Tapa del libro Capital de Vida, de Alejandro Curcio',
+  },
+  {
+    anio: '2023',
+    titulo: 'Toolbook',
+    sub: 'Herramientas para comprender el mundo que viene',
+    meta: 'Conecta · Serie Capital de Vida',
+    href: '/libros',
+    accion: 'Ver el libro',
+    coverId: 'toolbook-front',
+    ratio: '2048 / 3008',
+    alt: 'Tapa del libro Toolbook, de Alejandro Curcio',
+  },
+];
+---
+<section id="libros" class="arco-section" data-arco>
+  <div class="lb-viaje">
+    <div class="lb-escena">
+      <span class="lb-bigyear" aria-hidden="true">
+        <span data-lb-big="0">2018</span><span data-lb-big="1">2023</span><span data-lb-big="2">2026</span>
+      </span>
+      <div class="wrap lb-head">
+        <div class="lb-top">
+          <span class="lb-kicker">Los libros</span>
+          <span class="lb-rule" aria-hidden="true"></span>
+          <span class="lb-num" aria-hidden="true">[ 03 ]</span>
+        </div>
+        <h2 class="lb-h2" data-split="lines">Una serie, no tres títulos sueltos.</h2>
+      </div>
+
+      <div class="wrap lb-stage" data-lb-stage>
+        <ol class="lb-tapas">
+          {
+            [...libros, { anio: '2026', titulo: 'CEO DE TU VIDA' }].map((l, i) => (
+              <li class="lb-tapa" data-lb-tapa={i}>
+                {i < 2 ? (
+                  <MediaCard id={libros[i].coverId} kind="cover" ratio={libros[i].ratio} alt={libros[i].alt} eager />
+                ) : (
+                  <MediaCard
+                    src="/media/covers/ceo-de-tu-vida-mockup.jpg"
+                    class="media-card--natural"
+                    eager
+                    alt="El libro CEO DE TU VIDA, de Alejandro Curcio — 51 reglas para decidir mejor, liderar con claridad y construir una vida con intención (Grijalbo, noviembre 2026)"
+                  />
+                )}
+              </li>
+            ))
+          }
+        </ol>
+
+        <div class="lb-fichas">
+          {
+            libros.map((l, i) => (
+              <article class="lb-ficha" data-lb-ficha={i}>
+                <span class="lb-anio">{l.anio}</span>
+                <h3 class="lb-titulo"><a href={l.href}>{l.titulo}</a></h3>
+                <p class="lb-sub">{l.sub}</p>
+                <p class="lb-meta">{l.meta}</p>
+                <a class="lb-link" href={l.href}>
+                  {l.accion}
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+                    <line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" />
+                  </svg>
+                </a>
+              </article>
+            ))
+          }
+
+          <article class="lb-ficha lb-ficha--proximo" data-lb-ficha="2">
+            <span class="lb-anio">2026</span>
+            <span class="lb-tag">Noviembre 2026</span>
+            <h3 class="lb-titulo"><a href="/ceo-de-tu-vida">CEO DE TU VIDA</a></h3>
+            <p class="lb-sub">
+              51 reglas para decidir mejor, liderar con claridad y construir una vida con intención.
+            </p>
+            {/* Sin día, ISBN, precio ni páginas: la tapa no los confirma. */}
+            <p class="lb-meta">Grijalbo · Lanzamiento 17 de noviembre</p>
+            <a class="pill pill--accent" href="/ceo-de-tu-vida" data-magnetic data-roll>
+              Enterate del lanzamiento
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+                <line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" />
+              </svg>
+            </a>
+          </article>
+        </div>
+
+        <ol class="lb-pasos" aria-hidden="true">
+          <li data-lb-paso="0"><span data-counter>2018</span></li>
+          <li data-lb-paso="1"><span data-counter>2023</span></li>
+          <li data-lb-paso="2"><span data-counter>2026</span></li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<style>
+  /* Tratamiento 21/10/2026: tapas que entran en 3D (perspectiva + rotación,
+     con inclinación según el mouse), año gigante en contorno detrás que
+     cambia por paso, regla de progreso, tipografía display + mono. Mismo
+     recorrido sticky de antes (ver notas de altura más abajo). */
+  .arco-section {
+    --lb-mono: var(--font-mono, 'JetBrains Mono Variable', ui-monospace, Menlo, monospace);
+    --lb-display: var(--font-display, 'Geist Variable', system-ui, sans-serif);
+    --lb-gold: var(--accent, #e8c874);
+    --lb-ease: var(--ease-expo, cubic-bezier(0.16, 1, 0.3, 1));
+    overflow-x: clip;
+    color: var(--ink-hi);
+    /* Sólo el color base. Los degradés van en .lb-escena, que mide una
+       pantalla: acá se estirarían sobre los 320vh del recorrido. */
+    background-color: var(--color-cap-4);
+  }
+
+  /* El recorrido: tres pantallas de scroll para tres libros. */
+  .lb-viaje {
+    position: relative;
+    height: 320vh;
+  }
+  .lb-escena {
+    position: sticky;
+    top: 0;
+    /* ALTURA DEFINIDA, no min-height: con min-height la grilla estiraba sus
+       filas contra los 320vh del contenedor y las tapas se dibujaban fuera
+       de la pantalla. */
+    height: 100vh;
+    overflow: hidden;
+    background-image:
+      linear-gradient(90deg, var(--line, rgb(255 255 255 / 0.06)) 1px, transparent 1px),
+      var(--oro-degrade-suave),
+      radial-gradient(60% 50% at 70% 78%, rgb(var(--accent-rgb) / 0.16), transparent 68%);
+    background-size: calc((100% - 1px) / 12) 100%, auto, auto;
+    background-repeat: repeat-x, no-repeat, no-repeat;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: clamp(24px, 3.4vw, 48px);
+    padding: clamp(80px, 10vh, 130px) 0 clamp(32px, 5vh, 64px);
+  }
+
+  /* Año gigante en contorno, detrás de todo. */
+  .lb-bigyear {
+    position: absolute;
+    right: -0.04em;
+    bottom: -0.12em;
+    z-index: 0;
+    pointer-events: none;
+    font-family: var(--lb-display);
+    font-weight: 600;
+    font-size: clamp(8rem, 26vw, 28rem);
+    line-height: 0.95;
+    letter-spacing: -0.045em;
+    color: transparent;
+    -webkit-text-stroke: 1.2px rgb(232 200 116 / 0.22);
+  }
+  .lb-bigyear span {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+  }
+  .lb-bigyear span + span {
+    visibility: hidden;
+  }
+  :global(html.lb-on) .lb-bigyear span {
+    visibility: visible;
+    opacity: 0;
+    transform: translateY(18%);
+    transition:
+      opacity 800ms var(--lb-ease),
+      transform 1100ms var(--lb-ease);
+  }
+  :global(html.lb-on) .lb-bigyear span.is-on {
+    opacity: 1;
+    transform: none;
+  }
+
+  .lb-head,
+  .lb-stage {
+    position: relative;
+    z-index: 1;
+  }
+  .lb-top {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font-family: var(--lb-mono);
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .lb-kicker {
+    color: var(--lb-gold);
+  }
+  .lb-rule {
+    flex: 1;
+    height: 1px;
+    background: var(--line, rgb(255 255 255 / 0.14));
+  }
+  .lb-num {
+    color: var(--ink-low);
+  }
+  .lb-h2 {
+    font-family: var(--lb-display);
+    font-weight: 600;
+    font-size: clamp(2.4rem, 1rem + 4.6vw, 6.2rem);
+    letter-spacing: -0.045em;
+    line-height: 0.95;
+    margin: 18px 0 0;
+    max-width: 16ch;
+    color: var(--color-off, #f4f1ea);
+  }
+
+  .lb-stage {
+    flex: 0 0 auto;
+    display: grid;
+    align-content: start;
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+    gap: clamp(28px, 4vw, 72px);
+    align-items: center;
+    --rx: 0deg;
+    --ry: 0deg;
+  }
+
+  .lb-tapas {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    align-items: flex-end;
+    gap: clamp(12px, 1.6vw, 26px);
+    perspective: 1400px;
+  }
+  .lb-tapa {
+    flex: 0 0 auto;
+    width: clamp(104px, 12.5vw, 190px);
+    filter: drop-shadow(0 24px 40px rgba(0, 0, 0, 0.55));
+    transform-style: preserve-3d;
+  }
+  .lb-tapa:last-child {
+    width: clamp(140px, 18vw, 280px);
+  }
+
+  /* Estado inicial SÓLO con JS. Inicial y final con la MISMA forma
+     (:global(html.lb-on) .lb-tapa…), si no el scope de Astro hace que el
+     inicial le gane al final. */
+  :global(html.lb-on) .lb-tapa {
+    opacity: 0;
+    transform: translate3d(160px, 40px, -320px) rotateY(-62deg) rotateX(12deg);
+    transition:
+      opacity 700ms var(--lb-ease),
+      transform 1200ms var(--lb-ease);
+  }
+  :global(html.lb-on) .lb-tapa.is-on {
+    opacity: 0.72;
+    transform: translate3d(0, 0, 0) rotateY(calc(var(--ry) - 10deg)) rotateX(var(--rx));
+  }
+  :global(html.lb-on) .lb-tapa.is-on.is-current {
+    opacity: 1;
+    transform: translate3d(0, -14px, 40px) rotateY(var(--ry)) rotateX(var(--rx));
+  }
+
+  .lb-fichas {
+    position: relative;
+    min-height: 19rem;
+  }
+  .lb-ficha {
+    position: absolute;
+    inset: 0;
+  }
+  :global(html.lb-on) .lb-ficha {
+    opacity: 0;
+    transform: translateY(24px);
+    pointer-events: none;
+    transition:
+      opacity 500ms var(--lb-ease),
+      transform 800ms var(--lb-ease);
+  }
+  :global(html.lb-on) .lb-ficha.is-on {
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+  }
+
+  .lb-anio {
+    display: block;
+    font-family: var(--lb-mono);
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    font-variant-numeric: tabular-nums;
+    color: var(--ink-low);
+  }
+  .lb-tag {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 6px 10px;
+    border-radius: 4px;
+    font-family: var(--lb-mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #0c0a06;
+    background: var(--lb-gold);
+  }
+  .lb-titulo {
+    font-family: var(--lb-display);
+    font-weight: 600;
+    font-size: clamp(2.4rem, 1.4rem + 3.4vw, 5rem);
+    letter-spacing: -0.045em;
+    line-height: 0.95;
+    margin: 12px 0 0;
+  }
+  .lb-titulo a {
+    color: var(--color-off, #f4f1ea);
+    transition: color 250ms var(--lb-ease);
+  }
+  .lb-titulo a:hover {
+    color: var(--lb-gold);
+  }
+  .lb-sub {
+    font-size: clamp(1rem, 0.92rem + 0.3vw, 1.15rem);
+    line-height: 1.45;
+    color: var(--ink-mid);
+    margin: 16px 0 0;
+    max-width: 38ch;
+  }
+  .lb-meta {
+    font-family: var(--lb-mono);
+    font-size: 11.5px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-low);
+    margin: 14px 0 0;
+    padding-top: 12px;
+    border-top: 1px solid var(--line, rgb(255 255 255 / 0.12));
+    max-width: 44ch;
+  }
+  .lb-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 22px;
+    font-family: var(--lb-mono);
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-hi);
+    padding-bottom: 4px;
+    border-bottom: 1px solid currentColor;
+    transition: color 250ms var(--lb-ease);
+  }
+  .lb-link:hover {
+    color: var(--lb-gold);
+  }
+  .lb-ficha--proximo .pill {
+    margin-top: 24px;
+  }
+
+  /* Indicador de paso + regla de progreso. */
+  .lb-pasos {
+    --lb-p: 0;
+    position: relative;
+    grid-column: 1 / -1;
+    list-style: none;
+    margin: 0;
+    padding: 16px 0 0;
+    display: flex;
+    justify-content: space-between;
+    border-top: 1px solid var(--line, rgb(255 255 255 / 0.14));
+  }
+  .lb-pasos::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: -1px;
+    height: 1px;
+    background: var(--lb-gold);
+    transform-origin: 0 50%;
+    transform: scaleX(var(--lb-p));
+  }
+  .lb-pasos li {
+    font-family: var(--lb-mono);
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    font-variant-numeric: tabular-nums;
+    color: var(--ink-low);
+    opacity: 0.5;
+    transition: opacity 250ms var(--lb-ease), color 250ms var(--lb-ease);
+  }
+  .lb-pasos li.is-on {
+    opacity: 1;
+    color: var(--lb-gold);
+  }
+
+  @media (max-width: 900px) {
+    .lb-stage {
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+    .lb-fichas {
+      min-height: 19rem;
+    }
+    .lb-viaje {
+      height: 300vh;
+    }
+    .lb-escena {
+      padding-top: 72px;
+      gap: 20px;
+    }
+    .lb-h2 {
+      font-size: clamp(2.2rem, 10vw, 3.4rem);
+    }
+    .lb-titulo {
+      font-size: clamp(2.2rem, 10vw, 3rem);
+    }
+    .lb-tapa {
+      width: 23vw;
+    }
+    .lb-tapa:last-child {
+      width: 32vw;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .lb-viaje {
+      height: auto;
+    }
+    .lb-escena {
+      position: static;
+      height: auto;
+      min-height: 0;
+    }
+  }
+</style>
+
+<script>
+  /* Escenario fijo (sticky top:0 dentro de un contenedor de tres
+     pantallas). Sin IntersectionObserver: en el preview no dispara. */
+  const raiz = document.querySelector<HTMLElement>('[data-arco]');
+  const viaje = raiz?.querySelector<HTMLElement>('.lb-viaje');
+
+  if (raiz && viaje && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    document.documentElement.classList.add('lb-on');
+
+    const tapas = Array.from(raiz.querySelectorAll<HTMLElement>('[data-lb-tapa]'));
+    const fichas = Array.from(raiz.querySelectorAll<HTMLElement>('[data-lb-ficha]'));
+    const pasos = Array.from(raiz.querySelectorAll<HTMLElement>('[data-lb-paso]'));
+    const grandes = Array.from(raiz.querySelectorAll<HTMLElement>('[data-lb-big]'));
+    const lista = raiz.querySelector<HTMLElement>('.lb-pasos');
+    const stage = raiz.querySelector<HTMLElement>('[data-lb-stage]');
+    const n = 3;
+
+    let raf = 0;
+    const pintar = () => {
+      raf = 0;
+      const r = viaje.getBoundingClientRect();
+      const recorrido = r.height - window.innerHeight;
+      // LINEAL a propósito: elige un paso discreto.
+      const p = recorrido > 0 ? Math.min(1, Math.max(0, -r.top / recorrido)) : 0;
+      const idx = Math.min(n - 1, Math.floor(p * n));
+
+      tapas.forEach((el, i) => {
+        el.classList.toggle('is-on', i <= idx);
+        el.classList.toggle('is-current', i === idx);
+      });
+      fichas.forEach((el, i) => el.classList.toggle('is-on', i === idx));
+      pasos.forEach((el, i) => el.classList.toggle('is-on', i === idx));
+      grandes.forEach((el, i) => el.classList.toggle('is-on', i === idx));
+      lista?.style.setProperty('--lb-p', p.toFixed(3));
+    };
+
+    addEventListener('scroll', () => { if (!raf) raf = requestAnimationFrame(pintar); }, { passive: true });
+    addEventListener('resize', () => { if (!raf) raf = requestAnimationFrame(pintar); });
+    pintar();
+
+    // Inclinación de las tapas según el mouse (sólo puntero fino).
+    if (stage && matchMedia('(hover: hover) and (pointer: fine)').matches) {
+      raiz.addEventListener('pointermove', (e) => {
+        const b = stage.getBoundingClientRect();
+        const nx = (e.clientX - b.left) / b.width - 0.5;
+        const ny = (e.clientY - b.top) / b.height - 0.5;
+        stage.style.setProperty('--ry', `${(nx * 22).toFixed(2)}deg`);
+        stage.style.setProperty('--rx', `${(-ny * 12).toFixed(2)}deg`);
+      });
+      raiz.addEventListener('pointerleave', () => {
+        stage.style.setProperty('--ry', '0deg');
+        stage.style.setProperty('--rx', '0deg');
+      });
+    }
+  }
+</script>

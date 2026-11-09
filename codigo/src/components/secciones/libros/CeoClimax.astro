@@ -1,0 +1,164 @@
+---
+/**
+ * CeoClimax.astro — Libros-only. «CEO DE TU VIDA» como clímax del arco.
+ * Rediseño 21/10/2026: lámina negra a sangre con el título display enorme
+ * (no hay tapa definitiva — el libro no salió), la bajada real, la cuenta
+ * regresiva con dígitos de odómetro y el CTA a /seguime (regla de no
+ * inventar URLs). La lámina se abre con clip-path a medida que entra
+ * (data-scrub → --p) y el halo dorado sigue al cursor (data-ed-spot).
+ */
+import Countdown from './Countdown.astro';
+
+interface Props {
+  ctaHref?: string;
+  ctaLabel?: string;
+  id?: string;
+  kicker?: string;
+  n?: string;
+}
+
+const {
+  ctaHref = '/seguime',
+  ctaLabel = 'Enterate primero — seguí a @alecurcio_capitaldevida',
+  id = 'ceo-de-tu-vida',
+  kicker = 'El clímax del arco · Método',
+  n = '04',
+} = Astro.props;
+---
+
+<section id={id} class="ceo-climax" data-scrub="enter">
+  <div class="ceo-climax__card ed-grid" data-ed-spot>
+    <div class="ceo-climax__glow" aria-hidden="true"></div>
+    <div class="ceo-climax__content ed-wrap">
+      <div class="ceo-climax__top ed-mono">
+        <span class="ceo-climax__kicker">{kicker}</span>
+        <span class="ceo-climax__n" aria-hidden="true">[ {n} ]</span>
+      </div>
+      <h2 class="ceo-climax__title ed-display" data-split="lines">CEO DE<br />TU VIDA</h2>
+      <div class="ceo-climax__body">
+        <p class="ceo-climax__lead" data-reveal>
+          Una serie de reglas con historias y aprendizajes sobre liderazgo personal, resiliencia y toma de
+          decisiones — principios aplicables a emprendedores, ejecutivos e inversores. Después del interior
+          y el exterior, llega el método. Forjado, no heredado.
+        </p>
+        <div class="ceo-climax__count">
+          <Countdown class="ceo-climax__countdown" />
+          <span class="ceo-climax__countdown-note ed-mono">Hasta el lanzamiento — noviembre de 2026</span>
+        </div>
+      </div>
+
+      <a class="ed-btn ceo-climax__cta" href={ctaHref} data-magnetic>
+        <span>{ctaLabel}</span>
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+          <line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline>
+        </svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .ceo-climax {
+    position: relative;
+    background: linear-gradient(var(--ed-bone) 50%, var(--ed-bg) 50%);
+  }
+  .ceo-climax__card {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    background: var(--ed-bg);
+    color: #fff;
+    padding: clamp(96px, 12vw, 176px) 0 clamp(72px, 9vw, 128px);
+    /* se abre con el scroll: de tarjeta inset a sangre */
+    --pp: min(1, calc(var(--p, 1) * 1.35));
+    clip-path: inset(0 calc((1 - var(--pp)) * 4vw) round calc((1 - var(--pp)) * 48px + 0px));
+    border-radius: var(--ed-r-xl) var(--ed-r-xl) 0 0;
+  }
+  .ceo-climax__glow {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background:
+      radial-gradient(600px circle at var(--mx, 70%) var(--my, 20%), rgb(232 200 116 / 0.2), transparent 60%),
+      radial-gradient(80% 60% at 50% 0%, rgb(232 200 116 / 0.12), transparent 60%);
+    pointer-events: none;
+  }
+  .ceo-climax__top {
+    display: flex;
+    justify-content: space-between;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--ed-line-strong);
+    margin-bottom: clamp(28px, 4vw, 56px);
+  }
+  .ceo-climax__kicker {
+    color: var(--ed-accent);
+  }
+  .ceo-climax__n {
+    color: rgb(255 255 255 / 0.45);
+  }
+  .ceo-climax__title {
+    font-size: clamp(4rem, 14vw, 15rem);
+    line-height: 0.92;
+    letter-spacing: -0.055em;
+    font-weight: 540;
+    background: linear-gradient(180deg, #fff 30%, #e8c874 120%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  /* con data-split las palabras van en máscaras transformadas: el
+     degradé recortado del padre no las atraviesa, así que cada palabra
+     lleva el suyo. */
+  .ceo-climax__title:global([data-split-done]) {
+    background: none;
+    color: #fff;
+  }
+  .ceo-climax__title :global(.mo-wi) {
+    background: linear-gradient(180deg, #fff 35%, #e8c874 140%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .ceo-climax__body {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr);
+    gap: clamp(28px, 5vw, 88px);
+    align-items: end;
+    margin-top: clamp(36px, 5vw, 72px);
+  }
+  .ceo-climax__lead {
+    margin: 0;
+    font-size: clamp(1.0625rem, 1rem + 0.35vw, 1.3125rem);
+    line-height: 1.6;
+    color: rgb(255 255 255 / 0.78);
+    max-width: 46ch;
+  }
+  .ceo-climax__count {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .ceo-climax__countdown-note {
+    color: rgb(255 255 255 / 0.55);
+  }
+  .ceo-climax__cta {
+    margin-top: clamp(36px, 5vw, 64px);
+  }
+  .ceo-climax :global(.ed-odo__col) {
+    transition-duration: 0.7s;
+  }
+  @media (max-width: 860px) {
+    .ceo-climax__body {
+      grid-template-columns: 1fr;
+    }
+    .ceo-climax__cta {
+      white-space: normal;
+      text-align: left;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .ceo-climax__card {
+      clip-path: none;
+    }
+  }
+</style>

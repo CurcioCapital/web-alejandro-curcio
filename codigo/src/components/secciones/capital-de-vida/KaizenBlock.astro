@@ -1,0 +1,227 @@
+---
+/**
+ * KaizenBlock.astro — Capital de Vida-only. Las dos formas de Kaizen
+ * (mantenimiento vs. mejora) + la cita de Taiichi Ohno que cita
+ * curciocapital.com.
+ *
+ * Rediseño 21/10/2026: el glifo 改善 pasa a ser una pieza gráfica enorme en
+ * trazo que se desplaza con el scroll (data-scrub), las dos formas van en
+ * columnas con etiquetas mono numeradas y el ciclo PDCA es una grilla de
+ * cuatro celdas con la letra en display. La cita de Ohno, en serif grande.
+ */
+interface Props {
+  ohnoQuote: string;
+  ohnoSource: string;
+}
+
+const { ohnoQuote, ohnoSource } = Astro.props;
+---
+
+<div class="kaizen" data-scrub>
+  <div class="kaizen-head">
+    <span class="kaizen-glyph" aria-hidden="true">改善</span>
+    <p class="kaizen-lead" data-reveal>
+      Kaizen tiene dos formas complementarias — una resuelve, la otra nunca se da por satisfecha.
+    </p>
+  </div>
+
+  <div class="kaizen-cols">
+    <div class="kaizen-col" data-reveal>
+      <span class="kaizen-col-label ed-mono"><b aria-hidden="true">A</b> Kaizen de mantenimiento</span>
+      <p class="kaizen-col-desc">
+        Resuelve problemas puntuales con el ciclo PDCA de Deming.
+      </p>
+      <ol class="kaizen-pdca">
+        <li><span>P</span>Planificar</li>
+        <li><span>D</span>Hacer</li>
+        <li><span>C</span>Verificar</li>
+        <li><span>A</span>Actuar</li>
+      </ol>
+    </div>
+    <div class="kaizen-col" data-reveal>
+      <span class="kaizen-col-label ed-mono"><b aria-hidden="true">B</b> Kaizen de mejora</span>
+      <p class="kaizen-col-desc">
+        La mentalidad permanente de elevar los estándares, aunque hoy algo funcione bien.
+      </p>
+      <div class="kaizen-curve" aria-hidden="true">
+        <svg viewBox="0 0 400 140" preserveAspectRatio="none">
+          <path d="M0 130 L80 130 L80 104 L160 104 L160 76 L240 76 L240 48 L320 48 L320 20 L400 20" pathLength="1" />
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <figure class="ed-quote ed-quote--wide kaizen-ohno">
+    <blockquote data-split="lines"><p>&ldquo;{ohnoQuote}&rdquo;</p></blockquote>
+    <figcaption class="ed-mono">{ohnoSource}</figcaption>
+  </figure>
+</div>
+
+<style>
+  .kaizen {
+    position: relative;
+    margin-top: clamp(48px, 6vw, 96px);
+  }
+  .kaizen-head {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: end;
+    gap: 24px;
+    min-height: clamp(180px, 26vw, 380px);
+    margin-bottom: clamp(40px, 5vw, 72px);
+    border-bottom: 1px solid rgb(12 10 6 / 0.2);
+    padding-bottom: 28px;
+  }
+  .kaizen-glyph {
+    font-size: clamp(8rem, 26vw, 24rem);
+    line-height: 0.8;
+    font-weight: 700;
+    color: transparent;
+    -webkit-text-stroke: 1.5px var(--ed-accent-ink);
+    letter-spacing: -0.04em;
+    transform: translateX(calc((1 - var(--p, 0.5)) * 8vw - 4vw));
+    user-select: none;
+    white-space: nowrap;
+  }
+  .kaizen-lead {
+    font-size: clamp(1.125rem, 1rem + 0.6vw, 1.6rem);
+    line-height: 1.4;
+    color: var(--ed-ink);
+    max-width: 30ch;
+    margin: 0;
+    justify-self: end;
+  }
+  .kaizen-cols {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    border-top: 1px solid rgb(12 10 6 / 0.12);
+    margin-bottom: clamp(24px, 4vw, 48px);
+  }
+  .kaizen-col {
+    padding: 32px clamp(20px, 3vw, 48px) 32px 0;
+  }
+  .kaizen-col + .kaizen-col {
+    border-left: 1px solid rgb(12 10 6 / 0.12);
+    padding-left: clamp(20px, 3vw, 48px);
+  }
+  .kaizen-col-label {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    color: var(--ed-accent-ink);
+    margin-bottom: 18px;
+  }
+  .kaizen-col-label b {
+    display: inline-grid;
+    place-items: center;
+    width: 22px;
+    height: 22px;
+    border: 1px solid currentColor;
+    border-radius: 4px;
+    font-weight: 600;
+  }
+  .kaizen-col-desc {
+    font-size: clamp(1.125rem, 1rem + 0.5vw, 1.5rem);
+    line-height: 1.35;
+    color: var(--ed-ink);
+    max-width: 26ch;
+    margin: 0 0 28px;
+  }
+  .kaizen-pdca {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    border: 1px solid rgb(12 10 6 / 0.16);
+    border-radius: 14px;
+    overflow: hidden;
+  }
+  .kaizen-pdca li {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 18px 14px;
+    font-family: var(--ed-mono);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: rgb(12 10 6 / 0.7);
+    transition: background 0.5s var(--ed-expo), color 0.5s var(--ed-expo);
+  }
+  .kaizen-pdca li + li {
+    border-left: 1px solid rgb(12 10 6 / 0.16);
+  }
+  .kaizen-pdca li span {
+    font-family: var(--ed-display);
+    font-weight: 560;
+    font-size: clamp(2.2rem, 1.4rem + 2vw, 3.5rem);
+    letter-spacing: -0.04em;
+    line-height: 1;
+    color: var(--ed-ink);
+    transition: color 0.5s var(--ed-expo);
+  }
+  .kaizen-pdca li:hover {
+    background: var(--ed-ink);
+    color: rgb(255 255 255 / 0.75);
+  }
+  .kaizen-pdca li:hover span {
+    color: var(--ed-accent);
+  }
+  .kaizen-curve {
+    height: 140px;
+    border-bottom: 1px solid rgb(12 10 6 / 0.16);
+  }
+  .kaizen-curve svg {
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+  }
+  .kaizen-curve path {
+    fill: none;
+    stroke: var(--ed-accent-ink);
+    stroke-width: 2;
+    vector-effect: non-scaling-stroke;
+    stroke-dasharray: 1;
+    stroke-dashoffset: calc(1 - min(1, var(--p, 1) * 2.2));
+  }
+  .kaizen-ohno blockquote p {
+    margin: 0;
+  }
+
+  @media (max-width: 760px) {
+    .kaizen-head {
+      grid-template-columns: 1fr;
+      min-height: 0;
+    }
+    .kaizen-lead {
+      justify-self: start;
+    }
+    .kaizen-cols {
+      grid-template-columns: 1fr;
+    }
+    .kaizen-col {
+      padding-right: 0;
+    }
+    .kaizen-col + .kaizen-col {
+      border-left: 0;
+      border-top: 1px solid rgb(12 10 6 / 0.12);
+      padding-left: 0;
+    }
+    .kaizen-pdca li {
+      padding: 14px 10px;
+      font-size: 10px;
+      letter-spacing: 0.02em;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .kaizen-glyph {
+      transform: none;
+    }
+    .kaizen-curve path {
+      stroke-dashoffset: 0;
+    }
+  }
+</style>

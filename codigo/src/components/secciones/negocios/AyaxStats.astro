@@ -1,0 +1,68 @@
+---
+/**
+ * AyaxStats.astro — Negocios-only. Compact stat strip for AYAX's real
+ * numbers (1945, 97%, 23 concesionarios, 66 talleres, 3S). Sits inside a
+ * <SectionWhite> body. Not a shared component — lives under
+ * secciones/negocios/ per the section-ownership rule.
+ */
+interface Stat {
+  value: string;
+  label: string;
+}
+
+interface Props {
+  stats: Stat[];
+}
+
+const { stats } = Astro.props;
+---
+
+<div class="ayax-stats">
+  {
+    stats.map((s) => (
+      <div class="ayax-stat">
+        <span class="ayax-stat-value">{s.value}</span>
+        <span class="ayax-stat-label">{s.label}</span>
+      </div>
+    ))
+  }
+</div>
+
+<style>
+  .ayax-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 40px 56px;
+    margin: 48px 0;
+    padding-top: 40px;
+    border-top: 1px solid var(--color-line-dark);
+  }
+  .ayax-stat {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 96px;
+  }
+  .ayax-stat-value {
+    font-size: clamp(30px, 3.6vw, 46px);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    color: var(--color-black);
+  }
+  .ayax-stat-label {
+    font-size: 12.5px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: rgba(10, 10, 10, 0.5);
+    max-width: 18ch;
+  }
+  @media (max-width: 720px) {
+    .ayax-stats {
+      gap: 28px 40px;
+      margin: 36px 0;
+      padding-top: 32px;
+    }
+  }
+</style>

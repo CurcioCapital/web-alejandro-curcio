@@ -1,0 +1,221 @@
+---
+/**
+ * BookIndex.astro — Libros-only. Índice real de un libro (título del
+ * capítulo + el descriptor que sale del propio libro). Rediseño 21/10/2026:
+ * deja el acordeón y pasa a una lista con HOVER-REVEAL — cada fila muestra
+ * el capítulo en grande y, al pasar el mouse o con foco de teclado, el
+ * descriptor entra con máscara y la fila se enciende. En pantallas táctiles
+ * (sin hover) el descriptor queda siempre visible. Mismo texto que antes.
+ */
+interface Props {
+  label: string;
+  items: { q: string; a: string }[];
+}
+
+const { label, items } = Astro.props;
+
+// "I — Mi padre y el viento" → num "I", title "Mi padre y el viento"
+const parse = (q: string) => {
+  const m = q.match(/^(\S+)\s—\s(.+)$/);
+  return m ? { num: m[1], title: m[2] } : { num: '', title: q };
+};
+---
+
+<div class="bi">
+  <div class="bi-head ed-mono">
+    <span>{label}</span>
+    <span aria-hidden="true">{String(items.length).padStart(2, '0')}</span>
+  </div>
+  <ol class="bi-list">
+    {
+      items.map((it) => {
+        const { num, title } = parse(it.q);
+        return (
+          <li class="bi-row" tabindex="0">
+            <span class="bi-num ed-mono">{num}</span>
+            <span class="bi-sep" aria-hidden="true">{num ? ' — ' : ''}</span>
+            <span class="bi-title">{title}</span>
+            <span class="bi-a">
+              <span>{it.a}</span>
+            </span>
+            <span class="bi-plus" aria-hidden="true" />
+          </li>
+        );
+      })
+    }
+  </ol>
+</div>
+
+<style>
+  .bi {
+    margin: clamp(40px, 5vw, 72px) 0;
+  }
+  .bi-head {
+    display: flex;
+    justify-content: space-between;
+    padding-bottom: 12px;
+    color: var(--ed-accent-ink);
+    border-bottom: 1px solid rgb(12 10 6 / 0.3);
+  }
+  .bi-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .bi-row {
+    position: relative;
+    display: grid;
+    grid-template-columns: 56px minmax(0, 1fr) 24px;
+    grid-template-areas:
+      'num title plus'
+      '.   a     .';
+    align-items: baseline;
+    column-gap: 16px;
+    padding: 18px 0;
+    border-bottom: 1px solid rgb(12 10 6 / 0.12);
+    outline: none;
+    cursor: default;
+    isolation: isolate;
+  }
+  .bi-row::before {
+    content: '';
+    position: absolute;
+    inset: 0 -14px;
+    z-index: -1;
+    border-radius: 14px;
+    background: var(--ed-ink);
+    clip-path: inset(50% 0 50% 0 round 14px);
+    transition: clip-path 0.6s var(--ed-expo);
+  }
+  .bi-sep {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+  }
+  .bi-num {
+    grid-area: num;
+    color: var(--ed-accent-ink);
+    transition: color 0.4s var(--ed-expo);
+  }
+  .bi-title {
+    grid-area: title;
+    font-family: var(--ed-display);
+    font-weight: 540;
+    font-size: clamp(1.25rem, 1rem + 0.9vw, 1.875rem);
+    line-height: 1.12;
+    letter-spacing: -0.03em;
+    transition: color 0.4s var(--ed-expo), transform 0.6s var(--ed-expo);
+  }
+  .bi-a {
+    grid-area: a;
+    display: block;
+  }
+  .bi-a > span {
+    display: block;
+    padding-top: 10px;
+    max-width: 62ch;
+    font-size: 15px;
+    line-height: 1.55;
+    color: rgb(12 10 6 / 0.7);
+    transition: color 0.4s var(--ed-expo);
+  }
+  .bi-plus {
+    grid-area: plus;
+    position: relative;
+    width: 14px;
+    height: 14px;
+    align-self: center;
+  }
+  .bi-plus::before,
+  .bi-plus::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 14px;
+    height: 1.5px;
+    background: currentColor;
+    transition: transform 0.6s var(--ed-expo);
+  }
+  .bi-plus::after {
+    transform: rotate(90deg);
+  }
+
+  /* hover-reveal: sólo en punteros finos. En táctil, todo visible.
+     El descriptor ocupa SIEMPRE su lugar (columna derecha): se revela con
+     opacidad + máscara, sin animar layout. */
+  @media (hover: hover) and (pointer: fine) and (min-width: 861px) {
+    .bi-row {
+      grid-template-columns: 56px minmax(0, 1fr) minmax(0, 1fr) 24px;
+      grid-template-areas: 'num title a plus';
+      align-items: center;
+      min-height: 76px;
+    }
+    .bi-a > span {
+      padding-top: 0;
+      opacity: 0;
+      transform: translateY(14px);
+      clip-path: inset(0 0 100% 0);
+      transition: opacity 0.5s var(--ed-expo), transform 0.7s var(--ed-expo), clip-path 0.7s var(--ed-expo);
+    }
+    .bi-row:hover,
+    .bi-row:focus-visible {
+      color: #fff;
+    }
+    .bi-row:hover::before,
+    .bi-row:focus-visible::before {
+      clip-path: inset(0 0 0 0 round 14px);
+    }
+    .bi-row:hover .bi-num,
+    .bi-row:focus-visible .bi-num {
+      color: var(--ed-accent);
+    }
+    .bi-row:hover .bi-title,
+    .bi-row:focus-visible .bi-title {
+      transform: translateX(8px);
+    }
+    .bi-row:hover .bi-a > span,
+    .bi-row:focus-visible .bi-a > span {
+      opacity: 1;
+      transform: none;
+      clip-path: inset(0 0 0 0);
+      color: rgb(255 255 255 / 0.74);
+    }
+    .bi-row:hover .bi-plus::after,
+    .bi-row:focus-visible .bi-plus::after {
+      transform: rotate(0deg);
+    }
+    .bi-row:focus-visible {
+      box-shadow: 0 0 0 2px var(--ed-accent-ink);
+      border-radius: 14px;
+    }
+  }
+  .bi-plus {
+    display: none;
+  }
+  @media (hover: hover) and (pointer: fine) and (min-width: 861px) {
+    .bi-plus {
+      display: block;
+    }
+  }
+  @media (max-width: 600px) {
+    .bi-row {
+      grid-template-columns: 40px minmax(0, 1fr) 0;
+      column-gap: 12px;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .bi-row::before,
+    .bi-a,
+    .bi-a > span,
+    .bi-title,
+    .bi-plus::after {
+      transition: none !important;
+    }
+    .bi-a > span {
+      transform: none !important;
+    }
+  }
+</style>

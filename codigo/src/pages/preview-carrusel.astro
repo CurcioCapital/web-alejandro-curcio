@@ -1,0 +1,439 @@
+---
+/**
+ * preview-carrusel.astro — PÁGINA DE PRUEBA, no forma parte del sitio.
+ *
+ * Propuesta alternativa al carrusel 3D de facetas, con la lógica del
+ * carrusel de testimonios de tonyrobbins.com: una fila horizontal de
+ * tarjetas verticales, el título tipográfico quemado dentro de la imagen, y
+ * la cita FUERA de la tarjeta, debajo.
+ *
+ * NADA de esto toca el carrusel actual. index.astro y FacetasCarousel3D
+ * quedaron sin modificar; esta ruta existe sólo para comparar y se borra
+ * cuando se decida.
+ *
+ * Diferencias de fondo con el carrusel actual, más allá del aspecto:
+ * - Sin cilindro 3D y sin scroll-jack: es scroll horizontal nativo con snap,
+ *   así que anda con rueda, con trackpad, con dedo y con teclado sin que la
+ *   página secuestre el scroll vertical.
+ * - El video no corre solo: cada tarjeta muestra su póster y arranca al
+ *   pasar el mouse o al enfocar con teclado. Seis videos en loop simultáneo
+ *   es lo que hoy hace pesado el capítulo.
+ * - La cita sale de arriba de la imagen y pasa abajo, que es donde se lee.
+ */
+import Base from '../layouts/Base.astro';
+
+const facetas = [
+	{
+		index: '01',
+		word: 'Empresario',
+		quote: 'La crisis, al final, se había convertido en una oportunidad.',
+		quoteSource: 'Capital de Vida',
+		href: '/negocios',
+		hrefLabel: 'Explorar Negocios',
+		video: '/media/video/bz4x-card.mp4',
+		poster: '/media/video/bz4x-card-poster.jpg',
+		alt: 'Alejandro Curcio hablando en el lanzamiento del Toyota bZ4X',
+	},
+	{
+		index: '02',
+		word: 'Deportista',
+		quote: 'En el fondo lo que me encanta es la aventura del descubrimiento.',
+		quoteSource: 'Forbes Uruguay, 2025',
+		href: '/aventura',
+		hrefLabel: 'Explorar Aventura',
+		video: '/media/video/drift-park-card.mp4',
+		poster: '/media/video/drift-park-card-poster.jpg',
+		alt: 'Casco de Alejandro Curcio en el Toyota Drift Park',
+	},
+	{
+		index: '03',
+		word: 'Aventurero',
+		quote: 'El pánico te mata y el miedo te salva.',
+		quoteSource: 'Capital de Vida',
+		href: '/aventura',
+		hrefLabel: 'Explorar Aventura',
+		poster: '/media/img/guinness-03-1280.jpg',
+		alt: 'Alejandro Curcio en el récord Guinness Ice Challenge 2024',
+	},
+	{
+		index: '04',
+		word: 'Pensador',
+		quote: 'La felicidad no es algo que uno busca, sino algo que uno se permite.',
+		quoteSource: 'Capital de Vida',
+		href: '/libros',
+		hrefLabel: 'Explorar Libros',
+		video: '/media/video/toolbook-aftermovie-card.mp4',
+		poster: '/media/video/toolbook-aftermovie-card-poster.jpg',
+		alt: 'Aftermovie de la presentación de Toolbook',
+	},
+	{
+		index: '05',
+		word: 'Solidario',
+		quote: 'El éxito corporativo está vacío si no democratizamos las oportunidades.',
+		quoteSource: 'Pilar «La Figura»',
+		href: '/negocios',
+		hrefLabel: 'Explorar Negocios',
+		video: '/media/video/drift-solidario-card.mp4',
+		poster: '/media/video/drift-solidario-card-poster.jpg',
+		alt: 'Drift Arena Solidario, noviembre de 2024',
+	},
+	{
+		index: '06',
+		word: 'Legado',
+		quote: 'Dejarle algo valioso a la siguiente generación involucra mucho más que dinero.',
+		quoteSource: 'Capital de Vida',
+		href: '/historia',
+		hrefLabel: 'Explorar Historia',
+		video: '/media/video/fiat600r-card.mp4',
+		poster: '/media/video/fiat600r-card-poster.jpg',
+		alt: 'Alejandro Curcio contando la anécdota del Fiat 600R',
+	},
+];
+---
+
+<Base title="Preview — carrusel alternativo" description="Página de prueba. No forma parte del sitio.">
+	<div class="aviso">
+		<strong>Página de prueba.</strong> Propuesta alternativa para el carrusel de facetas. El carrusel
+		actual de la home no se tocó — compará con <a href="/#facetas">/#facetas</a>.
+	</div>
+
+	<section class="sheet sheet--cap-2 sheet--flush prueba">
+		<div class="wrap">
+			<span class="kicker">Facetas</span>
+			<h2 class="section-title">Una vida. Seis facetas.</h2>
+			<p class="section-lead">Elegí por dónde entrar.</p>
+		</div>
+
+		<!-- La fila se sale del wrap a propósito: sangra hacia el borde para
+		     que se vea que hay más tarjetas a la derecha. -->
+		<div class="fila-wrap">
+			<ul class="fila" data-fila tabindex="0" role="list" aria-label="Facetas de Alejandro Curcio">
+				{
+					facetas.map((f) => (
+						<li class="tarjeta" data-tarjeta>
+							<a class="tarjeta-link" href={f.href}>
+								<div class="tarjeta-media">
+									{f.video ? (
+										<video
+											class="tarjeta-video"
+											data-src={f.video}
+											poster={f.poster}
+											muted
+											loop
+											playsinline
+											preload="none"
+											aria-label={f.alt}
+										/>
+									) : (
+										<img class="tarjeta-img" src={f.poster} alt={f.alt} loading="lazy" />
+									)}
+									<span class="tarjeta-scrim" aria-hidden="true" />
+
+									<span class="tarjeta-mirar" aria-hidden="true">
+										<svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor">
+											<path d="M8 5v14l11-7z" />
+										</svg>
+										Mirar
+									</span>
+
+									<span class="tarjeta-lockup">
+										<span class="tarjeta-n">{f.index}</span>
+										<span class="tarjeta-word">{f.word}</span>
+									</span>
+								</div>
+
+								<blockquote class="tarjeta-cita">«{f.quote}»</blockquote>
+								<cite class="tarjeta-fuente">{f.quoteSource}</cite>
+							</a>
+						</li>
+					))
+				}
+			</ul>
+
+			<div class="fila-nav">
+				<button class="fila-flecha" type="button" data-prev aria-label="Anterior">
+					<svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2">
+						<line x1="19" y1="12" x2="5" y2="12" /><polyline points="12 19 5 12 12 5" />
+					</svg>
+				</button>
+				<div class="fila-barra" aria-hidden="true"><span data-barra></span></div>
+				<button class="fila-flecha" type="button" data-next aria-label="Siguiente">
+					<svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2">
+						<line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" />
+					</svg>
+				</button>
+			</div>
+		</div>
+	</section>
+</Base>
+
+<style>
+	.aviso {
+		background: rgb(var(--accent-rgb) / 0.14);
+		border-bottom: 1px solid rgb(var(--accent-rgb) / 0.3);
+		color: var(--ink-hi);
+		font-size: 13.5px;
+		text-align: center;
+		padding: 12px 20px;
+	}
+	.aviso a {
+		color: var(--color-cobalt-bright);
+	}
+	.prueba {
+		padding-bottom: var(--chapter-pad);
+	}
+
+	/* ---------- fila horizontal ---------- */
+	.fila-wrap {
+		margin-top: 46px;
+	}
+	.fila {
+		list-style: none;
+		margin: 0;
+		padding: 0 var(--edge) 4px;
+		display: flex;
+		gap: clamp(16px, 1.8vw, 26px);
+		overflow-x: auto;
+		scroll-snap-type: x mandatory;
+		scrollbar-width: none;
+		/* El wrap centra a 1360px; la fila arranca alineada con él pero puede
+		   seguir hasta el borde de la pantalla. */
+		padding-left: max(var(--edge), calc((100vw - 1360px) / 2 + var(--edge)));
+	}
+	.fila::-webkit-scrollbar {
+		display: none;
+	}
+	.fila:focus-visible {
+		outline: 2px solid var(--color-cobalt-bright);
+		outline-offset: 4px;
+		border-radius: var(--radius-object);
+	}
+
+	.tarjeta {
+		flex: 0 0 auto;
+		width: clamp(230px, 22vw, 320px);
+		scroll-snap-align: start;
+	}
+	.tarjeta-link {
+		display: block;
+		text-decoration: none;
+		color: inherit;
+	}
+
+	.tarjeta-media {
+		position: relative;
+		aspect-ratio: 3 / 4.1;
+		border-radius: var(--radius-object);
+		overflow: hidden;
+		background: var(--color-black-2);
+		box-shadow: var(--shadow-object);
+		transition: transform var(--dur-md) var(--ease-out);
+	}
+	.tarjeta-link:hover .tarjeta-media,
+	.tarjeta-link:focus-visible .tarjeta-media {
+		transform: translateY(-6px);
+	}
+	.tarjeta-video,
+	.tarjeta-img {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		display: block;
+	}
+	.tarjeta-scrim {
+		position: absolute;
+		inset: 0;
+		background: linear-gradient(0deg, rgba(10, 8, 5, 0.86) 0%, rgba(10, 8, 5, 0.15) 46%, transparent 68%);
+	}
+
+	/* pill «Mirar», arriba a la izquierda, aparece al acercarse */
+	.tarjeta-mirar {
+		position: absolute;
+		inset: 14px auto auto 14px;
+		display: inline-flex;
+		align-items: center;
+		gap: 7px;
+		padding: 7px 14px 7px 11px;
+		border-radius: 999px;
+		background: rgba(11, 14, 23, 0.6);
+		backdrop-filter: blur(10px);
+		color: var(--ink-hi);
+		font-size: 12.5px;
+		font-weight: 600;
+		opacity: 0;
+		transform: translateY(-4px);
+		transition:
+			opacity var(--dur-sm) var(--ease-out),
+			transform var(--dur-sm) var(--ease-out);
+	}
+	.tarjeta-link:hover .tarjeta-mirar,
+	.tarjeta-link:focus-visible .tarjeta-mirar {
+		opacity: 1;
+		transform: none;
+	}
+
+	/* el nombre de la faceta, quemado abajo dentro de la imagen */
+	.tarjeta-lockup {
+		position: absolute;
+		inset: auto 18px 18px 18px;
+		display: flex;
+		flex-direction: column;
+		gap: 4px;
+	}
+	.tarjeta-n {
+		font-size: 11px;
+		font-weight: 600;
+		letter-spacing: 0.16em;
+		color: rgba(233, 237, 255, 0.6);
+		font-variant-numeric: tabular-nums;
+	}
+	.tarjeta-word {
+		font-size: clamp(1.375rem, 1.1rem + 1.1vw, 1.875rem);
+		font-weight: 700;
+		font-stretch: 100%;
+		letter-spacing: -0.022em;
+		line-height: 1;
+		color: #fff;
+	}
+
+	/* la cita vive FUERA de la tarjeta */
+	.tarjeta-cita {
+		margin: 18px 0 0;
+		font-family: var(--font-body);
+		font-style: normal;
+		font-weight: 450;
+		letter-spacing: -0.015em;
+		font-size: 16px;
+		line-height: 1.42;
+		color: var(--ink-hi);
+		text-wrap: pretty;
+	}
+	.tarjeta-fuente {
+		display: block;
+		margin-top: 8px;
+		font-size: 12px;
+		font-style: normal;
+		font-weight: 500;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: var(--ink-low);
+	}
+
+	/* ---------- navegación ---------- */
+	.fila-nav {
+		display: flex;
+		align-items: center;
+		gap: 18px;
+		margin: 34px auto 0;
+		max-width: 1360px;
+		padding: 0 var(--edge);
+	}
+	.fila-flecha {
+		width: 42px;
+		height: 42px;
+		display: grid;
+		place-items: center;
+		border-radius: 999px;
+		border: 1px solid rgba(233, 237, 255, 0.22);
+		background: transparent;
+		color: var(--ink-hi);
+		cursor: pointer;
+		transition:
+			background var(--dur-sm) var(--ease-out),
+			border-color var(--dur-sm) var(--ease-out),
+			opacity var(--dur-sm) var(--ease-out);
+	}
+	.fila-flecha:hover:not(:disabled) {
+		background: rgba(255, 255, 255, 0.08);
+		border-color: var(--color-cobalt-bright);
+	}
+	.fila-flecha:disabled {
+		opacity: 0.28;
+		cursor: default;
+	}
+	.fila-barra {
+		flex: 1 1 auto;
+		height: 2px;
+		background: var(--color-line);
+		border-radius: 2px;
+		overflow: hidden;
+		max-width: 320px;
+	}
+	.fila-barra span {
+		display: block;
+		height: 100%;
+		width: 20%;
+		background: var(--color-cobalt-bright);
+		border-radius: 2px;
+		transition: transform var(--dur-md) var(--ease-out);
+		transform-origin: left;
+	}
+
+	@media (max-width: 720px) {
+		.fila {
+			padding-left: var(--edge);
+		}
+		.tarjeta {
+			width: 74vw;
+		}
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.tarjeta-link:hover .tarjeta-media {
+			transform: none;
+		}
+	}
+</style>
+
+<script>
+	const fila = document.querySelector<HTMLElement>('[data-fila]');
+	if (fila) {
+		const tarjetas = [...fila.querySelectorAll<HTMLElement>('[data-tarjeta]')];
+		const prev = document.querySelector<HTMLButtonElement>('[data-prev]');
+		const next = document.querySelector<HTMLButtonElement>('[data-next]');
+		const barra = document.querySelector<HTMLElement>('[data-barra]');
+
+		// El video de cada tarjeta se carga y arranca sólo al acercarse el
+		// mouse o al enfocar con teclado. Seis loops simultáneos es lo que
+		// hoy hace pesado el capítulo de facetas.
+		tarjetas.forEach((t) => {
+			const v = t.querySelector<HTMLVideoElement>('.tarjeta-video');
+			if (!v) return;
+			const arrancar = () => {
+				if (!v.getAttribute('src')) v.setAttribute('src', v.dataset.src!);
+				v.play().catch(() => {});
+			};
+			const parar = () => v.pause();
+			t.addEventListener('pointerenter', arrancar);
+			t.addEventListener('pointerleave', parar);
+			t.addEventListener('focusin', arrancar);
+			t.addEventListener('focusout', parar);
+		});
+
+		const paso = () => tarjetas[0].getBoundingClientRect().width + 22;
+		prev?.addEventListener('click', () => fila.scrollBy({ left: -paso(), behavior: 'smooth' }));
+		next?.addEventListener('click', () => fila.scrollBy({ left: paso(), behavior: 'smooth' }));
+
+		let raf = 0;
+		const pintar = () => {
+			raf = 0;
+			const max = fila.scrollWidth - fila.clientWidth;
+			const p = max > 0 ? fila.scrollLeft / max : 0;
+			if (prev) prev.disabled = fila.scrollLeft < 4;
+			if (next) next.disabled = fila.scrollLeft > max - 4;
+			if (barra) {
+				const visible = fila.clientWidth / fila.scrollWidth;
+				barra.style.width = `${Math.max(12, visible * 100)}%`;
+				barra.style.transform = `translateX(${(p * (100 / Math.max(12, visible * 100) - 1) * 100).toFixed(1)}%)`;
+			}
+		};
+		fila.addEventListener('scroll', () => {
+			if (!raf) raf = requestAnimationFrame(pintar);
+		}, { passive: true });
+		addEventListener('resize', () => {
+			if (!raf) raf = requestAnimationFrame(pintar);
+		}, { passive: true });
+		pintar();
+	}
+</script>

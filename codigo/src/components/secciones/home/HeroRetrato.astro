@@ -1,0 +1,820 @@
+---
+/**
+ * HeroRetrato.astro — apertura del home «como landonorris.com» (pedido del
+ * cliente, 21/10/2026; ajustes aprobados por el cliente el mismo día).
+ *
+ * Capas, de atrás hacia adelante:
+ *   1. grilla técnica + brillo dorado (decorativo)
+ *   2. «Alejandro / Curcio» en display (var(--font-display)), DETRÁS del
+ *      retrato, a un tamaño que acompaña sin dominar
+ *   3. retrato recortado de Ale en traje (alt real)
+ *   4. versión piloto GR, mismo encuadre, pintada en un <canvas> a través
+ *      de una máscara de pincel: el cursor «pinta» la otra imagen con un
+ *      borde suave y orgánico, deja una estela corta y se desvanece en
+ *      ~0,6–1 s cuando el cursor se detiene o sale. Sin UI visible.
+ *      Decorativo: aria-hidden. Hoy la GR es un placeholder teñido; se
+ *      reemplaza por la final con los mismos nombres de archivo.
+ *   5. «Curcio» en contorno por delante del retrato (profundidad)
+ *   6. lockup trébol + «Capital de Vida» (h1), mini-card con el loop de los
+ *      80 años (sin texto ni créditos), indicador «Scroll».
+ *
+ * Táctil: tap revela (con fundido) y otro tap lo deja desvanecer; además el
+ * scroll pinta una estela leve sobre la cara. Reduced motion: sin revelado,
+ * sin parallax, sin autoplay. Sin JS: traje y todo el texto.
+ * El rAF se detiene cuando no hay nada que animar.
+ * Sin IntersectionObserver (no dispara en el preview del proyecto).
+ */
+import '@fontsource-variable/jetbrains-mono';
+import '@fontsource-variable/geist';
+
+interface Props {
+  title: string;
+  videoSrc: string;
+  poster: string;
+  focus?: string;
+}
+
+const { title, videoSrc, poster, focus = '50% 45%' } = Astro.props;
+
+const srcset = (v: string) =>
+  [720, 1280, 1800].map((w) => `/media/img/hero-ale-${v}-${w}.webp ${w}w`).join(', ');
+const sizes = '(max-width: 720px) 92vw, 46vw';
+---
+
+<section class="hh" data-hh>
+  <div class="hh-stage" data-hh-stage>
+    <div class="hh-bg" aria-hidden="true">
+      <span class="hh-cols"></span>
+      <span class="hh-cols hh-cols--hot"></span>
+      <span class="hh-spot"></span>
+      <span class="hh-glow"></span>
+    </div>
+
+    <!-- Nombre: una sola lectura para el lector de pantalla. -->
+    <p class="hh-name hh-name--back" aria-label="Alejandro Curcio">
+      <span class="hh-layer" data-hh-layer="back">
+        <span class="hh-line hh-line--1" aria-hidden="true"><span>Alejandro</span></span>
+        <span class="hh-line hh-line--2" aria-hidden="true"><span>Curcio</span></span>
+      </span>
+    </p>
+
+    <div class="hh-figure-wrap" data-hh-layer="figure">
+      <div class="hh-figure" data-hh-figure data-cursor="hide">
+        <img
+          class="hh-img hh-img--traje"
+          src="/media/img/hero-ale-traje-1280.webp"
+          srcset={srcset('traje')}
+          sizes={sizes}
+          width="2048"
+          height="3070"
+          alt="Retrato de Alejandro Curcio de traje, sonriendo, con las manos sobre el puño de la camisa"
+          fetchpriority="high"
+          decoding="async"
+        />
+        <!-- Fuente de la capa GR: no se muestra; se pinta en el canvas. -->
+        <img
+          class="hh-gr-src"
+          src="/media/img/hero-ale-gr-1280.webp"
+          srcset={srcset('gr')}
+          sizes={sizes}
+          width="2048"
+          height="3070"
+          alt=""
+          aria-hidden="true"
+          decoding="async"
+          data-hh-gr
+        />
+        <canvas class="hh-brush" aria-hidden="true" data-hh-brush></canvas>
+      </div>
+    </div>
+
+    <div class="hh-foot">
+      <h1 class="hh-title">
+        <span class="hh-trebol" aria-hidden="true"></span>
+        <span class="hh-title-text">{title}</span>
+      </h1>
+    </div>
+
+    <div class="hh-scroll" aria-hidden="true">
+      <span class="hh-scroll-line"><span></span></span>
+      <span class="hh-mono">Scroll</span>
+    </div>
+
+    <span class="hh-mark hh-mark--tl" aria-hidden="true"></span>
+    <span class="hh-mark hh-mark--tr" aria-hidden="true"></span>
+  </div>
+</section>
+
+<style>
+  .hh {
+    --hh-black: var(--color-black, #0c0a06);
+    --hh-bone: var(--color-off, #f4f1ea);
+    --hh-gold: var(--accent, #e8c874);
+    --hh-line: var(--line, rgb(255 255 255 / 0.08));
+    --hh-mono: var(--font-mono, 'JetBrains Mono Variable', ui-monospace, 'SFMono-Regular', Menlo, monospace);
+    --hh-display: var(--font-display, 'Geist Variable', system-ui, sans-serif);
+    --hh-ease: var(--ease-expo, cubic-bezier(0.16, 1, 0.3, 1));
+    /* Alto del header sticky (ribbon + nav). */
+    --hh-top: 92px;
+    position: relative;
+    background: var(--hh-black);
+    color: var(--hh-bone);
+    overflow: clip;
+  }
+
+  .hh-stage {
+    position: relative;
+    height: calc(100svh - var(--hh-top));
+    min-height: 600px;
+    max-height: 1100px;
+    overflow: hidden;
+    isolation: isolate;
+    transform-origin: 50% 0%;
+    will-change: transform;
+  }
+
+  /* ── fondo ── */
+  .hh-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+  }
+  .hh-cols {
+    position: absolute;
+    inset: 0;
+    background-image: linear-gradient(90deg, var(--hh-line) 1px, transparent 1px);
+    background-size: calc((100% - 1px) / 12) 100%;
+    mask-image: linear-gradient(180deg, transparent 0%, #000 22%, #000 70%, transparent 100%);
+  }
+  .hh-glow {
+    position: absolute;
+    left: 50%;
+    top: 58%;
+    width: min(90vw, 1100px);
+    aspect-ratio: 1;
+    transform: translate(calc(-50% + var(--hh-gx, 0%)), calc(-50% + var(--hh-gy, 0%)));
+    background: radial-gradient(closest-side, rgb(232 200 116 / 0.16), rgb(232 200 116 / 0.05) 55%, transparent 100%);
+  }
+  /* La grilla «se enciende» alrededor del cursor y una luz tenue lo sigue:
+     el fondo responde, discreto, en todo el héroe (no sólo en el retrato). */
+  .hh-cols--hot {
+    background-image: linear-gradient(90deg, rgb(232 200 116 / 0.35) 1px, transparent 1px);
+    mask-image: radial-gradient(280px circle at var(--hh-sx, -999px) var(--hh-sy, -999px), #000, transparent 75%);
+    opacity: var(--hh-sa, 0);
+  }
+  .hh-spot {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(520px circle at var(--hh-sx, -999px) var(--hh-sy, -999px), rgb(232 200 116 / 0.07), transparent 70%);
+    opacity: var(--hh-sa, 0);
+  }
+
+  /* ── nombre ──
+     Composición editorial (22/10): el nombre es un bloque legible a la
+     izquierda, sin que la cabeza lo tape; el retrato (la interacción) vive a
+     la derecha. Lectura: nombre → «Capital de Vida» → retrato. */
+  .hh-name {
+    position: absolute;
+    inset: 0;
+    margin: 0;
+    pointer-events: none;
+    font-family: var(--hh-display);
+    font-weight: 600;
+    letter-spacing: -0.04em;
+    line-height: 0.9;
+    text-transform: uppercase;
+    font-size: min(8.8vw, 17svh);
+    white-space: nowrap;
+  }
+  .hh-name--back {
+    z-index: 1;
+    color: var(--hh-bone);
+  }
+  /* CURCIO va SOLO en contorno, sin relleno. */
+  .hh-name .hh-line--2 {
+    color: transparent;
+    -webkit-text-stroke: 1.5px rgb(244 241 234 / 0.85);
+  }
+  .hh-layer {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 0 0 12svh var(--edge, 20px);
+    will-change: transform;
+  }
+  .hh-line {
+    display: block;
+    overflow: hidden;
+    padding: 0.06em 0.04em 0.1em;
+    margin-bottom: -0.1em;
+  }
+  .hh-line > span {
+    display: block;
+    animation: hh-up 1300ms var(--hh-ease) both;
+  }
+  .hh-line--2 > span {
+    animation-delay: 120ms;
+  }
+  @keyframes hh-up {
+    from {
+      transform: translateY(110%);
+    }
+    to {
+      transform: none;
+    }
+  }
+
+  /* ── retrato ── */
+  .hh-figure-wrap {
+    position: absolute;
+    z-index: 3;
+    left: 66%;
+    bottom: -9%;
+    height: 106%;
+    aspect-ratio: 2048 / 3070;
+    transform: translateX(-50%);
+    will-change: transform;
+  }
+  .hh-figure {
+    position: absolute;
+    inset: 0;
+    animation: hh-rise 1500ms var(--hh-ease) 150ms both;
+  }
+  @keyframes hh-rise {
+    from {
+      opacity: 0;
+      transform: translateY(6%) scale(1.04);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  .hh-img,
+  .hh-brush {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    user-select: none;
+    -webkit-user-drag: none;
+    /* El recorte termina en el borde inferior: lo fundimos al negro. */
+    mask-image: linear-gradient(180deg, #000 78%, transparent 100%);
+  }
+  .hh-img {
+    object-fit: contain;
+    object-position: 50% 100%;
+  }
+  .hh-brush {
+    pointer-events: none;
+  }
+  /* La fuente GR nunca se ve directamente. */
+  .hh-gr-src {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  /* ── pie: lockup + mini-card ── */
+  .hh-foot {
+    position: absolute;
+    z-index: 5;
+    left: var(--edge, 20px);
+    right: var(--edge, 20px);
+    bottom: clamp(20px, 4svh, 40px);
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+    pointer-events: none;
+  }
+  .hh-foot > * {
+    pointer-events: auto;
+  }
+  .hh-title {
+    margin: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.32em;
+    font-family: var(--hh-display);
+    font-weight: 600;
+    font-size: clamp(1.5rem, 0.9rem + 1.8vw, 2.6rem);
+    line-height: 1;
+    letter-spacing: -0.035em;
+    color: var(--hh-bone);
+    white-space: nowrap;
+    text-shadow: 0 2px 24px rgb(12 10 6 / 0.6);
+    animation: hh-fade 900ms var(--hh-ease) 500ms both;
+  }
+  .hh-trebol {
+    width: 1.05em;
+    height: 1.05em;
+    flex: 0 0 auto;
+    background-color: var(--hh-gold);
+    -webkit-mask: url('/media/marca/trebol.png') no-repeat center / contain;
+    mask: url('/media/marca/trebol.png') no-repeat center / contain;
+  }
+  .hh-mini {
+    position: relative;
+    flex: 0 0 auto;
+    width: clamp(150px, 17vw, 280px);
+    aspect-ratio: 16 / 9;
+    border-radius: 14px;
+    overflow: hidden;
+    background: #17130b;
+    box-shadow: 0 0 0 1px rgb(255 255 255 / 0.12), 0 20px 50px rgb(0 0 0 / 0.5);
+    animation: hh-fade 900ms var(--hh-ease) 700ms both;
+  }
+  .hh-mini-video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  @keyframes hh-fade {
+    from {
+      opacity: 0;
+      transform: translateY(16px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  /* ── indicador de scroll ── */
+  .hh-scroll {
+    position: absolute;
+    z-index: 5;
+    left: 50%;
+    bottom: clamp(14px, 3svh, 28px);
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+  .hh-mono {
+    font-family: var(--hh-mono);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgb(244 241 234 / 0.7);
+  }
+  .hh-scroll-line {
+    position: relative;
+    width: 1px;
+    height: 36px;
+    background: rgb(244 241 234 / 0.18);
+    overflow: hidden;
+  }
+  .hh-scroll-line span {
+    position: absolute;
+    inset: 0;
+    background: var(--hh-gold);
+    animation: hh-drip 1800ms var(--hh-ease) infinite;
+  }
+  @keyframes hh-drip {
+    0% {
+      transform: translateY(-100%);
+    }
+    60%,
+    100% {
+      transform: translateY(100%);
+    }
+  }
+
+  .hh-mark {
+    position: absolute;
+    z-index: 2;
+    top: 14px;
+    width: 14px;
+    height: 14px;
+    border-color: rgb(244 241 234 / 0.35);
+    border-style: solid;
+    border-width: 0;
+  }
+  .hh-mark--tl {
+    left: var(--edge, 20px);
+    border-top-width: 1px;
+    border-left-width: 1px;
+  }
+  .hh-mark--tr {
+    right: var(--edge, 20px);
+    border-top-width: 1px;
+    border-right-width: 1px;
+  }
+
+  /* ── móvil ── */
+  @media (max-width: 720px) {
+    .hh-stage {
+      min-height: 560px;
+    }
+    .hh-name {
+      font-size: 13.5vw;
+    }
+    .hh-layer {
+      justify-content: flex-start;
+      padding: 7svh 0 0 var(--edge, 20px);
+    }
+    .hh-figure-wrap {
+      left: 50%;
+      bottom: 0;
+      height: 84%;
+    }
+    .hh-foot {
+      align-items: flex-end;
+      gap: 14px;
+      bottom: 20px;
+    }
+    .hh-title {
+      font-size: clamp(1.35rem, 6.4vw, 1.9rem);
+    }
+    .hh-mini {
+      width: 30vw;
+      border-radius: 10px;
+    }
+    .hh-scroll {
+      display: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hh-line > span,
+    .hh-figure,
+    .hh-title,
+    .hh-mini,
+    .hh-scroll-line span {
+      animation: none;
+    }
+    .hh-brush {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  // La página siempre arranca arriba (no restaurar el scroll del navegador).
+  if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+  if (!location.hash) window.scrollTo(0, 0);
+
+  const raiz = document.querySelector<HTMLElement>('[data-hh]');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const fino = matchMedia('(hover: hover) and (pointer: fine)').matches;
+  const video = raiz?.querySelector<HTMLVideoElement>('[data-hh-video]');
+
+  if (raiz && !reduce) {
+    const stage = raiz.querySelector<HTMLElement>('[data-hh-stage]')!;
+    const fig = raiz.querySelector<HTMLElement>('[data-hh-figure]')!;
+    const fuente = raiz.querySelector<HTMLImageElement>('[data-hh-gr]')!;
+    const lienzo = raiz.querySelector<HTMLCanvasElement>('[data-hh-brush]')!;
+    const ctx = lienzo.getContext('2d')!;
+
+    const capa = (n: string) => raiz.querySelector<HTMLElement>(`[data-hh-layer="${n}"]`);
+    const back = capa('back');
+    const figura = capa('figure');
+
+    const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
+    const clamp = (v: number, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+
+    /* ───────────── Máscara «de pintura» ─────────────
+       Un campo de intensidad (grilla a 1/3 de resolución) recibe manchas
+       gaussianas a lo largo del recorrido del cursor o de las pinceladas
+       automáticas, y se apaga solo en cada cuadro. Para dibujarlo se le
+       aplica un UMBRAL perturbado con ruido estirado en horizontal: el borde
+       queda nítido pero rasgado, y al apagarse se «come» de forma irregular,
+       como pintura que se seca. Nunca un círculo perfecto. */
+    const CELDA = 3;
+    let W = 0, H = 0, gw = 1, gh = 1, dpr = 1;
+    let campo = new Float32Array(1);
+    const mascara = document.createElement('canvas');
+    const mctx = mascara.getContext('2d')!;
+    let img = mctx.createImageData(1, 1);
+
+    const dimensionar = () => {
+      W = fig.offsetWidth;
+      H = fig.offsetHeight;
+      dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+      lienzo.width = Math.max(1, Math.round(W * dpr));
+      lienzo.height = Math.max(1, Math.round(H * dpr));
+      gw = Math.max(1, Math.ceil(W / CELDA));
+      gh = Math.max(1, Math.ceil(H / CELDA));
+      campo = new Float32Array(gw * gh);
+      mascara.width = gw;
+      mascara.height = gh;
+      img = mctx.createImageData(gw, gh);
+    };
+
+    // Ruido de valor, liso, en una tabla periódica de 64×64.
+    const N = 64;
+    const tabla = new Float32Array(N * N).map(() => Math.random());
+    const ruido = (x: number, y: number) => {
+      const xi = Math.floor(x), yi = Math.floor(y);
+      const fx = x - xi, fy = y - yi;
+      const sx = fx * fx * (3 - 2 * fx), sy = fy * fy * (3 - 2 * fy);
+      const x0 = ((xi % N) + N) % N, y0 = ((yi % N) + N) % N;
+      const x1 = (x0 + 1) % N, y1 = (y0 + 1) % N;
+      const a = tabla[y0 * N + x0], b = tabla[y0 * N + x1];
+      const c = tabla[y1 * N + x0], d = tabla[y1 * N + x1];
+      return lerp(lerp(a, b, sx), lerp(c, d, sx), sy);
+    };
+
+    /** Mancha en coordenadas locales (px). Suma por máximo: no satura. */
+    const mancha = (x: number, y: number, r: number, fuerza = 1) => {
+      const gx = x / CELDA, gy = y / CELDA, gr = r / CELDA;
+      const x0 = Math.max(0, Math.floor(gx - gr)), x1 = Math.min(gw - 1, Math.ceil(gx + gr));
+      const y0 = Math.max(0, Math.floor(gy - gr)), y1 = Math.min(gh - 1, Math.ceil(gy + gr));
+      const s2 = 2 * (gr * 0.55) * (gr * 0.55);
+      for (let j = y0; j <= y1; j++) {
+        const dy = j - gy;
+        for (let i = x0; i <= x1; i++) {
+          const dx = i - gx;
+          const v = fuerza * Math.exp(-(dx * dx + dy * dy) / s2);
+          const k = j * gw + i;
+          if (v > campo[k]) campo[k] = v;
+        }
+      }
+    };
+    /** Trazo continuo: manchas solapadas entre dos puntos. */
+    const trazo = (x0: number, y0: number, x1: number, y1: number, r: number, fuerza = 1) => {
+      const d = Math.hypot(x1 - x0, y1 - y0);
+      const pasos = Math.max(1, Math.ceil(d / (r * 0.25)));
+      for (let i = 1; i <= pasos; i++) {
+        const t = i / pasos;
+        mancha(lerp(x0, x1, t), lerp(y0, y1, t), r, fuerza);
+      }
+    };
+
+    // Puntero local a la figura (suavizado) y estado.
+    let px = 0, py = 0, sx = 0, sy = 0, prevx = 0, prevy = 0;
+    let dentro = false;
+    let ultimaInteraccion = 0;
+    let velX = 0; // velocidad horizontal del trazo (px/cuadro)
+    let tapAbierto = false, tapR = 0, tapX = 0, tapY = 0;
+    let ultimoTipo = 'mouse';
+
+    const local = (cx: number, cy: number) => {
+      const b = fig.getBoundingClientRect();
+      const s = b.width / (fig.offsetWidth || 1);
+      return { lx: (cx - b.left) / s, ly: (cy - b.top) / s };
+    };
+
+    /* ───────────── Ráfagas automáticas ─────────────
+       Cada 3 s, si nadie interactúa, un «cursor fantasma» cruza el retrato
+       rápido de izquierda a derecha y vuelve (ida y vuelta, a veces una ida
+       más), como alguien pasando el mouse a toda velocidad. Hay dos tipos y
+       se alternan: uno a la altura del casco/rostro y otro sobre el traje.
+       Cada ida frena apenas en el giro; la curva sale de un spline por los
+       puntos de giro, así el recorrido se ve natural. */
+    type Pt = { x: number; y: number };
+    type Barrido = { pts: Pt[]; t0: number; tramo: number; r: number; prev: Pt | null };
+    let barrido: Barrido | null = null;
+    let proximaRafaga = performance.now() + 1500;
+    let tipoRafaga = Math.random() < 0.5 ? 0 : 1; // 0 = rostro, 1 = traje
+    const rafaga = (t: number) => {
+      const rostro = tipoRafaga === 0;
+      tipoRafaga = 1 - tipoRafaga;
+      const idas = Math.random() < 0.45 ? 3 : 2;
+      // franja vertical de cada tipo (fracción del alto de la figura)
+      const [yA, yB] = rostro ? [0.13, 0.3] : [0.38, 0.72];
+      const izq = Math.random() < 0.5;
+      const pts: Pt[] = [];
+      for (let i = 0; i <= idas; i++) {
+        const lado = (i % 2 === 0) === izq ? -1 : 1;
+        const x = W * (0.5 + lado * (0.62 + Math.random() * 0.1));
+        const y = H * (yA + (yB - yA) * (i / idas) + (Math.random() - 0.5) * 0.03);
+        pts.push({ x, y });
+      }
+      barrido = {
+        pts,
+        t0: t,
+        tramo: 210 + Math.random() * 70, // ms por ida: rápido
+        r: H * (rostro ? 0.11 + Math.random() * 0.03 : 0.13 + Math.random() * 0.04),
+        prev: null,
+      };
+    };
+    /** Catmull-Rom por los puntos de giro. */
+    const spline = (P: Pt[], seg: number, s: number): Pt => {
+      const p0 = P[Math.max(0, seg - 1)], p1 = P[seg], p2 = P[Math.min(P.length - 1, seg + 1)], p3 = P[Math.min(P.length - 1, seg + 2)];
+      const s2 = s * s, s3 = s2 * s;
+      const f = (a: number, b: number, c: number, d: number) =>
+        0.5 * (2 * b + (-a + c) * s + (2 * a - 5 * b + 4 * c - d) * s2 + (-a + 3 * b - 3 * c + d) * s3);
+      return { x: f(p0.x, p1.x, p2.x, p3.x), y: f(p0.y, p1.y, p2.y, p3.y) };
+    };
+
+    /* ───────────── Fondo que reacciona al mouse ───────────── */
+    let tmx = 0, tmy = 0, mx = 0, my = 0; // parallax −1…1
+    let spotX = -9999, spotY = -9999, tspotX = -9999, tspotY = -9999, spotA = 0, tspotA = 0;
+
+    raiz.addEventListener('pointermove', (e) => {
+      ultimoTipo = e.pointerType;
+      if (e.pointerType !== 'mouse' && e.pointerType !== 'pen') return;
+      const sb = stage.getBoundingClientRect();
+      tmx = ((e.clientX - sb.left) / sb.width - 0.5) * 2;
+      tmy = ((e.clientY - sb.top) / sb.height - 0.5) * 2;
+      tspotX = e.clientX - sb.left;
+      tspotY = e.clientY - sb.top;
+      if (spotA < 0.01) { spotX = tspotX; spotY = tspotY; }
+      tspotA = 1;
+      const { lx, ly } = local(e.clientX, e.clientY);
+      const ahora = lx > 0 && lx < W && ly > 0 && ly < H;
+      if (ahora && !dentro) { sx = prevx = px = lx; sy = prevy = py = ly; }
+      dentro = ahora;
+      px = lx;
+      py = ly;
+      ultimaInteraccion = performance.now();
+      despertar();
+    });
+    raiz.addEventListener('pointerleave', () => {
+      dentro = false;
+      tmx = tmy = 0;
+      tspotA = 0;
+      ultimaInteraccion = performance.now();
+      despertar();
+    });
+    raiz.addEventListener('pointerdown', (e) => { ultimoTipo = e.pointerType; });
+
+    // Táctil: tap abre la capa GR desde el punto tocado; otro tap la cierra.
+    fig.addEventListener('click', (e) => {
+      if (ultimoTipo === 'mouse') return;
+      const { lx, ly } = local(e.clientX, e.clientY);
+      tapAbierto = !tapAbierto;
+      if (tapAbierto) { tapX = lx; tapY = ly; tapR = 0; }
+      ultimaInteraccion = performance.now();
+      despertar();
+    });
+
+    let progreso = 0;
+    let visible = true;
+    let corriendo = false;
+    let espera = 0;
+    let tPrev = performance.now();
+    let energia = 0;
+
+    const medir = () => {
+      const b = raiz.getBoundingClientRect();
+      progreso = clamp(-b.top / (b.height || 1));
+      visible = b.bottom > 0 && b.top < innerHeight;
+    };
+
+    /** Campo → alfa con umbral rasgado; devuelve la energía restante. */
+    const pintarMascara = (t: number, dt: number) => {
+      // Con el cursor encima (y hasta ~0,5 s después) se apaga despacio: pasando
+      // el mouse se llega a ver el traje GR completo. Las ráfagas automáticas
+      // se disuelven rápido, como en la referencia.
+      // Como en la referencia: el trazo dura poco (~0,4 s) y se va LIMPIO.
+      const caida = Math.pow(tapAbierto ? 1 : 0.94, dt);
+      // Arrastre horizontal (estela «líquida» en la dirección del movimiento).
+      const corr = Math.max(-4, Math.min(4, Math.round((velX * 0.35) / CELDA)));
+      velX *= Math.pow(0.85, dt);
+      if (corr !== 0) {
+        for (let j = 0; j < gh; j++) {
+          const fila = campo.subarray(j * gw, (j + 1) * gw);
+          if (corr > 0) { fila.copyWithin(corr, 0, gw - corr); fila.fill(0, 0, corr); }
+          else { fila.copyWithin(0, -corr); fila.fill(0, gw + corr); }
+        }
+      }
+      const d = img.data;
+      const tt = t * 0.00035;
+      let max = 0;
+      for (let j = 0; j < gh; j++) {
+        for (let i = 0; i < gw; i++) {
+          const k = j * gw + i;
+          let v = campo[k];
+          if (v < 0.004) { campo[k] = 0; d[k * 4 + 3] = 0; continue; }
+          v *= caida;
+          campo[k] = v;
+          if (v > max) max = v;
+          // ruido estirado en horizontal (vetas de pincel) + uno fino
+          // Vetas HORIZONTALES (casi constantes a lo ancho): al apagarse, la
+          // mancha se parte en cintas finas de borde nítido que se afinan y
+          // desaparecen, en lugar de granularse.
+          const n = ruido(i * 0.01 + tt, j * 0.11 + tt * 0.5) * 0.75 + ruido(i * 0.025 - tt * 2, j * 0.3) * 0.25;
+          const a = clamp((v - 0.28 + (n - 0.5) * 0.6) / 0.03);
+          d[k * 4 + 3] = (a * 255) | 0;
+        }
+      }
+      mctx.putImageData(img, 0, 0);
+      return max;
+    };
+
+    const cuadro = (t: number) => {
+      corriendo = false;
+      const dt = Math.min(3, (t - tPrev) / 16.67);
+      tPrev = t;
+      medir();
+      if (W !== fig.offsetWidth || H !== fig.offsetHeight) dimensionar();
+
+      // ── cursor: pinta a lo largo del recorrido ──
+      const activo = fino && dentro;
+      if (activo) {
+        sx = lerp(sx, px, 0.4 * dt);
+        sy = lerp(sy, py, 0.4 * dt);
+        const vel = Math.hypot(sx - prevx, sy - prevy);
+        const r = H * (0.15 + Math.min(vel / 600, 0.05));
+        velX = lerp(velX, sx - prevx, 0.5);
+        trazo(prevx, prevy, sx, sy, r, 1);
+        if (vel < 0.5) mancha(sx, sy, r * 0.9, 0.85); // quieto: se sostiene, más chico
+        prevx = sx;
+        prevy = sy;
+      }
+
+      // ── ráfaga automática cada 3 s (alterna rostro / traje) ──
+      if (!activo && !tapAbierto && visible && progreso < 0.5 && !barrido && t > proximaRafaga && t - ultimaInteraccion > 1500) {
+        rafaga(t);
+        proximaRafaga = t + 3000;
+      }
+      if (barrido) {
+        const z = barrido;
+        if (activo) barrido = null; // el usuario toma el control
+        else {
+          const tramos = z.pts.length - 1;
+          const e = (t - z.t0) / z.tramo; // en «idas»
+          const seg = Math.min(tramos - 1, Math.floor(e));
+          const loc = clamp(e - seg);
+          const s = loc < 0.5 ? 2 * loc * loc : 1 - Math.pow(-2 * loc + 2, 2) / 2; // frena en los giros
+          const q = spline(z.pts, seg, s);
+          if (z.prev) { velX = lerp(velX, q.x - z.prev.x, 0.5); trazo(z.prev.x, z.prev.y, q.x, q.y, z.r, 1); }
+          z.prev = q;
+          if (e >= tramos) barrido = null;
+        }
+      }
+
+      // ── tap (táctil) ──
+      if (tapAbierto) {
+        tapR = lerp(tapR, Math.hypot(W, H) * 1.1, 0.08 * dt);
+        mancha(tapX, tapY, tapR, 1);
+      }
+
+      energia = W > 0 ? pintarMascara(t, dt) : 0;
+      const hayMascara = energia > 0.004;
+
+      // Composición: máscara (escalada, suave) → «source-in» con la imagen GR.
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.clearRect(0, 0, lienzo.width, lienzo.height);
+      if (hayMascara && fuente.complete && fuente.naturalWidth) {
+        ctx.imageSmoothingEnabled = true;
+        ctx.drawImage(mascara, 0, 0, lienzo.width, lienzo.height);
+        ctx.globalCompositeOperation = 'source-in';
+        ctx.drawImage(fuente, 0, 0, lienzo.width, lienzo.height);
+        ctx.globalCompositeOperation = 'source-over';
+      }
+
+      // ── fondo: luz y grilla siguen al mouse, discreto ──
+      spotX = lerp(spotX, tspotX, 0.12 * dt);
+      spotY = lerp(spotY, tspotY, 0.12 * dt);
+      spotA = lerp(spotA, tspotA, 0.08 * dt);
+      stage.style.setProperty('--hh-sx', `${spotX.toFixed(1)}px`);
+      stage.style.setProperty('--hh-sy', `${spotY.toFixed(1)}px`);
+      stage.style.setProperty('--hh-sa', spotA.toFixed(3));
+
+      // ── parallax de capas + salida con scroll ──
+      mx = lerp(mx, tmx, 0.07 * dt);
+      my = lerp(my, tmy, 0.07 * dt);
+      stage.style.setProperty('--hh-gx', `${(mx * 6).toFixed(2)}%`);
+      stage.style.setProperty('--hh-gy', `${(my * 5).toFixed(2)}%`);
+      const p = progreso;
+      if (back) back.style.transform = `translate3d(${(-mx * 14).toFixed(2)}px, ${(-my * 8 - p * 120).toFixed(2)}px, 0)`;
+      if (figura)
+        figura.style.transform = `translate3d(calc(-50% + ${(mx * 12).toFixed(2)}px), ${(my * 6 + p * 80).toFixed(2)}px, 0) scale(${(1 + p * 0.06).toFixed(4)})`;
+      stage.style.transform = `scale(${(1 - p * 0.08).toFixed(4)})`;
+      stage.style.clipPath = p > 0.001 ? `inset(0 round ${Math.min(40, p * 160).toFixed(1)}px)` : '';
+      stage.style.opacity = String(1 - clamp((p - 0.55) / 0.45) * 0.6);
+
+      if (video) {
+        if (visible && video.paused) video.play().catch(() => {});
+        else if (!visible && !video.paused) video.pause();
+      }
+
+      // ¿Queda algo por animar? Si no, dormir hasta la próxima ráfaga.
+      const quieto =
+        !hayMascara && !barrido && !activo && !tapAbierto &&
+        Math.abs(mx - tmx) < 0.002 && Math.abs(my - tmy) < 0.002 &&
+        Math.abs(spotA - tspotA) < 0.005 && Math.abs(spotX - tspotX) < 0.5 && Math.abs(spotY - tspotY) < 0.5;
+      if (!quieto) despertar();
+      else if (visible) {
+        clearTimeout(espera);
+        espera = window.setTimeout(despertar, Math.max(200, proximaRafaga - performance.now()));
+      }
+    };
+
+    function despertar() {
+      if (corriendo) return;
+      corriendo = true;
+      requestAnimationFrame(cuadro);
+    }
+
+    dimensionar();
+    addEventListener('scroll', despertar, { passive: true });
+    addEventListener('resize', () => { dimensionar(); despertar(); });
+    despertar();
+  } else if (video && reduce) {
+    video.pause();
+  }
+</script>

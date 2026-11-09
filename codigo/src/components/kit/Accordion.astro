@@ -1,0 +1,208 @@
+---
+/**
+ * kit/Accordion.astro — details/summary FAQ accordion, 300ms animated
+ * max-height (Robbins §8). Usage: <Accordion items={[{ q: '¿...?', a: '...' }]} />
+ */
+interface AccordionItem {
+  q: string;
+  a: string;
+}
+
+interface Props {
+  items: AccordionItem[];
+  class?: string;
+}
+
+const { items, class: className = '' } = Astro.props;
+---
+
+<div class:list={['kit-accordion', className]}>
+  {
+    items.map((item, i) => (
+      <details class="kit-accordion__item" data-index={i}>
+        <summary class="kit-accordion__trigger">
+          <span class="kit-accordion__question">{item.q}</span>
+          <svg
+            class="kit-accordion__chevron"
+            viewBox="0 0 24 24"
+            width="16"
+            height="16"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            aria-hidden="true"
+          >
+            <polyline points="6 9 12 15 18 9" />
+          </svg>
+        </summary>
+        <div class="kit-accordion__panel">
+          <div class="kit-accordion__panel-inner">{item.a}</div>
+        </div>
+      </details>
+    ))
+  }
+</div>
+
+<style>
+  .kit-accordion {
+    display: flex;
+    flex-direction: column;
+  }
+  .kit-accordion__item {
+    border-bottom: 1px solid color-mix(in srgb, currentColor 12%, transparent);
+  }
+  .kit-accordion__item:first-child {
+    border-top: 1px solid color-mix(in srgb, currentColor 12%, transparent);
+  }
+  .kit-accordion__trigger {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 22px 4px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
+  }
+  .kit-accordion__trigger::-webkit-details-marker {
+    display: none;
+  }
+  /* subrayado que se dibuja de izquierda a derecha */
+  .kit-accordion__question {
+    background: linear-gradient(currentColor, currentColor) 0 100% / 0% 1px no-repeat;
+    transition: background-size 0.6s var(--ease-expo, cubic-bezier(0.16, 1, 0.3, 1));
+  }
+  .kit-accordion__trigger:hover .kit-accordion__question,
+  .kit-accordion__trigger:focus-visible .kit-accordion__question {
+    background-size: 100% 1px;
+  }
+  .kit-accordion__chevron {
+    flex-shrink: 0;
+    transition: transform 0.6s var(--ease-expo, cubic-bezier(0.16, 1, 0.3, 1));
+  }
+  .kit-accordion__item[open] .kit-accordion__chevron {
+    transform: rotate(180deg);
+  }
+  /* sin max-height en CSS: sin JS, <details> abre y cierra nativo y el
+     contenido se ve; el JS pone el max-height inline para animar. */
+  .kit-accordion__panel {
+    overflow: hidden;
+    transition: max-height 0.6s var(--ease-expo, cubic-bezier(0.16, 1, 0.3, 1));
+  }
+  .kit-accordion__panel-inner {
+    padding: 0 4px 22px;
+    font-size: 15px;
+    line-height: 1.6;
+    opacity: 0.75;
+  }
+  /* el contenido entra subiendo y se va antes de que el panel se cierre */
+  :global(html.mo) .kit-accordion__panel-inner {
+    opacity: 0;
+    translate: 0 12px;
+    transition:
+      opacity 0.3s linear,
+      translate 0.6s var(--ease-expo, cubic-bezier(0.16, 1, 0.3, 1));
+  }
+  :global(html.mo) .kit-accordion__item.is-expanded .kit-accordion__panel-inner {
+    opacity: 0.75;
+    translate: none;
+    transition-delay: 0.12s;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .kit-accordion__panel,
+    .kit-accordion__chevron {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  // One shared resize listener for every accordion on the page (not one
+  // per item) — recalculates max-height only for panels currently open.
+  const openPanels = new Set<HTMLElement>();
+  window.addEventListener('resize', () => {
+    openPanels.forEach((panel) => {
+      panel.style.maxHeight = `${panel.scrollHeight}px`;
+    });
+  });
+
+  const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function wire(details: HTMLDetailsElement) {
+    const summary = details.querySelector('summary');
+    const panel = details.querySelector<HTMLElement>('.kit-accordion__panel');
+    if (!summary || !panel) return;
+
+    // Tracks the in-flight transitionend handler so a rapid re-click can
+    // cancel the previous one instead of leaving a stale listener that
+    // fires later and snaps the panel back to the wrong state.
+    let pendingOnEnd: ((ev: TransitionEvent) => void) | null = null;
+
+    if (details.open) {
+      details.classList.add('is-expanded');
+      panel.style.maxHeight = `${panel.scrollHeight}px`;
+      openPanels.add(panel);
+    } else {
+      panel.style.maxHeight = '0px';
+    }
+
+    summary.addEventListener('click', (e) => {
+      e.preventDefault();
+      const isOpen = details.open;
+      if (reducedMotion) {
+        // sin transición no hay transitionend: abrir/cerrar directo
+        details.open = !isOpen;
+        details.classList.toggle('is-expanded', !isOpen);
+        panel.style.maxHeight = isOpen ? '0px' : 'none';
+        if (isOpen) openPanels.delete(panel);
+        return;
+      }
+
+      if (pendingOnEnd) {
+        panel.removeEventListener('transitionend', pendingOnEnd);
+        pendingOnEnd = null;
+      }
+
+      if (isOpen) {
+        // Closing: freeze current height, then collapse on the next frame.
+        openPanels.delete(panel);
+        details.classList.remove('is-expanded');
+        panel.style.maxHeight = `${panel.scrollHeight}px`;
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            panel.style.maxHeight = '0px';
+          });
+        });
+        const onEnd = (ev: TransitionEvent) => {
+          if (ev.propertyName !== 'max-height') return;
+          details.open = false;
+          panel.removeEventListener('transitionend', onEnd);
+          pendingOnEnd = null;
+        };
+        pendingOnEnd = onEnd;
+        panel.addEventListener('transitionend', onEnd);
+      } else {
+        // Opening: mount content, then animate from 0 to its real height.
+        details.open = true;
+        details.classList.add('is-expanded');
+        panel.style.maxHeight = '0px';
+        void panel.offsetHeight; // force reflow
+        requestAnimationFrame(() => {
+          panel.style.maxHeight = `${panel.scrollHeight}px`;
+        });
+        const onEnd = (ev: TransitionEvent) => {
+          if (ev.propertyName !== 'max-height') return;
+          panel.style.maxHeight = 'none'; // let content reflow (e.g. resize) freely while open
+          panel.removeEventListener('transitionend', onEnd);
+          pendingOnEnd = null;
+          openPanels.add(panel);
+        };
+        pendingOnEnd = onEnd;
+        panel.addEventListener('transitionend', onEnd);
+      }
+    });
+  }
+
+  document.querySelectorAll<HTMLDetailsElement>('.kit-accordion__item').forEach(wire);
+</script>

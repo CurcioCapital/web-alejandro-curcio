@@ -1,0 +1,646 @@
+---
+/**
+ * FacetasCarousel3D.astro — the six facetas as a rotating 3D cylinder of
+ * vertical media cards (chapter 2, the dark stage of the Home v2 film).
+ *
+ * The six cards stand in a circle (rotateY every 360/n degrees, pushed out
+ * translateZ(--radius)); the whole ring rotates so one card faces front.
+ * A radial stage light glows behind the cylinder; the front card is
+ * "active" — it plays its lazily-hydrated video (muted/loop) or runs a
+ * slow Ken Burns zoom when the faceta only has a photo, gets the cobalt
+ * glow + rim, and tilts up to 4° toward the cursor. Side cards are dimmed:
+ * the hierarchy is made by the light. The ring advances on its own every
+ * 5000ms (the page's single heartbeat), pauses on hover, and side cards
+ * can be clicked to bring them to the front.
+ *
+ * Scroll machinery (easings, scrollProgress, assistedSnap) lives in
+ * src/scripts/motion.ts. The entrance is scrubbed by the scrollbar via
+ * --f3d-p (0..1), exposed BOTH on the .f3d root and on the anchor element
+ * so the section intro (title/lead/hint in index.astro) can derive its
+ * own reveal from the same timeline. Auto-rotation and video playback
+ * stop while the carousel is off-screen and under prefers-reduced-motion
+ * (static posters, no tilt, no sweep).
+ */
+interface Facet {
+  index: string;
+  word: string;
+  quote: string;
+  quoteSource: string;
+  exploreLabel: string;
+  exploreHref: string;
+  videoSrc?: string;
+  poster?: string;
+  photoSrc?: string;
+  alt: string;
+  /**
+   * Encuadre del media dentro de la tarjeta (object-position). Default
+   * centrado. Hace falta cuando el sujeto NO está en el centro vertical:
+   * la tarjeta activa llega a ratio 0.65 contra 0.56 del archivo, así que
+   * `cover` recorta arriba y abajo, y con la cabeza en el tercio superior
+   * queda al filo. Ej: \"50% 25%\".
+   */
+  focus?: string;
+}
+
+interface Props {
+  facets: Facet[];
+  /** Selector of the element the scroll math anchors on (e.g. the whole
+   *  facetas <section>, so the assisted snap lands with the section title
+   *  at the top of the screen). Defaults to this carousel itself. */
+  anchor?: string;
+}
+
+const { facets, anchor } = Astro.props;
+const step = 360 / facets.length;
+---
+
+<div class="f3d" data-f3d data-anchor={anchor} style={`--step:${step}deg`}>
+  <div class="f3d-stage">
+    <div class="f3d-ring" data-ring>
+      {
+        facets.map((f, i) => (
+          <article
+            class={`f3d-card${i === 0 ? ' is-active' : ''}`}
+            data-card
+            style={`--i:${i}`}
+          >
+            {f.videoSrc ? (
+              <video
+                class="f3d-media"
+                data-src={f.videoSrc}
+                poster={f.poster}
+                muted
+                loop
+                playsinline
+                preload="none"
+                disablepictureinpicture
+                disableremoteplayback
+                aria-label={f.alt}
+                style={f.focus ? `object-position:${f.focus}` : undefined}
+              />
+            ) : (
+              <img
+                class="f3d-media f3d-media--photo"
+                src={f.photoSrc}
+                alt={f.alt}
+                loading="lazy"
+                style={f.focus ? `object-position:${f.focus}` : undefined}
+              />
+            )}
+            <span class="f3d-scrim" aria-hidden="true" />
+            <span class="f3d-idx">{f.index}</span>
+            <div class="f3d-copy">
+              <span class="f3d-word">{f.word}</span>
+              <blockquote class="f3d-quote">
+                <p>«{f.quote}»</p>
+                <cite>{f.quoteSource}</cite>
+              </blockquote>
+              <a class="f3d-explore" href={f.exploreHref}>
+                {f.exploreLabel}
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <line x1="5" y1="12" x2="19" y2="12" />
+                  <polyline points="12 5 19 12 12 19" />
+                </svg>
+              </a>
+            </div>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+
+  <div class="f3d-nav">
+    <button class="f3d-arrow" data-prev aria-label="Faceta anterior">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <line x1="19" y1="12" x2="5" y2="12" /><polyline points="12 19 5 12 12 5" />
+      </svg>
+    </button>
+    <div class="f3d-dots">
+      {
+        facets.map((f, i) => (
+          <button
+            class={`f3d-dot${i === 0 ? ' is-on' : ''}`}
+            data-dot
+            aria-label={`Ir a la faceta ${f.word}`}
+          />
+        ))
+      }
+    </div>
+    <button class="f3d-arrow" data-next aria-label="Siguiente faceta">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" />
+      </svg>
+    </button>
+  </div>
+</div>
+
+<style>
+  .f3d {
+    --card-w: clamp(300px, 34vw, 480px);
+    /* fill the viewport under the compact section intro when snapped */
+    --card-h: clamp(440px, calc(100dvh - 340px), 780px);
+    /* radius of the cylinder: (w/2) / tan(180°/6) ≈ w * 0.866, plus breathing room */
+    --radius: calc(var(--card-w) * 0.87 + 84px);
+    margin-top: 24px;
+  }
+
+  .f3d-stage {
+    position: relative;
+    height: calc(var(--card-h) + 40px);
+    display: grid;
+    place-items: center;
+    perspective: 2000px;
+    overflow: visible;
+    /* scroll-driven entrance: --f3d-p is the scroll progress (0..1) into
+       the section, set by JS (on this root AND on the anchor element, so
+       the section intro can derive its reveal from the same timeline).
+       The stage rises and fades in lockstep with the user's scroll (and
+       reverses if they scroll back up); the ring sweep is applied from JS
+       in applyRing(). No time-based transition — the scrollbar IS the
+       timeline. */
+    opacity: var(--f3d-p, 1);
+    transform: translateY(calc((1 - var(--f3d-p, 1)) * 72px));
+  }
+  /* Stage light: a cobalt radial behind the cylinder. */
+  .f3d-stage::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(60% 50% at 50% 42%, rgb(var(--accent-rgb) / 0.14), transparent 70%);
+    pointer-events: none;
+  }
+  .f3d-nav {
+    opacity: var(--f3d-p, 1);
+  }
+
+  .f3d-ring {
+    position: relative;
+    width: var(--card-w);
+    height: var(--card-h);
+    transform-style: preserve-3d;
+    transform: translateZ(calc(-1 * var(--radius)));
+    transition: transform var(--dur-xl) var(--ease-inout);
+  }
+
+  .f3d-card {
+    position: absolute;
+    inset: 0;
+    border-radius: var(--radius-object);
+    overflow: hidden;
+    background: var(--color-black-2);
+    border: 1px solid transparent;
+    transform: rotateY(calc(var(--i) * var(--step))) translateZ(var(--radius));
+    box-shadow: var(--shadow-object);
+    cursor: pointer;
+    /* the hierarchy is made by the light: off-center cards sit in the dark */
+    filter: brightness(0.55) saturate(0.85);
+    transition: filter var(--dur-lg) var(--ease-out);
+  }
+  .f3d-card.is-active {
+    filter: none;
+    cursor: default;
+    /* stage glow + borde del acento (--accent-rgb @ .35 / .22) */
+    border-color: rgb(var(--accent-rgb) / 0.35);
+    box-shadow: 0 0 90px rgba(46, 82, 255, 0.22);
+    /* cursor tilt: --tilt-x/--tilt-y set from JS, max 4° per axis */
+    transform: rotateY(calc(var(--i) * var(--step))) translateZ(var(--radius))
+      rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg));
+    transition:
+      filter var(--dur-lg) var(--ease-out),
+      transform 400ms var(--ease-out),
+      box-shadow var(--dur-lg) var(--ease-out),
+      border-color var(--dur-lg) var(--ease-out);
+  }
+
+  .f3d-media {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .f3d-card.is-active .f3d-media--photo {
+    animation: f3d-kenburns 14s ease-in-out infinite alternate;
+  }
+  @keyframes f3d-kenburns {
+    from {
+      transform: scale(1);
+    }
+    to {
+      transform: scale(1.14);
+    }
+  }
+
+  .f3d-scrim {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    /* ink scrim (rgba(8,9,15,x)), never pure black */
+    background: linear-gradient(
+      to top,
+      rgba(10, 8, 5, 0.86),
+      rgba(10, 8, 5, 0.25) 46%,
+      transparent 70%
+    );
+    pointer-events: none;
+  }
+
+  .f3d-idx {
+    position: absolute;
+    top: 18px;
+    left: 20px;
+    z-index: 2;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--ink-mid);
+  }
+
+  .f3d-copy {
+    position: absolute;
+    left: 22px;
+    right: 22px;
+    bottom: 20px;
+    z-index: 2;
+    color: var(--color-white);
+  }
+  /* The typographic mass of the chapter lives here, not in the section
+     title: faceta word in Archivo 700 stretch 110%. */
+  .f3d-word {
+    display: block;
+    font-family: var(--font-heading);
+    font-size: var(--text-facet-word);
+    font-weight: 700;
+    font-stretch: 100%;
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+  }
+  .f3d-quote,
+  .f3d-explore {
+    opacity: 0;
+    transform: translateY(8px);
+    transition:
+      opacity var(--dur-md) var(--ease-out) 250ms,
+      transform var(--dur-md) var(--ease-out) 250ms;
+  }
+  .f3d-card.is-active .f3d-quote,
+  .f3d-card.is-active .f3d-explore {
+    opacity: 1;
+    transform: none;
+  }
+  .f3d-quote {
+    margin: 12px 0 16px;
+  }
+  /* Cita en la sans, no en serif itálica: una cita verbatim en cursiva
+     serif es el lenguaje de las placas motivacionales, justo el registro
+     que el proyecto evita. La serif queda para la voz editorial. */
+  .f3d-quote p {
+    margin: 0;
+    font-family: var(--font-body);
+    font-size: var(--text-facet-quote);
+    font-style: normal;
+    font-weight: 450;
+    line-height: 1.4;
+    letter-spacing: -0.015em;
+    color: var(--ink-hi);
+  }
+  .f3d-quote cite {
+    display: block;
+    margin-top: 8px;
+    font-family: var(--font-body);
+    font-size: 11px;
+    font-style: normal;
+    font-weight: 600;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--ink-low);
+  }
+  .f3d-explore {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-white);
+    text-decoration: none;
+  }
+  .f3d-explore svg {
+    transition: transform var(--dur-sm) var(--ease-out);
+  }
+  .f3d-explore:hover svg {
+    transform: translateX(4px);
+  }
+
+  /* ---------- nav ---------- */
+  .f3d-nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 12px;
+  }
+  .f3d-arrow {
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    border: 1px solid var(--ink-low);
+    border-radius: 50%;
+    background: transparent;
+    color: var(--ink-hi);
+    cursor: pointer;
+    transition:
+      background var(--dur-sm) var(--ease-out),
+      color var(--dur-sm) var(--ease-out);
+  }
+  .f3d-arrow:hover {
+    background: var(--color-white);
+    color: var(--color-ink);
+  }
+  .f3d-dots {
+    display: flex;
+    gap: 8px;
+  }
+  .f3d-dot {
+    width: 8px;
+    height: 8px;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background: var(--ink-low);
+    cursor: pointer;
+    transition:
+      background var(--dur-sm) var(--ease-out),
+      transform var(--dur-sm) var(--ease-out);
+  }
+  .f3d-dot.is-on {
+    background: var(--color-white);
+    transform: scale(1.35);
+  }
+
+  @media (max-width: 720px) {
+    .f3d {
+      --card-w: min(72vw, 300px);
+      --card-h: min(120vw, calc(100dvh - 280px));
+      --radius: calc(var(--card-w) * 0.87 + 40px);
+    }
+    .f3d-stage {
+      perspective: 1100px;
+    }
+  }
+
+  /* PRM: no transforms, no autoplay (JS gates on the same query), no
+     tilt, no sweep; the copy fades within the 200ms systemic cap. */
+  @media (prefers-reduced-motion: reduce) {
+    .f3d-ring,
+    .f3d-card,
+    .f3d-card.is-active {
+      transition: none;
+    }
+    .f3d-card.is-active {
+      transform: rotateY(calc(var(--i) * var(--step))) translateZ(var(--radius));
+    }
+    .f3d-card.is-active .f3d-media--photo {
+      animation: none;
+    }
+    .f3d-stage,
+    .f3d-nav {
+      opacity: 1;
+      transform: none;
+    }
+    .f3d-quote,
+    .f3d-explore {
+      transform: none;
+      transition: opacity 200ms linear;
+    }
+    .f3d-explore svg {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  import { assistedSnap, easeOutQuint, scrollProgress } from '../../../scripts/motion';
+
+  document.querySelectorAll<HTMLElement>('[data-f3d]').forEach((root) => {
+    const ring = root.querySelector<HTMLElement>('[data-ring]')!;
+    const cards = Array.from(root.querySelectorAll<HTMLElement>('[data-card]'));
+    const dots = Array.from(root.querySelectorAll<HTMLElement>('[data-dot]'));
+    // Cached once — applyCards() never re-queries the DOM.
+    const videos = cards.map((card) => card.querySelector('video'));
+    const n = cards.length;
+    const step = 360 / n;
+    const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // Entrance sweep: how far the ring sits rotated away at progress 0.
+    const sweepMax = -2.5 * step;
+
+    let idx = 0;
+    // Cumulative rotation so the ring always keeps spinning the same way
+    // instead of rewinding when it wraps past the last card.
+    let rot = 0;
+    // Scroll progress (0..1) from "section entering the viewport" to
+    // "carousel fully on stage". The scrollbar drives the entrance.
+    let p = reduced ? 1 : 0;
+    let timer: ReturnType<typeof setInterval> | null = null;
+    let inView = false;
+
+    // ---------- lazy video hydration (data-src → src) ----------
+    // Only the active card and its two neighbours ever get a src (max 2-3
+    // media decoding); the neighbours are assigned during idle time so
+    // the turn itself stays smooth. Under PRM the posters are the media.
+    const idle: (cb: () => void) => void =
+      'requestIdleCallback' in window ? (cb) => requestIdleCallback(cb) : (cb) => setTimeout(cb, 300);
+    function hydrate(i: number) {
+      const v = videos[((i % n) + n) % n];
+      if (v && !v.src && v.dataset.src) v.src = v.dataset.src;
+    }
+    function hydrateAround() {
+      if (reduced || !inView) return;
+      hydrate(idx);
+      idle(() => {
+        hydrate(idx + 1);
+        hydrate(idx - 1);
+      });
+    }
+
+    // ---------- apply, split ----------
+    // The scroll scrub only moves the ring; card activation/playback only
+    // runs on turns and visibility changes — no redundant work per frame.
+    function applyRing() {
+      ring.style.transform = `translateZ(calc(-1 * var(--radius))) rotateY(${rot + sweepMax * (1 - easeOutQuint(p))}deg)`;
+    }
+    function applyCards() {
+      cards.forEach((card, i) => {
+        const active = i === idx;
+        card.classList.toggle('is-active', active);
+        const video = videos[i];
+        if (video) {
+          if (active && inView && !reduced) {
+            if (video.paused) video.play().catch(() => {});
+          } else if (!video.paused) video.pause();
+        }
+      });
+      dots.forEach((dot, i) => dot.classList.toggle('is-on', i === idx));
+    }
+
+    function go(delta: number) {
+      idx = (idx + delta + n) % n;
+      rot -= step * delta;
+      resetTilt();
+      hydrateAround();
+      applyRing();
+      applyCards();
+    }
+
+    function goTo(target: number) {
+      // rotate via the shortest arc
+      let delta = target - idx;
+      if (delta > n / 2) delta -= n;
+      if (delta < -n / 2) delta += n;
+      if (delta) go(delta);
+    }
+
+    function start() {
+      if (reduced || timer || p < 1) return;
+      // 5000ms — the page's single auto-advance heartbeat.
+      timer = setInterval(() => go(1), 5000);
+    }
+    function stop() {
+      if (timer) clearInterval(timer);
+      timer = null;
+    }
+    // Manual navigation resets the heartbeat: the freshly chosen card gets
+    // its full 5000ms before the auto-advance moves on (otherwise a click
+    // lands mid-interval and the pending tick yanks the carousel almost
+    // immediately — the "clicked and it moved on" bug).
+    function restart() {
+      stop();
+      start();
+    }
+
+    root.querySelector('[data-prev]')?.addEventListener('click', () => {
+      go(-1);
+      restart();
+    });
+    root.querySelector('[data-next]')?.addEventListener('click', () => {
+      go(1);
+      restart();
+    });
+    dots.forEach((dot, i) =>
+      dot.addEventListener('click', () => {
+        goTo(i);
+        restart();
+      })
+    );
+
+    cards.forEach((card, i) =>
+      card.addEventListener('click', (e) => {
+        if (i === idx) return; // active card: let its "Explorar" link work
+        e.preventDefault();
+        goTo(i);
+        restart();
+      })
+    );
+
+    // Auto-advance only while visible; pause the spin (not the video) on hover.
+    root.addEventListener('pointerenter', stop);
+    root.addEventListener('pointerleave', () => inView && start());
+
+    // ---------- tilt: the active card leans toward the cursor ----------
+    // rotateX/rotateY max 4° per axis, eased by the 400ms --ease-out
+    // transition on .is-active. rAF-throttled; disabled under PRM.
+    let tiltRaf = 0;
+    let px = 0;
+    let py = 0;
+    function resetTilt() {
+      root.style.setProperty('--tilt-x', '0deg');
+      root.style.setProperty('--tilt-y', '0deg');
+    }
+    if (!reduced) {
+      root.addEventListener('pointermove', (e) => {
+        px = e.clientX;
+        py = e.clientY;
+        if (tiltRaf) return;
+        tiltRaf = requestAnimationFrame(() => {
+          tiltRaf = 0;
+          const r = cards[idx].getBoundingClientRect();
+          if (!r.width || !r.height) return;
+          const cl = (v: number) => Math.max(-0.5, Math.min(0.5, v));
+          const nx = cl((px - r.left) / r.width - 0.5);
+          const ny = cl((py - r.top) / r.height - 0.5);
+          // ±0.5 across the card → ±4°; X leans toward the cursor.
+          root.style.setProperty('--tilt-x', `${(-ny * 8).toFixed(2)}deg`);
+          root.style.setProperty('--tilt-y', `${(nx * 8).toFixed(2)}deg`);
+        });
+      });
+      root.addEventListener('pointerleave', resetTilt);
+    }
+
+    // The scroll math anchors on `anchor` (the whole facetas section when
+    // provided) so the assisted snap lands with the section title at the
+    // top of the screen and the carousel filling the rest.
+    const anchor =
+      (root.dataset.anchor && document.querySelector<HTMLElement>(root.dataset.anchor)) || root;
+
+    // Assisted snap: the user starts the move, the page finishes it
+    // (machinery in motion.ts; armed per scroll event below).
+    const snap = assistedSnap(anchor, () => p);
+
+    // --f3d-p lives on the root AND on the anchor element, so the section
+    // intro (title/lead/hint) can derive its reveal from the same
+    // timeline — one timeline owns the chapter.
+    function setProgressVar(value: string) {
+      root.style.setProperty('--f3d-p', value);
+      if (anchor !== root) anchor.style.setProperty('--f3d-p', value);
+    }
+
+    // Scroll-driven entrance: p maps the anchor's travel from "entering
+    // at the bottom of the viewport" (p=0) to "aligned with the top"
+    // (p=1) onto the sweep + fade (quint shaping — the exact JS mirror of
+    // cubic-bezier(0.22,1,0.36,1)). While scrubbing (p < 1) the ring
+    // transition is off so the rotation tracks the scrollbar 1:1; at
+    // p = 1 it comes back for the card-to-card turns and auto-advance.
+    // The progress work is rAF-throttled: one update per frame.
+    let scrollRaf = 0;
+    function onScroll() {
+      if (reduced) return;
+      snap.arm();
+      if (scrollRaf) return;
+      scrollRaf = requestAnimationFrame(() => {
+        scrollRaf = 0;
+        const np = scrollProgress(anchor);
+        if (np === p) return;
+        const wasSettled = p >= 1;
+        p = np;
+        setProgressVar(p.toFixed(3));
+        ring.style.transition = p < 1 ? 'none' : '';
+        applyRing();
+        if (p >= 1 && !wasSettled && inView) start();
+        else if (p < 1 && wasSettled) stop();
+      });
+    }
+
+    new IntersectionObserver(
+      ([entry]) => {
+        inView = entry.isIntersecting;
+        if (inView) {
+          start();
+          hydrateAround();
+          applyCards();
+        } else {
+          stop();
+          videos.forEach((v) => v && !v.paused && v.pause());
+        }
+      },
+      { threshold: 0.2 }
+    ).observe(root);
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll, { passive: true });
+    setProgressVar(reduced ? '1' : '0');
+    onScroll();
+    applyRing();
+    applyCards();
+  });
+</script>

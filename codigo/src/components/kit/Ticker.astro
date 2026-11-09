@@ -1,0 +1,124 @@
+---
+/**
+ * kit/Ticker.astro — CSS marquee strip, pause on hover, content duplicated
+ * for a seamless loop. Usage: <Ticker speed={26}><span>El País</span>
+ * <span>Forbes</span>...</Ticker>
+ */
+interface Props {
+  speed?: number; // seconds for one full loop
+  gap?: number; // px between items
+  pauseOnHover?: boolean;
+  class?: string;
+}
+
+const { speed = 28, gap = 56, pauseOnHover = true, class: className = '' } = Astro.props;
+---
+
+<div
+  class:list={['kit-ticker', pauseOnHover && 'kit-ticker--pause-hover', className]}
+  style={`--kit-ticker-speed:${(speed / 2.4).toFixed(2)}s; --kit-ticker-gap:${gap}px`}
+>
+  <div class="kit-ticker__track">
+    <div class="kit-ticker__group">
+      <slot />
+    </div>
+    <div class="kit-ticker__group" aria-hidden="true">
+      <slot />
+    </div>
+  </div>
+</div>
+
+<style>
+  .kit-ticker {
+    overflow: hidden;
+    width: 100%;
+    mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+  }
+  .kit-ticker__track {
+    display: flex;
+    width: max-content;
+    animation: kit-ticker-scroll var(--kit-ticker-speed, 28s) linear infinite;
+  }
+  .kit-ticker--pause-hover:hover .kit-ticker__track {
+    animation-play-state: paused;
+  }
+  .kit-ticker__group {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    gap: var(--kit-ticker-gap, 56px);
+    padding-right: var(--kit-ticker-gap, 56px);
+  }
+  @keyframes kit-ticker-scroll {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+  /* con JS + motion, el loop lo maneja el script (reactivo al scroll) */
+  .kit-ticker.is-js .kit-ticker__track {
+    animation: none;
+    will-change: transform;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .kit-ticker__track {
+      animation: none;
+    }
+  }
+</style>
+
+<script>
+  // Con motion activo (html.mo) el loop CSS se reemplaza por uno en JS que
+  // reacciona al scroll como las marquesinas de landonorris.com: la
+  // velocidad de scroll lo acelera y la dirección lo invierte; en hover
+  // frena suave hasta parar (si pauseOnHover). Fuera de pantalla o con la
+  // pestaña oculta no calcula nada. Sin JS queda la animación CSS; con
+  // reduced-motion, estático.
+  type MotionWin = Window & { __motion?: { state: { velocity: number; direction: 1 | -1 } } };
+
+  function wire(root: HTMLElement) {
+    const track = root.querySelector<HTMLElement>('.kit-ticker__track');
+    const group = root.querySelector<HTMLElement>('.kit-ticker__group');
+    if (!track || !group) return;
+    if (!document.documentElement.classList.contains('mo')) {
+      document.addEventListener('visibilitychange', () => {
+        track.style.animationPlayState = document.hidden ? 'paused' : '';
+      });
+      return;
+    }
+    root.classList.add('is-js');
+    const seconds = parseFloat(getComputedStyle(root).getPropertyValue('--kit-ticker-speed')) || 28;
+    const pauseHover = root.classList.contains('kit-ticker--pause-hover');
+    let hovering = false;
+    root.addEventListener('pointerenter', (e) => e.pointerType === 'mouse' && (hovering = true));
+    root.addEventListener('pointerleave', () => (hovering = false));
+
+    let width = group.getBoundingClientRect().width;
+    addEventListener('resize', () => (width = group.getBoundingClientRect().width));
+    document.fonts?.ready.then(() => (width = group.getBoundingClientRect().width));
+
+    let x = 0;
+    let factor = 1;
+    let last = performance.now();
+    const loop = (now: number) => {
+      const dt = Math.min(0.1, (now - last) / 1000);
+      last = now;
+      requestAnimationFrame(loop);
+      if (document.hidden || !width) return;
+      const r = root.getBoundingClientRect();
+      if (r.bottom < -50 || r.top > innerHeight + 50) return;
+      const st = (window as MotionWin).__motion?.state;
+      let target = st ? st.direction * (1 + Math.min(Math.abs(st.velocity) * 0.18, 5)) : 1;
+      if (hovering && pauseHover) target = 0;
+      factor += (target - factor) * Math.min(1, dt * 5);
+      x -= (width / seconds) * factor * dt;
+      if (x <= -width) x += width;
+      if (x > 0) x -= width;
+      track.style.transform = `translate3d(${x.toFixed(2)}px,0,0)`;
+    };
+    requestAnimationFrame(loop);
+  }
+  document.querySelectorAll<HTMLElement>('.kit-ticker').forEach(wire);
+</script>

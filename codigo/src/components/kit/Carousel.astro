@@ -1,0 +1,398 @@
+---
+/**
+ * kit/Carousel.astro — horizontal scroll-snap card carousel (Robbins §1):
+ * round arrows w/ disabled edge-states, pointer drag+momentum, optional
+ * autoplay/dots. Usage: <Carousel dots autoplay><Card />...<Card /></Carousel>
+ */
+interface Props {
+  gap?: number; // px between slides (Robbins spaceBetween: 10)
+  autoplay?: boolean;
+  autoplayDelay?: number; // ms
+  dots?: boolean;
+  ariaLabel?: string;
+  prevLabel?: string;
+  nextLabel?: string;
+  class?: string;
+}
+
+const {
+  gap = 10,
+  autoplay = false,
+  autoplayDelay = 4000,
+  dots = false,
+  ariaLabel = 'Carrusel',
+  prevLabel = 'Anterior',
+  nextLabel = 'Siguiente',
+  class: className = '',
+} = Astro.props;
+---
+
+<div
+  class:list={['kit-carousel', className]}
+  style={`--kit-gap:${gap}px`}
+  data-autoplay={autoplay ? 'true' : 'false'}
+  data-autoplay-delay={autoplayDelay}
+  aria-roledescription="carousel"
+  aria-label={ariaLabel}
+>
+  <div class="kit-carousel__track" role="list" tabindex="0" data-cursor="drag">
+    <slot />
+  </div>
+  <div class="kit-carousel__controls">
+    <button class="kit-carousel__arrow kit-carousel__arrow--prev" type="button" aria-label={prevLabel} disabled data-magnetic="0.3">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5">
+        <polyline points="15 6 9 12 15 18" />
+      </svg>
+    </button>
+    {dots && <div class="kit-carousel__dots" role="tablist" aria-label="Paginación"></div>}
+    <button class="kit-carousel__arrow kit-carousel__arrow--next" type="button" aria-label={nextLabel} data-magnetic="0.3">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5">
+        <polyline points="9 6 15 12 9 18" />
+      </svg>
+    </button>
+  </div>
+</div>
+
+<style>
+  .kit-carousel {
+    position: relative;
+  }
+  .kit-carousel__track {
+    display: flex;
+    gap: var(--kit-gap, 10px);
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    cursor: grab;
+    touch-action: pan-y;
+    outline: none;
+  }
+  .kit-carousel__track::-webkit-scrollbar {
+    display: none;
+  }
+  .kit-carousel__track.is-dragging,
+  .kit-carousel__track.is-gliding {
+    scroll-snap-type: none;
+  }
+  .kit-carousel__track.is-dragging {
+    cursor: grabbing;
+    user-select: none;
+  }
+  /* mientras se arrastra, las tarjetas se contraen apenas (tactilidad) */
+  .kit-carousel__track > :global(*) {
+    transition: scale 0.6s var(--ease-expo, cubic-bezier(0.16, 1, 0.3, 1));
+  }
+  :global(html.mo) .kit-carousel__track.is-dragging > :global(*) {
+    scale: 0.97;
+  }
+  .kit-carousel__track :global(img) {
+    -webkit-user-drag: none;
+  }
+  /* slotted cards: peek layout, no shrink, snap to start */
+  .kit-carousel__track > :global(*) {
+    flex: 0 0 auto;
+    scroll-snap-align: start;
+  }
+  .kit-carousel__controls {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 14px;
+    margin-top: 20px;
+  }
+  .kit-carousel__arrow {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    border-radius: 999px;
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-cobalt, #d9a93c);
+    color: #fff;
+    cursor: pointer;
+    transition: background var(--dur, 500ms) var(--ease), opacity var(--dur, 500ms) var(--ease),
+      transform var(--dur, 500ms) var(--ease);
+  }
+  .kit-carousel__arrow:hover:not(:disabled) {
+    background: var(--color-cobalt-dim, #5e470c);
+  }
+  .kit-carousel__arrow svg {
+    transition: translate 0.5s var(--ease-expo, cubic-bezier(0.16, 1, 0.3, 1));
+  }
+  .kit-carousel__arrow--prev:hover:not(:disabled) svg {
+    translate: -2px 0;
+  }
+  .kit-carousel__arrow--next:hover:not(:disabled) svg {
+    translate: 2px 0;
+  }
+  .kit-carousel__arrow:disabled {
+    opacity: 0.28;
+    cursor: default;
+    pointer-events: none;
+  }
+  .kit-carousel__dots {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-right: auto;
+  }
+  .kit-carousel__dots :global(.kit-carousel__dot) {
+    width: 7px;
+    height: 7px;
+    border-radius: 999px;
+    border: none;
+    padding: 0;
+    background: currentColor;
+    opacity: 0.28;
+    cursor: pointer;
+    transition: opacity var(--dur, 500ms) var(--ease), transform var(--dur, 500ms) var(--ease),
+      width var(--dur, 500ms) var(--ease);
+  }
+  .kit-carousel__dots :global(.kit-carousel__dot.is-active) {
+    opacity: 1;
+    width: 20px;
+    background: var(--color-cobalt, #d9a93c);
+  }
+</style>
+
+<script>
+  // Drag con inercia (sólo mouse: en táctil manda el scroll nativo, que ya
+  // tiene inercia), suelta proyectando la velocidad y aterriza en la
+  // tarjeta más cercana con easeOutExpo. Un arrastre de >5px anula el click
+  // (no se abre un link al soltar). Flechas del teclado sobre el track.
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const easeOutExpo = (t: number) => (t >= 1 ? 1 : 1 - 2 ** (-10 * t));
+
+  function initCarousel(root: HTMLElement) {
+    const track = root.querySelector<HTMLElement>('.kit-carousel__track');
+    const prevBtn = root.querySelector<HTMLButtonElement>('.kit-carousel__arrow--prev');
+    const nextBtn = root.querySelector<HTMLButtonElement>('.kit-carousel__arrow--next');
+    const dotsEl = root.querySelector<HTMLElement>('.kit-carousel__dots');
+    if (!track || !prevBtn || !nextBtn) return;
+
+    const autoplay = root.dataset.autoplay === 'true' && !reduced;
+    const delay = parseInt(root.dataset.autoplayDelay || '4000', 10);
+
+    const slides = () => Array.from(track.children) as HTMLElement[];
+    const maxScroll = () => Math.max(0, track.scrollWidth - track.clientWidth);
+    const offsetOf = (el: HTMLElement) => Math.min(maxScroll(), el.offsetLeft - track.offsetLeft);
+
+    /* ── glide: animación propia de scrollLeft (sin scroll-behavior CSS) */
+    let glideRaf = 0;
+    function stopGlide() {
+      cancelAnimationFrame(glideRaf);
+      glideRaf = 0;
+      track!.classList.remove('is-gliding');
+    }
+    function glideTo(target: number, dur = 750) {
+      stopGlide();
+      const from = track!.scrollLeft;
+      const to = Math.max(0, Math.min(maxScroll(), target));
+      if (reduced || Math.abs(to - from) < 1) {
+        track!.scrollLeft = to;
+        return;
+      }
+      track!.classList.add('is-gliding');
+      const t0 = performance.now();
+      const tick = (now: number) => {
+        const t = Math.min(1, (now - t0) / dur);
+        track!.scrollLeft = from + (to - from) * easeOutExpo(t);
+        if (t < 1) glideRaf = requestAnimationFrame(tick);
+        else stopGlide();
+      };
+      glideRaf = requestAnimationFrame(tick);
+    }
+
+    function nearestIndex(x: number) {
+      let best = 0;
+      let min = Infinity;
+      slides().forEach((el, i) => {
+        const d = Math.abs(offsetOf(el) - x);
+        if (d < min) {
+          min = d;
+          best = i;
+        }
+      });
+      return best;
+    }
+    const currentIndex = () => nearestIndex(track.scrollLeft);
+
+    function buildDots() {
+      if (!dotsEl) return;
+      dotsEl.innerHTML = '';
+      slides().forEach((_, i) => {
+        const dot = document.createElement('button');
+        dot.type = 'button';
+        dot.className = 'kit-carousel__dot';
+        dot.setAttribute('role', 'tab');
+        dot.setAttribute('aria-label', `Ir a la tarjeta ${i + 1}`);
+        dot.setAttribute('aria-selected', 'false');
+        dot.addEventListener('click', () => scrollToIndex(i));
+        dotsEl.appendChild(dot);
+      });
+    }
+
+    function updateDots() {
+      if (!dotsEl) return;
+      const idx = currentIndex();
+      Array.from(dotsEl.children).forEach((d, i) => {
+        d.classList.toggle('is-active', i === idx);
+        d.setAttribute('aria-selected', String(i === idx));
+      });
+    }
+
+    function scrollToIndex(i: number) {
+      const el = slides()[i];
+      if (el) glideTo(offsetOf(el));
+    }
+
+    function updateArrows() {
+      const max = maxScroll() - 1;
+      prevBtn!.disabled = track!.scrollLeft <= 0;
+      nextBtn!.disabled = max <= 0 || track!.scrollLeft >= max;
+    }
+
+    function step(dir: 1 | -1) {
+      const i = currentIndex();
+      const n = slides().length;
+      // si ya estamos al final del recorrido, avanzar no tiene efecto
+      scrollToIndex(Math.max(0, Math.min(n - 1, i + dir)));
+    }
+
+    prevBtn.addEventListener('click', () => step(-1));
+    nextBtn.addEventListener('click', () => step(1));
+    track.addEventListener('keydown', (e) => {
+      if (e.target !== track) return;
+      if (e.key === 'ArrowRight') {
+        e.preventDefault();
+        step(1);
+      } else if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        step(-1);
+      }
+    });
+
+    let scrollRaf = 0;
+    track.addEventListener(
+      'scroll',
+      () => {
+        cancelAnimationFrame(scrollRaf);
+        scrollRaf = requestAnimationFrame(() => {
+          updateArrows();
+          updateDots();
+        });
+      },
+      { passive: true }
+    );
+    // rueda/trackpad horizontal o swipe táctil cortan el glide en curso
+    track.addEventListener('wheel', () => glideRaf && stopGlide(), { passive: true });
+    track.addEventListener('touchstart', () => glideRaf && stopGlide(), { passive: true });
+
+    /* ── drag con mouse + inercia */
+    let isDown = false;
+    let moved = false;
+    let startX = 0;
+    let startScroll = 0;
+    let velocity = 0; // px/ms, positivo = puntero hacia la derecha
+    let lastX = 0;
+    let lastT = 0;
+
+    track.addEventListener('dragstart', (e) => e.preventDefault());
+
+    track.addEventListener('pointerdown', (e: PointerEvent) => {
+      if (e.pointerType !== 'mouse' || e.button !== 0) return;
+      isDown = true;
+      moved = false;
+      startX = lastX = e.clientX;
+      startScroll = track.scrollLeft;
+      lastT = performance.now();
+      velocity = 0;
+      stopGlide();
+    });
+
+    track.addEventListener('pointermove', (e: PointerEvent) => {
+      if (!isDown) return;
+      const dx = e.clientX - startX;
+      if (!moved && Math.abs(dx) > 5) {
+        moved = true;
+        track.setPointerCapture(e.pointerId);
+        track.classList.add('is-dragging');
+      }
+      if (!moved) return;
+      // resistencia elástica en los bordes
+      let next = startScroll - dx;
+      const max = maxScroll();
+      if (next < 0) next = next * 0.35;
+      else if (next > max) next = max + (next - max) * 0.35;
+      track.scrollLeft = next;
+      const now = performance.now();
+      const dt = Math.max(1, now - lastT);
+      velocity = velocity * 0.6 + ((e.clientX - lastX) / dt) * 0.4;
+      lastX = e.clientX;
+      lastT = now;
+    });
+
+    function endDrag() {
+      if (!isDown) return;
+      isDown = false;
+      if (!moved) return;
+      track!.classList.remove('is-dragging');
+      // proyectar la inercia y aterrizar en la tarjeta más cercana
+      const idle = performance.now() - lastT > 90; // soltó quieto
+      const projected = track!.scrollLeft - (idle ? 0 : velocity * 320);
+      const target = slides()[nearestIndex(projected)];
+      glideTo(target ? offsetOf(target) : projected, 900);
+    }
+    track.addEventListener('pointerup', endDrag);
+    track.addEventListener('pointercancel', endDrag);
+    track.addEventListener('lostpointercapture', endDrag);
+    // un arrastre no es un click
+    track.addEventListener(
+      'click',
+      (e) => {
+        if (moved) {
+          e.preventDefault();
+          e.stopPropagation();
+          moved = false;
+        }
+      },
+      true
+    );
+
+    // Autoplay — pausa con hover/foco y con la pestaña oculta.
+    let timer = 0;
+    function startAutoplay() {
+      if (!autoplay) return;
+      stopAutoplay();
+      timer = window.setInterval(() => {
+        if (document.hidden) return;
+        if (track!.scrollLeft >= maxScroll() - 1) glideTo(0, 1100);
+        else step(1);
+      }, delay);
+    }
+    function stopAutoplay() {
+      clearInterval(timer);
+    }
+    if (autoplay) {
+      startAutoplay();
+      root.addEventListener('mouseenter', stopAutoplay);
+      root.addEventListener('mouseleave', startAutoplay);
+      root.addEventListener('focusin', stopAutoplay);
+      root.addEventListener('focusout', startAutoplay);
+    }
+
+    buildDots();
+    updateArrows();
+    updateDots();
+    window.addEventListener('resize', () => {
+      updateArrows();
+      updateDots();
+    });
+  }
+
+  document.querySelectorAll<HTMLElement>('.kit-carousel').forEach(initCarousel);
+</script>

@@ -1,0 +1,403 @@
+---
+/**
+ * preview-carrusel-2.astro — PÁGINA DE PRUEBA, no forma parte del sitio.
+ *
+ * Segunda propuesta para el capítulo de facetas, con la mecánica de
+ * wildfi.com/es/solutions (medida ahí): cartas apiladas. Cada faceta es un
+ * panel `position: sticky; top: 0` de una pantalla de alto, dentro de un
+ * contenedor de N pantallas. Al bajar, cada panel se queda pegado y el
+ * siguiente sube y lo TAPA — como repartir cartas sobre la mesa.
+ *
+ * Lo que hace que el gesto se lea (y que en una copia apurada se pierde):
+ * - Esquinas superiores redondeadas + hairline arriba: es el borde de la
+ *   carta entrante lo que se ve cruzar sobre la anterior.
+ * - Tonos alternados entre paneles. Si todos fueran del mismo color, el
+ *   movimiento existiría pero no se percibiría.
+ * - Sombra hacia arriba en cada panel, para que la carta entrante despegue.
+ *
+ * NADA de esto toca el carrusel actual: index.astro y FacetasCarousel3D
+ * siguen intactos. Comparar con /preview-carrusel (opción A) y con /#facetas.
+ */
+import Base from '../layouts/Base.astro';
+
+const facetas = [
+	{
+		index: '01',
+		word: 'Empresario',
+		quote: 'La crisis, al final, se había convertido en una oportunidad.',
+		quoteSource: 'Capital de Vida',
+		href: '/negocios',
+		hrefLabel: 'Explorar Negocios',
+		video: '/media/video/bz4x-card.mp4',
+		poster: '/media/video/bz4x-card-poster.jpg',
+		alt: 'Alejandro Curcio hablando en el lanzamiento del Toyota bZ4X',
+	},
+	{
+		index: '02',
+		word: 'Deportista',
+		quote: 'En el fondo lo que me encanta es la aventura del descubrimiento.',
+		quoteSource: 'Forbes Uruguay, 2025',
+		href: '/aventura',
+		hrefLabel: 'Explorar Aventura',
+		video: '/media/video/drift-park-card.mp4',
+		poster: '/media/video/drift-park-card-poster.jpg',
+		alt: 'Casco de Alejandro Curcio en el Toyota Drift Park',
+	},
+	{
+		index: '03',
+		word: 'Aventurero',
+		quote: 'El pánico te mata y el miedo te salva.',
+		quoteSource: 'Capital de Vida',
+		href: '/aventura',
+		hrefLabel: 'Explorar Aventura',
+		poster: '/media/img/guinness-03-1280.jpg',
+		alt: 'Alejandro Curcio en el récord Guinness Ice Challenge 2024',
+	},
+	{
+		index: '04',
+		word: 'Pensador',
+		quote: 'La felicidad no es algo que uno busca, sino algo que uno se permite.',
+		quoteSource: 'Capital de Vida',
+		href: '/libros',
+		hrefLabel: 'Explorar Libros',
+		video: '/media/video/toolbook-aftermovie-card.mp4',
+		poster: '/media/video/toolbook-aftermovie-card-poster.jpg',
+		alt: 'Aftermovie de la presentación de Toolbook',
+	},
+	{
+		index: '05',
+		word: 'Solidario',
+		quote: 'El éxito corporativo está vacío si no democratizamos las oportunidades.',
+		quoteSource: 'Pilar «La Figura»',
+		href: '/negocios',
+		hrefLabel: 'Explorar Negocios',
+		video: '/media/video/drift-solidario-card.mp4',
+		poster: '/media/video/drift-solidario-card-poster.jpg',
+		alt: 'Drift Arena Solidario, noviembre de 2024',
+	},
+	{
+		index: '06',
+		word: 'Legado',
+		quote: 'Dejarle algo valioso a la siguiente generación involucra mucho más que dinero.',
+		quoteSource: 'Capital de Vida',
+		href: '/historia',
+		hrefLabel: 'Explorar Historia',
+		video: '/media/video/fiat600r-card.mp4',
+		poster: '/media/video/fiat600r-card-poster.jpg',
+		alt: 'Alejandro Curcio contando la anécdota del Fiat 600R',
+	},
+];
+---
+
+<Base title="Preview — carrusel apilado" description="Página de prueba. No forma parte del sitio.">
+	<div class="aviso">
+		<strong>Página de prueba · opción B.</strong> Cartas apiladas. El carrusel actual no se tocó —
+		comparalo con <a href="/preview-carrusel">la opción A</a> y con <a href="/#facetas">/#facetas</a>.
+	</div>
+
+	<section class="sheet sheet--cap-1 sheet--flush intro">
+		<div class="wrap">
+			<span class="kicker">Facetas</span>
+			<h2 class="section-title">Una vida. Seis facetas.</h2>
+			<p class="section-lead">Elegí por dónde entrar. Bajá: cada faceta tapa a la anterior.</p>
+		</div>
+	</section>
+
+	<!-- Riel fijo: sin él uno pierde la cuenta de en cuál va. -->
+	<div class="riel" data-riel aria-hidden="true">
+		{facetas.map((f) => <span class="riel-item" data-riel-item><i></i>{f.word}</span>)}
+	</div>
+
+	<div class="mazo" data-mazo>
+		{
+			facetas.map((f, i) => (
+				<section
+					class:list={['carta', i % 2 === 1 && 'carta--alt']}
+					data-carta={i}
+					aria-label={`Faceta ${f.index}: ${f.word}`}
+				>
+					<div class="carta-inner wrap">
+						<div class="carta-txt">
+							<span class="carta-n">{f.index} — Faceta</span>
+							<h3 class="carta-word">{f.word}</h3>
+							<blockquote class="carta-cita">«{f.quote}»</blockquote>
+							<cite class="carta-fuente">{f.quoteSource}</cite>
+							<a class="carta-link" href={f.href}>
+								{f.hrefLabel}
+								<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5">
+									<line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" />
+								</svg>
+							</a>
+						</div>
+
+						<div class="carta-media">
+							{f.video ? (
+								<video
+									class="carta-video"
+									data-src={f.video}
+									poster={f.poster}
+									muted
+									loop
+									playsinline
+									preload="none"
+									aria-label={f.alt}
+								/>
+							) : (
+								<img class="carta-video" src={f.poster} alt={f.alt} loading="lazy" />
+							)}
+						</div>
+					</div>
+				</section>
+			))
+		}
+	</div>
+
+	<section class="sheet sheet--cap-4 sheet--glow-top cierre">
+		<div class="wrap">
+			<h2 class="section-title">Fin del mazo.</h2>
+			<p class="section-lead">Acá seguiría el capítulo de los libros.</p>
+		</div>
+	</section>
+</Base>
+
+<style>
+	.aviso {
+		background: rgb(var(--accent-rgb) / 0.14);
+		border-bottom: 1px solid rgb(var(--accent-rgb) / 0.3);
+		color: var(--ink-hi);
+		font-size: 13.5px;
+		text-align: center;
+		padding: 12px 20px;
+	}
+	.aviso a {
+		color: var(--color-cobalt-bright);
+	}
+	.intro,
+	.cierre {
+		padding-bottom: var(--chapter-pad);
+	}
+
+	/* ---------- el mazo ---------- */
+	.mazo {
+		position: relative;
+	}
+	/* Cada carta se pega arriba y la siguiente la tapa. El apilado sale del
+	   orden del DOM: no hace falta z-index. */
+	.carta {
+		position: sticky;
+		top: 0;
+		min-height: 100svh;
+		display: flex;
+		align-items: center;
+		background: var(--color-cap-2);
+		border-top: 1px solid rgba(233, 237, 255, 0.14);
+		border-radius: var(--radius-sheet) var(--radius-sheet) 0 0;
+		/* sombra hacia ARRIBA: hace despegar a la carta entrante */
+		box-shadow: 0 -30px 60px rgba(0, 0, 0, 0.45);
+		overflow: hidden;
+	}
+	/* Tonos alternados. Sin esto el movimiento existe pero no se percibe. */
+	.carta--alt {
+		background: var(--color-cap-1);
+	}
+
+	.carta-inner {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) minmax(0, 0.62fr);
+		gap: clamp(30px, 5vw, 80px);
+		align-items: center;
+		width: 100%;
+		padding-top: clamp(40px, 6vh, 80px);
+		padding-bottom: clamp(40px, 6vh, 80px);
+	}
+
+	.carta-n {
+		display: block;
+		font-size: 12px;
+		font-weight: 600;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+		color: var(--color-cobalt-bright);
+		font-variant-numeric: tabular-nums;
+	}
+	.carta-word {
+		font-size: clamp(2.75rem, 1.8rem + 4.6vw, 6.5rem);
+		font-weight: 700;
+		font-stretch: 100%;
+		letter-spacing: -0.035em;
+		line-height: 0.94;
+		color: var(--ink-hi);
+		margin: 18px 0 0;
+	}
+	.carta-cita {
+		margin: 28px 0 0;
+		font-family: var(--font-body);
+		font-style: normal;
+		font-weight: 450;
+		letter-spacing: -0.015em;
+		font-size: clamp(1.125rem, 1rem + 0.8vw, 1.5rem);
+		line-height: 1.4;
+		color: var(--ink-mid);
+		max-width: 34ch;
+		text-wrap: pretty;
+	}
+	.carta-fuente {
+		display: block;
+		margin-top: 12px;
+		font-size: 12px;
+		font-style: normal;
+		font-weight: 500;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+		color: var(--ink-low);
+	}
+	.carta-link {
+		display: inline-flex;
+		align-items: center;
+		gap: 8px;
+		margin-top: 34px;
+		font-size: 14.5px;
+		font-weight: 600;
+		color: var(--ink-hi);
+		text-decoration: none;
+		padding-bottom: 4px;
+		border-bottom: 1px solid rgba(233, 237, 255, 0.28);
+		transition:
+			color var(--dur-sm) var(--ease-out),
+			border-color var(--dur-sm) var(--ease-out);
+	}
+	.carta-link:hover {
+		color: var(--color-cobalt-bright);
+		border-bottom-color: var(--color-cobalt-bright);
+	}
+
+	.carta-media {
+		aspect-ratio: 3 / 4;
+		border-radius: var(--radius-object);
+		overflow: hidden;
+		background: var(--color-black-2);
+		box-shadow: var(--shadow-object);
+		max-height: 62vh;
+		justify-self: end;
+		width: 100%;
+	}
+	.carta-video {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		display: block;
+	}
+
+	/* ---------- riel fijo ---------- */
+	.riel {
+		position: fixed;
+		right: clamp(14px, 2vw, 34px);
+		top: 50%;
+		transform: translateY(-50%);
+		z-index: 30;
+		display: flex;
+		flex-direction: column;
+		gap: 12px;
+		opacity: 0;
+		transition: opacity var(--dur-md) var(--ease-out);
+		pointer-events: none;
+	}
+	.riel.is-on {
+		opacity: 1;
+	}
+	.riel-item {
+		display: flex;
+		align-items: center;
+		gap: 9px;
+		font-size: 11.5px;
+		font-weight: 600;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+		color: var(--ink-low);
+		opacity: 0.45;
+		transition:
+			opacity var(--dur-sm) var(--ease-out),
+			color var(--dur-sm) var(--ease-out);
+	}
+	.riel-item i {
+		width: 18px;
+		height: 1px;
+		background: currentColor;
+		transition: width var(--dur-md) var(--ease-out);
+	}
+	.riel-item.is-on {
+		opacity: 1;
+		color: var(--color-cobalt-bright);
+	}
+	.riel-item.is-on i {
+		width: 34px;
+	}
+
+	@media (max-width: 900px) {
+		.carta-inner {
+			grid-template-columns: 1fr;
+			gap: 26px;
+		}
+		.carta-media {
+			max-height: 40vh;
+			justify-self: start;
+			max-width: 300px;
+		}
+		.riel {
+			display: none;
+		}
+	}
+	@media (prefers-reduced-motion: reduce) {
+		/* Sin apilado: las cartas quedan una abajo de la otra. */
+		.carta {
+			position: static;
+			min-height: 0;
+			box-shadow: none;
+		}
+	}
+</style>
+
+<script>
+	const mazo = document.querySelector<HTMLElement>('[data-mazo]');
+	const riel = document.querySelector<HTMLElement>('[data-riel]');
+	if (mazo && riel) {
+		const cartas = [...mazo.querySelectorAll<HTMLElement>('[data-carta]')];
+		const items = [...riel.querySelectorAll<HTMLElement>('[data-riel-item]')];
+		let raf = 0;
+
+		const pintar = () => {
+			raf = 0;
+			const mid = window.innerHeight / 2;
+			// La carta activa es la última cuyo tope ya pasó el medio de la
+			// pantalla: es exactamente la que está tapando a las demás.
+			let activa = -1;
+			cartas.forEach((c, i) => {
+				if (c.getBoundingClientRect().top <= mid) activa = i;
+			});
+
+			const r = mazo.getBoundingClientRect();
+			riel.classList.toggle('is-on', r.top < window.innerHeight * 0.5 && r.bottom > 0);
+			items.forEach((it, i) => it.classList.toggle('is-on', i === activa));
+
+			// El video sólo corre en la carta visible: seis loops simultáneos
+			// es lo que hace pesado el capítulo actual.
+			cartas.forEach((c, i) => {
+				const v = c.querySelector<HTMLVideoElement>('video');
+				if (!v) return;
+				if (i === activa) {
+					if (!v.getAttribute('src')) v.setAttribute('src', v.dataset.src!);
+					v.play().catch(() => {});
+				} else if (!v.paused) {
+					v.pause();
+				}
+			});
+		};
+
+		const agendar = () => {
+			if (!raf) raf = requestAnimationFrame(pintar);
+		};
+		addEventListener('scroll', agendar, { passive: true });
+		addEventListener('resize', agendar, { passive: true });
+		agendar();
+	}
+</script>

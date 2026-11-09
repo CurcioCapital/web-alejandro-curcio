@@ -1,0 +1,599 @@
+---
+/**
+ * FacetasCarrusel.astro — riel de facetas (home y /home-tony).
+ *
+ * Rediseño 21/10/2026 (referencia landonorris.com): misma información y
+ * mismo orden — número, palabra, línea de apoyo y destino de cada faceta —
+ * con otro tratamiento:
+ *  · tarjetas grandes con radio xl, número mono gigante arriba y la palabra
+ *    en display condensada abajo;
+ *  · el medio arranca apagado (poster desaturado) y el video corre SÓLO en
+ *    hover/foco (puntero fino) o, en táctil, el de la tarjeta más centrada;
+ *  · riel arrastrable con el mouse (además del scroll nativo y las flechas)
+ *    con inclinación según la velocidad del arrastre;
+ *  · contador mono «01 / 06» + barra de progreso en lugar de los puntos.
+ *
+ * Sigue aceptando `href` y `exploreHref` (ver la nota en Faceta).
+ * Sin IntersectionObserver a propósito: en el preview del proyecto no dispara.
+ */
+interface Faceta {
+  index: string;
+  word: string;
+  linea: string;
+  /**
+   * Destino de la tarjeta. Se aceptan DOS nombres a propósito:
+   * el home viene del carrusel 3D y trae `exploreHref`; /home-tony trae
+   * `href`. Cuando este componente reemplazó al 3D sólo leía `href`, así
+   * que en el home las seis tarjetas quedaron SIN enlace. Aceptar los dos
+   * evita que vuelva a pasar al cambiar de un carrusel al otro.
+   */
+  href?: string;
+  exploreHref?: string;
+  videoSrc?: string;
+  poster?: string;
+  photoSrc?: string;
+  focus?: string;
+  alt: string;
+}
+
+interface Props {
+  facetas: Faceta[];
+  titulo: string;
+  enlaceLabel?: string;
+  enlaceHref?: string;
+}
+
+const { facetas, titulo, enlaceLabel, enlaceHref } = Astro.props;
+
+const destino = (f: Faceta) => f.href ?? f.exploreHref;
+
+const mudas = facetas.filter((f) => !destino(f)).map((f) => f.word);
+if (mudas.length) {
+  console.warn(`[FacetasCarrusel] sin destino: ${mudas.join(', ')}`);
+}
+const total = String(facetas.length).padStart(2, '0');
+// «Una vida. Seis facetas.» → dos líneas fijas, cortando después de cada
+// punto. El texto no cambia: sólo se reparte en renglones.
+const lineasTitulo = titulo.split(/(?<=\.)\s+/);
+---
+
+<section class="fc" data-fc>
+  <div class="fc-head">
+    <div class="fc-head-main">
+      <h2 class="fc-title">
+        {lineasTitulo.map((l) => <span class="fc-title-line">{l}</span>)}
+      </h2>
+      {
+        enlaceLabel && enlaceHref && (
+          <a class="fc-link" href={enlaceHref} data-roll>
+            {enlaceLabel}
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+              <polyline points="9 18 15 12 9 6" />
+            </svg>
+          </a>
+        )
+      }
+    </div>
+
+    <div class="fc-nav">
+      <span class="fc-count" aria-hidden="true">
+        <span data-fc-now>01</span><span class="fc-count-sep">/</span><span>{total}</span>
+      </span>
+      <button class="fc-btn" type="button" data-fc-prev aria-label="Faceta anterior" data-magnetic>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <polyline points="15 18 9 12 15 6" />
+        </svg>
+      </button>
+      <button class="fc-btn" type="button" data-fc-next aria-label="Faceta siguiente" data-magnetic>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <polyline points="9 18 15 12 9 6" />
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="fc-rail" data-fc-rail data-cursor="drag" data-cursor-label="Arrastrá">
+    {
+      facetas.map((f) => (
+        <a class="fc-card" href={destino(f)} data-fc-item data-cursor="view" data-cursor-label="Ver" draggable="false">
+          <span class="fc-frame">
+            {f.videoSrc ? (
+              <>
+                <img class="fc-media fc-poster" src={f.poster} alt="" aria-hidden="true" loading="lazy" decoding="async" draggable="false" style={f.focus ? `object-position:${f.focus}` : undefined} />
+                <video
+                  class="fc-media fc-video"
+                  src={f.videoSrc}
+                  poster={f.poster}
+                  muted
+                  loop
+                  playsinline
+                  preload="none"
+                  style={f.focus ? `object-position:${f.focus}` : undefined}
+                  data-fc-video
+                />
+              </>
+            ) : (
+              <img class="fc-media" src={f.photoSrc} alt={f.alt} loading="lazy" decoding="async" draggable="false" />
+            )}
+          </span>
+          <span class="fc-scrim" aria-hidden="true" />
+          <span class="fc-index">{f.index}</span>
+          <span class="fc-arrow" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <line x1="7" y1="17" x2="17" y2="7" /><polyline points="8 7 17 7 17 16" />
+            </svg>
+          </span>
+          <span class="fc-copy">
+            <span class="fc-word">{f.word}</span>
+            <span class="fc-linea">{f.linea}</span>
+          </span>
+        </a>
+      ))
+    }
+  </div>
+
+  <div class="fc-progress" aria-hidden="true"><span data-fc-bar></span></div>
+</section>
+
+<style>
+  .fc {
+    --fc-edge: var(--edge, clamp(20px, 5vw, 72px));
+    --fc-gap: clamp(12px, 1.4vw, 22px);
+    --fc-mono: var(--font-mono, 'JetBrains Mono Variable', ui-monospace, Menlo, monospace);
+    --fc-display: var(--font-display, 'Geist Variable', system-ui, sans-serif);
+    --fc-gold: var(--accent, #e8c874);
+    --fc-ease: var(--ease-expo, cubic-bezier(0.16, 1, 0.3, 1));
+  }
+
+  /* ── encabezado ── */
+  .fc-head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: clamp(14px, 2vw, 28px);
+    padding: 0 var(--fc-edge);
+    margin-bottom: clamp(24px, 3vw, 44px);
+  }
+  .fc-head-main {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .fc-title {
+    font-family: var(--fc-display);
+    font-weight: 600;
+    font-size: clamp(2.3rem, 0.9rem + 5vw, 6.5rem);
+    letter-spacing: -0.045em;
+    line-height: 0.95;
+    color: var(--color-off, #f4f1ea);
+    margin: 0;
+  }
+  .fc-title-line {
+    display: block;
+    white-space: nowrap;
+  }
+  .fc-link {
+    align-self: flex-start;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--fc-mono);
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-mid, rgb(255 255 255 / 0.65));
+    padding-bottom: 4px;
+    border-bottom: 1px solid currentColor;
+    white-space: nowrap;
+    transition: color 250ms var(--fc-ease);
+  }
+  .fc-link:hover {
+    color: var(--fc-gold);
+  }
+  .fc-nav {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 0 0 auto;
+  }
+  .fc-count {
+    font-family: var(--fc-mono);
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    color: var(--ink-mid, rgb(255 255 255 / 0.65));
+    margin-right: 10px;
+    font-variant-numeric: tabular-nums;
+  }
+  .fc-count [data-fc-now] {
+    color: var(--fc-gold);
+  }
+  .fc-count-sep {
+    margin: 0 6px;
+    opacity: 0.5;
+  }
+  .fc-btn {
+    width: 52px;
+    height: 52px;
+    border-radius: 999px;
+    display: grid;
+    place-items: center;
+    color: var(--ink-hi, #fff);
+    border: 1px solid rgb(255 255 255 / 0.22);
+    background: rgb(255 255 255 / 0.03);
+    cursor: pointer;
+    transition:
+      background-color 250ms var(--fc-ease),
+      border-color 250ms var(--fc-ease),
+      color 250ms var(--fc-ease),
+      opacity 250ms var(--fc-ease);
+  }
+  .fc-btn:hover:not(:disabled) {
+    background: var(--fc-gold);
+    border-color: var(--fc-gold);
+    color: #0c0a06;
+  }
+  .fc-btn:disabled {
+    opacity: 0.3;
+    cursor: default;
+  }
+
+  /* ── riel ── */
+  .fc-rail {
+    display: flex;
+    gap: var(--fc-gap);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    padding: 4px var(--fc-edge) 28px;
+    scroll-padding-left: var(--fc-edge);
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    cursor: grab;
+  }
+  .fc-rail::-webkit-scrollbar {
+    display: none;
+  }
+  .fc-rail.is-drag {
+    scroll-snap-type: none;
+    cursor: grabbing;
+  }
+  .fc-rail.is-drag .fc-card {
+    pointer-events: none;
+  }
+
+  .fc-card {
+    --tilt: 0deg;
+    position: relative;
+    flex: 0 0 auto;
+    scroll-snap-align: start;
+    width: clamp(270px, 30vw, 470px);
+    aspect-ratio: 3 / 4.1;
+    border-radius: var(--radius-lg, 28px);
+    overflow: hidden;
+    background: #14110b;
+    display: block;
+    color: #fff;
+    transform: rotate(var(--tilt));
+    transition: transform 600ms var(--fc-ease);
+    box-shadow: 0 0 0 1px rgb(255 255 255 / 0.08);
+    -webkit-user-drag: none;
+  }
+  .fc-card:focus-visible {
+    outline: 2px solid var(--fc-gold);
+    outline-offset: 4px;
+  }
+  .fc-frame {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+  }
+  .fc-media {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform: scale(1.12);
+    filter: grayscale(0.85) brightness(0.62);
+    transition:
+      transform 1100ms var(--fc-ease),
+      filter 700ms var(--fc-ease),
+      opacity 500ms var(--fc-ease);
+  }
+  .fc-video {
+    opacity: 0;
+  }
+  .fc-card.is-live .fc-media {
+    transform: scale(1);
+    filter: none;
+  }
+  .fc-card.is-live .fc-video.is-playing {
+    opacity: 1;
+  }
+  .fc-scrim {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(0deg, rgb(8 6 3 / 0.9) 0%, rgb(8 6 3 / 0.45) 30%, transparent 58%),
+      linear-gradient(180deg, rgb(8 6 3 / 0.55) 0%, transparent 28%);
+  }
+
+  .fc-index {
+    position: absolute;
+    top: clamp(14px, 1.6vw, 24px);
+    left: clamp(16px, 1.8vw, 28px);
+    font-family: var(--fc-mono);
+    font-weight: 200;
+    font-size: clamp(3.6rem, 2rem + 4.6vw, 7.5rem);
+    line-height: 0.9;
+    letter-spacing: -0.06em;
+    font-variant-numeric: tabular-nums;
+    color: rgb(255 255 255 / 0.9);
+    transition: color 500ms var(--fc-ease);
+  }
+  .fc-card.is-live .fc-index {
+    color: var(--fc-gold);
+  }
+  .fc-arrow {
+    position: absolute;
+    top: clamp(16px, 1.8vw, 26px);
+    right: clamp(16px, 1.8vw, 26px);
+    width: 44px;
+    height: 44px;
+    border-radius: 999px;
+    display: grid;
+    place-items: center;
+    border: 1px solid rgb(255 255 255 / 0.35);
+    transition:
+      transform 600ms var(--fc-ease),
+      background-color 300ms var(--fc-ease),
+      color 300ms var(--fc-ease);
+  }
+  .fc-card.is-live .fc-arrow {
+    background: var(--fc-gold);
+    border-color: var(--fc-gold);
+    color: #0c0a06;
+    transform: rotate(45deg);
+  }
+
+  .fc-copy {
+    position: absolute;
+    inset: auto 0 0 0;
+    padding: 0 clamp(16px, 1.8vw, 28px) clamp(18px, 2vw, 30px);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .fc-word {
+    font-family: var(--fc-display);
+    font-weight: 600;
+    font-size: clamp(2rem, 1.1rem + 2.3vw, 3.6rem);
+    letter-spacing: -0.045em;
+    line-height: 0.95;
+    transform: translateY(8px);
+    transition: transform 700ms var(--fc-ease);
+  }
+  .fc-card.is-live .fc-word {
+    transform: none;
+  }
+  .fc-linea {
+    font-family: var(--fc-mono);
+    font-size: 11.5px;
+    line-height: 1.45;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgb(255 255 255 / 0.78);
+    padding-top: 12px;
+    border-top: 1px solid rgb(255 255 255 / 0.22);
+  }
+
+  /* ── progreso ── */
+  .fc-progress {
+    margin: 0 var(--fc-edge);
+    height: 1px;
+    background: rgb(255 255 255 / 0.12);
+    position: relative;
+    overflow: hidden;
+  }
+  .fc-progress span {
+    position: absolute;
+    inset: 0;
+    background: var(--fc-gold);
+    transform-origin: 0 50%;
+    transform: scaleX(var(--fc-p, 0.16));
+  }
+
+  @media (max-width: 720px) {
+    .fc-head {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    .fc-nav {
+      width: 100%;
+      justify-content: flex-end;
+    }
+    .fc-count {
+      margin-right: auto;
+    }
+    .fc-card {
+      width: 78vw;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .fc-card,
+    .fc-media,
+    .fc-word,
+    .fc-arrow {
+      transition: none;
+    }
+    .fc-media {
+      transform: none;
+    }
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-fc]').forEach((raiz) => {
+    const riel = raiz.querySelector<HTMLElement>('[data-fc-rail]');
+    const prev = raiz.querySelector<HTMLButtonElement>('[data-fc-prev]');
+    const next = raiz.querySelector<HTMLButtonElement>('[data-fc-next]');
+    const ahora = raiz.querySelector<HTMLElement>('[data-fc-now]');
+    const barra = raiz.querySelector<HTMLElement>('[data-fc-bar]');
+    if (!riel) return;
+
+    const items = Array.from(riel.querySelectorAll<HTMLElement>('[data-fc-item]'));
+    if (!items.length) return;
+
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const fino = matchMedia('(hover: hover) and (pointer: fine)').matches;
+
+    const actual = () => {
+      const base = riel.getBoundingClientRect().left + parseFloat(getComputedStyle(riel).paddingLeft || '0');
+      let mejor = 0;
+      let dist = Infinity;
+      items.forEach((el, i) => {
+        const d = Math.abs(el.getBoundingClientRect().left - base);
+        if (d < dist) {
+          dist = d;
+          mejor = i;
+        }
+      });
+      return mejor;
+    };
+
+    const irA = (i: number) => {
+      const destino = items[Math.max(0, Math.min(items.length - 1, i))];
+      if (!destino) return;
+      const x = destino.offsetLeft - items[0].offsetLeft;
+      riel.scrollTo({ left: x, behavior: reduce ? 'auto' : 'smooth' });
+    };
+    prev?.addEventListener('click', () => irA(actual() - 1));
+    next?.addEventListener('click', () => irA(actual() + 1));
+
+    // ── video: hover/foco en puntero fino; en táctil, la tarjeta centrada ──
+    const encender = (el: HTMLElement, si: boolean) => {
+      el.classList.toggle('is-live', si);
+      const v = el.querySelector<HTMLVideoElement>('[data-fc-video]');
+      if (!v || reduce) return;
+      if (si) {
+        v.play()
+          .then(() => v.classList.add('is-playing'))
+          .catch(() => {});
+      } else {
+        v.pause();
+        v.classList.remove('is-playing');
+      }
+    };
+    if (fino) {
+      items.forEach((el) => {
+        el.addEventListener('pointerenter', () => !riel.classList.contains('is-drag') && encender(el, true));
+        el.addEventListener('pointerleave', () => encender(el, false));
+      });
+    }
+    items.forEach((el) => {
+      el.addEventListener('focus', () => encender(el, true));
+      el.addEventListener('blur', () => encender(el, false));
+    });
+
+    // ── arrastre con mouse (táctil ya arrastra nativo) ──
+    let arrastrando = false;
+    let movido = 0;
+    let x0 = 0;
+    let s0 = 0;
+    let vel = 0;
+    let ultX = 0;
+    riel.addEventListener('pointerdown', (e) => {
+      if (e.pointerType !== 'mouse' || e.button !== 0) return;
+      arrastrando = true;
+      movido = 0;
+      x0 = ultX = e.clientX;
+      s0 = riel.scrollLeft;
+      vel = 0;
+    });
+    addEventListener('pointermove', (e) => {
+      if (!arrastrando) return;
+      const dx = e.clientX - x0;
+      movido = Math.max(movido, Math.abs(dx));
+      if (movido > 4 && !riel.classList.contains('is-drag')) {
+        riel.classList.add('is-drag');
+        items.forEach((el) => encender(el, false));
+      }
+      vel = e.clientX - ultX;
+      ultX = e.clientX;
+      riel.scrollLeft = s0 - dx;
+      if (!reduce) {
+        const tilt = Math.max(-4, Math.min(4, -vel * 0.25));
+        items.forEach((el) => el.style.setProperty('--tilt', `${tilt}deg`));
+      }
+    });
+    const soltar = () => {
+      if (!arrastrando) return;
+      arrastrando = false;
+      items.forEach((el) => el.style.setProperty('--tilt', '0deg'));
+      if (riel.classList.contains('is-drag')) {
+        // Inercia corta y después el snap vuelve a encajar la tarjeta.
+        const destino = riel.scrollLeft - vel * 14;
+        requestAnimationFrame(() => {
+          riel.classList.remove('is-drag');
+          riel.scrollTo({ left: destino, behavior: reduce ? 'auto' : 'smooth' });
+        });
+      }
+    };
+    addEventListener('pointerup', soltar);
+    addEventListener('pointercancel', soltar);
+    // Si hubo arrastre, el click no navega.
+    riel.addEventListener(
+      'click',
+      (e) => {
+        if (movido > 6) {
+          e.preventDefault();
+          e.stopPropagation();
+        }
+        movido = 0;
+      },
+      true
+    );
+
+    let raf = 0;
+    const pintar = () => {
+      raf = 0;
+      const i = actual();
+      if (ahora) ahora.textContent = String(i + 1).padStart(2, '0');
+      const max = riel.scrollWidth - riel.clientWidth;
+      const p = max > 0 ? riel.scrollLeft / max : 1;
+      const tramo = riel.clientWidth / riel.scrollWidth;
+      barra?.style.setProperty('--fc-p', String(Math.min(1, tramo + p * (1 - tramo))));
+
+      if (prev) prev.disabled = riel.scrollLeft <= 2;
+      if (next) next.disabled = riel.scrollLeft >= max - 2;
+
+      // Táctil: sólo la tarjeta más centrada (y en pantalla) corre su video.
+      if (!fino) {
+        const vr = riel.getBoundingClientRect();
+        const enPantalla = vr.bottom > 0 && vr.top < innerHeight;
+        const cx = innerWidth / 2;
+        let mejor = -1;
+        let dist = Infinity;
+        items.forEach((el, j) => {
+          const r = el.getBoundingClientRect();
+          const d = Math.abs(r.left + r.width / 2 - cx);
+          if (d < dist) {
+            dist = d;
+            mejor = j;
+          }
+        });
+        items.forEach((el, j) => {
+          const si = enPantalla && j === mejor;
+          if (si !== el.classList.contains('is-live')) encender(el, si);
+        });
+      }
+    };
+    const pedir = () => {
+      if (!raf) raf = requestAnimationFrame(pintar);
+    };
+    riel.addEventListener('scroll', pedir, { passive: true });
+    addEventListener('scroll', pedir, { passive: true });
+    addEventListener('resize', pedir);
+    pintar();
+  });
+</script>

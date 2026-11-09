@@ -1,0 +1,276 @@
+---
+/**
+ * QuoteOverlay.astro — the "Serena pattern": full-bleed photo, big quote,
+ * attribution, and a row of overlapping circular avatars. Usage:
+ * <QuoteOverlay id="quote" bgId="guinness-06" bgAlt="..." quote="..." attribution="..."
+ *   avatars={[{ id: "retrato-estudio", alt: "" }, { src: "/media/video/brindis-poster.jpg", alt: "" }]} />
+ *
+ * REDISEÑO 22/10/2026 — pedido de cliente: la cita NUNCA tapa caras.
+ * Antes el bloque iba centrado y caía justo sobre las personas de la foto
+ * (gala-alfombra: tres personas paradas al centro, caras entre el 40 y el
+ * 56 % del alto del original). Ahora:
+ *  · ≥1200px: el bloque se ancla abajo a la izquierda (máx. ~56 % del ancho)
+ *    sobre un scrim fuerte inferior/izquierdo. El cuadro mantiene una
+ *    proporción ~2:1 (min-height 50vw) y la foto se encuadra por abajo
+ *    (object-position 50 % 100 %): las caras quedan en la franja superior
+ *    (≈20–42 % del alto) y la cita arranca por debajo del 50 %.
+ *  · <1200px: la foto va primero, sola y sin texto encima; la cita va
+ *    debajo, sobre superficie oscura, dentro de la misma tarjeta.
+ *  · compact (cierre de /aventura, guinness-06: hay caras en todo el
+ *    cuadro): nunca superpone. En desktop es un split texto | foto; en
+ *    angosto, foto arriba y cita abajo.
+ * Mismo texto, misma comilla, misma atribución y mismos avatares.
+ */
+import Reveal from './Reveal.astro';
+import BlurImage from './BlurImage.astro';
+
+interface Avatar {
+  id?: string; // manifest asset id
+  src?: string; // raw public path escape hatch
+  kind?: 'img' | 'cover';
+  alt: string;
+}
+
+interface Props {
+  id?: string;
+  bgId?: string;
+  bgSrc?: string;
+  bgAlt: string;
+  bgKind?: 'img' | 'cover';
+  quote: string;
+  attribution: string;
+  avatars?: Avatar[];
+  /** Cierre de sección: misma foto y misma cita, en menos alto y menos cuerpo. */
+  compact?: boolean;
+}
+
+const { id, bgId, bgSrc, bgAlt, bgKind = 'img', quote, attribution, avatars = [], compact = false } = Astro.props;
+---
+
+<Reveal
+  as="div"
+  id={id}
+  class:list={['quote-section', 'qo', 'u-crop', compact ? 'quote-section--cierre qo--split' : 'qo--overlay']}
+  data-scrub
+>
+  <div class="qo-media">
+    <BlurImage
+      id={bgId}
+      src={bgSrc}
+      alt={bgAlt}
+      kind={bgKind}
+      sizes={compact ? '(min-width: 1200px) 50vw, 100vw' : '100vw'}
+    />
+    <div class="scrim" aria-hidden="true"></div>
+  </div>
+  <div class="quote-content">
+    <span class="quote-mark" aria-hidden="true">&ldquo;</span>
+    <blockquote class="big-quote">{quote}</blockquote>
+    <span class="quote-attr">{attribution}</span>
+    {
+      avatars.length > 0 && (
+        <div class="avatar-row">
+          {avatars.map((a) => (
+            <BlurImage id={a.id} src={a.src} kind={a.kind ?? 'img'} alt={a.alt} width={640} sizes="56px" />
+          ))}
+        </div>
+      )
+    }
+  </div>
+</Reveal>
+
+<style is:global>
+  /* Todo cuelga de .qo (la clase la pone este componente): pisa el
+     tratamiento centrado de components.css / refresh.css sin tocarlos. */
+  .quote-section.qo {
+    --qo-ink: var(--color-black, #0c0a06);
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    text-align: left;
+    min-height: 0;
+    background: var(--qo-ink);
+    isolation: isolate;
+  }
+
+  /* ---------- foto ---------- */
+  .qo .qo-media {
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: 4 / 3;
+    width: 100%;
+  }
+  .qo .qo-media > picture,
+  .qo .qo-media > img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+  .qo .qo-media > picture > img,
+  .qo .qo-media > img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 62%;
+    filter: brightness(0.94);
+    transform: scale(calc(1.1 - 0.1 * var(--p, 1)));
+    transform-origin: 50% 30%;
+    will-change: transform;
+  }
+  /* Angosto: la foto va limpia; sólo un fundido al pie que la casa con la
+     superficie de la cita (no hay texto encima). */
+  .qo .scrim {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgb(12 10 6 / 0) 62%, rgb(12 10 6 / 0.85) 100%);
+    pointer-events: none;
+  }
+
+  /* ---------- cita ---------- */
+  .qo .quote-content {
+    position: relative;
+    z-index: 2;
+    max-width: none;
+    padding: 28px 22px 32px;
+    align-items: flex-start;
+    gap: 18px;
+  }
+  .qo .quote-mark {
+    font-size: clamp(72px, 7vw, 112px);
+    line-height: 0.5;
+    height: 0.36em;
+    margin-bottom: 2px;
+  }
+  .qo blockquote.big-quote {
+    margin: 0;
+    font-family: var(--font-display, 'Geist Variable', sans-serif);
+    font-weight: 500;
+    font-size: clamp(1.5rem, 1.05rem + 1.9vw, 2.875rem); /* 24 → 46px */
+    line-height: 1.12;
+    letter-spacing: -0.025em;
+    text-wrap: balance;
+    color: #fff;
+  }
+  .qo .quote-attr {
+    color: rgb(255 255 255 / 0.72);
+  }
+  .qo .avatar-row {
+    margin-top: 4px;
+  }
+
+  /* ---------- ≥1200px: cita abajo a la izquierda sobre la foto ---------- */
+  @media (min-width: 1200px) {
+    .quote-section.qo--overlay {
+      display: block;
+      min-height: clamp(680px, 50vw, 1000px);
+    }
+    .qo--overlay .qo-media {
+      position: absolute;
+      inset: 0;
+      aspect-ratio: auto;
+    }
+    .qo--overlay .qo-media > picture > img,
+    .qo--overlay .qo-media > img {
+      /* encuadre por abajo: las caras suben a la franja superior */
+      object-position: 50% 100%;
+      transform-origin: 50% 20%;
+    }
+    .qo--overlay .scrim {
+      background:
+        linear-gradient(0deg, rgb(12 10 6 / 0.94) 0%, rgb(12 10 6 / 0.82) 26%, rgb(12 10 6 / 0.35) 50%, rgb(12 10 6 / 0) 66%),
+        linear-gradient(90deg, rgb(12 10 6 / 0.7) 0%, rgb(12 10 6 / 0.3) 40%, rgb(12 10 6 / 0) 62%);
+    }
+    .qo--overlay .quote-content {
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: min(58%, 860px);
+      padding: 0 0 clamp(48px, 4.4vw, 72px) clamp(48px, 4.4vw, 72px);
+      gap: 20px;
+    }
+    .qo--overlay blockquote.big-quote {
+      font-size: clamp(2.25rem, 0.6rem + 2.3vw, 3.25rem); /* 36 → 52px */
+    }
+    /* atribución y avatares en una sola fila: el bloque queda más bajo */
+    .qo--overlay .quote-content {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      justify-items: start;
+      align-items: center;
+      column-gap: 28px;
+      row-gap: 20px;
+    }
+    .qo--overlay .quote-mark,
+    .qo--overlay blockquote.big-quote {
+      grid-column: 1 / -1;
+    }
+    .qo--overlay .avatar-row {
+      margin-top: 0;
+    }
+  }
+
+  /* ---------- compact (cierre): split, nunca superpuesto ---------- */
+  .quote-section.qo--split {
+    min-height: 0;
+  }
+  .qo--split .quote-content {
+    gap: 16px;
+  }
+  .qo--split blockquote.big-quote {
+    font-size: clamp(1.25rem, 1rem + 1vw, 1.75rem);
+    line-height: 1.3;
+    font-weight: 450;
+    letter-spacing: -0.012em;
+  }
+  .qo--split .quote-mark {
+    font-size: clamp(56px, 5vw, 80px);
+  }
+  @media (min-width: 1200px) {
+    .quote-section.qo--split {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      min-height: clamp(380px, 32vw, 520px);
+    }
+    .qo--split .qo-media {
+      order: 2;
+      aspect-ratio: auto;
+      height: 100%;
+    }
+    .qo--split .scrim {
+      background: linear-gradient(90deg, rgb(12 10 6 / 0.55) 0%, rgb(12 10 6 / 0) 22%);
+    }
+    .qo--split .quote-content {
+      order: 1;
+      justify-content: flex-end;
+      padding: clamp(40px, 4vw, 64px);
+    }
+  }
+
+  @media (min-width: 721px) and (max-width: 1199px) {
+    .qo .qo-media {
+      aspect-ratio: 16 / 9;
+    }
+    .qo .quote-content {
+      padding: 32px 40px 40px;
+      max-width: 860px;
+    }
+  }
+  @media (max-width: 720px) {
+    .qo .qo-media {
+      aspect-ratio: 5 / 4;
+    }
+    .qo .quote-content {
+      padding: 22px 20px 28px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .qo .qo-media > picture > img,
+    .qo .qo-media > img {
+      transform: none !important;
+    }
+  }
+</style>

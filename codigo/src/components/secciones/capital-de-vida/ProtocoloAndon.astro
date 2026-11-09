@@ -1,0 +1,187 @@
+---
+/**
+ * ProtocoloAndon.astro — Capital de Vida-only, la pieza central. Los cinco
+ * pasos del protocolo personal (Parar · Respirar · Observarse · Reflexionar
+ * · Actuar) nacidos del cordón Andon de Toyota.
+ *
+ * Rediseño 21/10/2026: el cordón es una línea que se TENSA con el scroll
+ * (data-scrub → --p) y cada nodo se enciende cuando la línea lo alcanza.
+ * Numeración mono enorme 01–05, palabra display, bajada y la cita textual
+ * del Cap. 8 donde el libro la da. Sin JS / reduced-motion: --p vale 1 y
+ * todo queda encendido.
+ */
+interface Step {
+  word: string;
+  caption: string;
+  quote?: string;
+  source?: string;
+}
+
+interface Props {
+  steps: Step[];
+}
+
+const { steps } = Astro.props;
+---
+
+<div class="protocol" data-scrub style={`--n:${steps.length}`}>
+  <div class="protocol-cord" aria-hidden="true"><i></i></div>
+  <ol class="protocol-steps">
+    {
+      steps.map((s, i) => (
+        <li class="protocol-step" style={`--i:${i}`}>
+          <span class="protocol-node" aria-hidden="true">
+            <span class="protocol-node-dot" />
+          </span>
+          <span class="protocol-step-num ed-mono">{`0${i + 1}`}</span>
+          <span class="protocol-step-word">{s.word}</span>
+          <p class="protocol-step-caption">{s.caption}</p>
+          {s.quote && (
+            <blockquote class="protocol-step-quote">
+              <span>&ldquo;{s.quote}&rdquo;</span>
+              {s.source && <footer class="ed-mono">{s.source}</footer>}
+            </blockquote>
+          )}
+        </li>
+      ))
+    }
+  </ol>
+</div>
+
+<style>
+  .protocol {
+    position: relative;
+    margin-top: clamp(48px, 6vw, 96px);
+    /* avance del cordón: llega al final cuando la sección va por el 60% */
+    --c: min(1, calc(var(--p, 1) * 1.7 - 0.15));
+  }
+  .protocol-cord {
+    position: absolute;
+    top: 6px;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: var(--ed-line-strong);
+  }
+  .protocol-cord i {
+    position: absolute;
+    inset: 0;
+    background: var(--ed-accent);
+    box-shadow: 0 0 12px rgb(232 200 116 / 0.6);
+    transform-origin: left;
+    transform: scaleX(max(0, var(--c)));
+  }
+  .protocol-steps {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 0;
+  }
+  .protocol-step {
+    /* 1 cuando el cordón pasó por este nodo */
+    --on: clamp(0, calc((var(--c) * var(--n) - var(--i)) * 2), 1);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 44px clamp(12px, 1.6vw, 24px) 0 0;
+    border-right: 1px solid var(--ed-line);
+    margin-right: clamp(12px, 1.6vw, 24px);
+    opacity: calc(0.3 + var(--on) * 0.7);
+  }
+  .protocol-step:last-child {
+    border-right: 0;
+    margin-right: 0;
+  }
+  .protocol-node {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 13px;
+    height: 13px;
+    border-radius: 999px;
+    background: var(--ed-bg);
+    box-shadow: 0 0 0 1px rgb(255 255 255 / 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .protocol-node-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 999px;
+    background: var(--ed-accent);
+    transform: scale(var(--on));
+  }
+  .protocol-step-num {
+    font-size: clamp(2.5rem, 1.2rem + 3vw, 4.5rem);
+    letter-spacing: -0.04em;
+    font-weight: 300;
+    line-height: 1;
+    color: var(--ed-accent);
+    margin-bottom: 18px;
+  }
+  .protocol-step-word {
+    font-family: var(--ed-display);
+    font-weight: 560;
+    font-size: clamp(1.6rem, 1rem + 1.4vw, 2.4rem);
+    letter-spacing: -0.04em;
+    line-height: 1.02;
+    margin-bottom: 14px;
+    word-break: break-word;
+  }
+  .protocol-step-caption {
+    font-size: 15px;
+    line-height: 1.5;
+    color: rgb(255 255 255 / 0.7);
+    margin: 0 0 18px;
+  }
+  .protocol-step-quote {
+    margin: 0;
+    font-family: var(--ed-serif);
+    font-style: italic;
+    font-size: clamp(1.05rem, 0.95rem + 0.4vw, 1.3rem);
+    line-height: 1.3;
+    color: #fff;
+    padding-top: 14px;
+    border-top: 1px solid var(--ed-line-strong);
+  }
+  .protocol-step-quote footer {
+    margin-top: 10px;
+    font-family: var(--ed-mono);
+    font-style: normal;
+    color: rgb(255 255 255 / 0.5);
+    letter-spacing: 0.04em;
+    text-wrap: balance;
+  }
+
+  @media (max-width: 900px) {
+    .protocol-cord {
+      top: 0;
+      bottom: 0;
+      left: 6px;
+      right: auto;
+      width: 1px;
+      height: auto;
+    }
+    .protocol-cord i {
+      transform-origin: top;
+      transform: scaleY(max(0, var(--c)));
+    }
+    .protocol-steps {
+      grid-template-columns: 1fr;
+      gap: 48px;
+    }
+    .protocol-step {
+      padding: 0 0 0 36px;
+      border-right: 0;
+      margin-right: 0;
+    }
+    .protocol-node {
+      top: 6px;
+      left: 0;
+    }
+  }
+</style>

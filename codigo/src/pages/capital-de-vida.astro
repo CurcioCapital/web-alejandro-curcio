@@ -1,0 +1,557 @@
+---
+/**
+ * capital-de-vida.astro — Capital de Vida section. Built from the shared
+ * design-system components in src/components/ (InsetHeroCard, SectionWhite,
+ * SectionPhoto, MediaCard, BlurImage, Reveal, PillButton — see
+ * src/pages/index.astro, the reference for how these compose) + the kit
+ * component src/components/kit/QuoteRotator.astro + a set of
+ * section-only components under src/components/secciones/capital-de-vida/
+ * for the pieces the shared kit doesn't cover (the pull-quote, the
+ * five-step protocol centerpiece, the Kaizen block, the tres-fuegos cards).
+ *
+ * Copy source: sitio-copy/capital-de-vida.md — the richest verified-quote
+ * file in the project (26 quotes in quotes_used, all traced below).
+ * Depth source: Empresa/Curcio Capital.md, Empresa/Kaizen.md,
+ * Alejandro/Génesis de Ale.md (the forjar → sistematizar → transmitir
+ * mechanism and the D8 rule — "forjado, no heredado": adversity and
+ * self-construction always come before legacy framing, never "heredero").
+ * Media: public/media/manifest.json — retrato-estudio, padre-hijo-barco-v/h,
+ * guinness-01/02/03, capital-de-vida-front, and the fiat600r video poster
+ * (the one existing asset tied to the padre anecdote) are the assets used;
+ * no invented imagery for the two crisis years that have no period photo
+ * (1982, 2001) — those cards render typographic, same principle as
+ * negocios/ApuestaCard.
+ */
+import Base from '../layouts/Base.astro';
+import '../components/secciones/libros/ed.css';
+import EdSection from '../components/secciones/libros/EdSection.astro';
+import EdHero from '../components/secciones/libros/EdHero.astro';
+import BlurImage from '../components/BlurImage.astro';
+import MediaCard from '../components/MediaCard.astro';
+import QuoteRotator from '../components/kit/QuoteRotator.astro';
+
+import PullQuote from '../components/secciones/capital-de-vida/PullQuote.astro';
+import ProtocoloAndon from '../components/secciones/capital-de-vida/ProtocoloAndon.astro';
+import KaizenBlock from '../components/secciones/capital-de-vida/KaizenBlock.astro';
+import TresFuegos from '../components/secciones/capital-de-vida/TresFuegos.astro';
+
+const protocolSteps = [
+	{
+		word: 'Parar',
+		caption: 'El momento que el libro llama la pausa sagrada.',
+		quote: 'Cada vez que siento que el fuego de mi emoción comienza a levantar rápidamente temperatura… STOP.',
+		source: 'Capital de Vida, Cap. 8',
+	},
+	{
+		word: 'Respirar',
+		caption: 'Bajar la temperatura del cuerpo antes de decidir nada.',
+	},
+	{
+		word: 'Observarse',
+		caption: 'Separar la emoción de la identidad.',
+		quote:
+			'Si es bronca lo que estoy sintiendo, mi reflexión es: Estoy experimentando bronca en mi cuerpo; y nunca debo pensar: Tengo bronca.',
+		source: 'Capital de Vida, Cap. 8',
+	},
+	{
+		word: 'Reflexionar',
+		caption: 'Buscar la salida donde todos ganan.',
+		quote: 'Intento pensar en distintas soluciones que tendrían como resultado una situación favorable para todos.',
+		source: 'Capital de Vida, Cap. 8',
+	},
+	{
+		word: 'Actuar',
+		caption: 'Decidir contra los propios valores, no contra el impulso.',
+		quote: 'Me gusta utilizarla porque me genera el espacio que necesito para evaluar mis decisiones de acuerdo a mis valores de vida.',
+		source: 'Capital de Vida, Cap. 8',
+	},
+];
+
+const quoteRotatorItems = [
+	{
+		quote:
+			'El dinero es una invención, no es real; lo único verdadero son las ideas que terminan manifestándose en el mundo real a través de una gran obra.',
+		author: 'Alejandro Curcio',
+		detail: 'Capital de Vida, Cap. 1',
+		avatarSrc: '/media/img/ale-living-640.jpg',
+	},
+	{
+		quote: 'El dinero es como un martillo, sirve tanto para construir —una vida— como para destruir —una vida—.',
+		author: 'Alejandro Curcio',
+		detail: 'Capital de Vida, Cap. 10',
+		avatarSrc: '/media/img/guinness-01-640.jpg',
+	},
+	{
+		quote:
+			'Lo importante no es perseguir a la riqueza, sino el poder verla como un medio para lograr un cierto estado de tranquilidad mental.',
+		author: 'Alejandro Curcio',
+		detail: 'Capital de Vida, Cap. 10',
+		avatarSrc: '/media/img/guinness-03-640.jpg',
+	},
+	{
+		quote: 'No hay nada más poderoso que un ser humano con un propósito de vida.',
+		author: 'Alejandro Curcio',
+		detail: 'Capital de Vida, Cap. 12',
+		avatarSrc: '/media/img/padre-hijo-barco-h-640.jpg',
+	},
+];
+
+const fuegos = [
+	{
+		year: '1982',
+		label: 'La económica',
+		title: 'La casa hipotecada',
+		body: 'Emilio J. Curcio fundó AYAX en 1945. En 1982 hipotecó todo, incluso la casa familiar, para sostener la empresa — Alejandro nunca lo vio quejarse. La crisis vuelve entre 1999 y 2001, con él ya adentro: entró en 1995, director joven, con la casa tambaleando otra vez.',
+		imgSrc: '/media/video/fiat600r-poster.jpg',
+		imgAlt: 'Fotograma del video donde Alejandro Curcio cuenta la anécdota de su padre y el Fiat 600R',
+		quotes: [
+			{ text: 'Mi padre nunca se da por vencido, incluso teniendo todos los pronósticos en contra.', attribution: 'Capital de Vida, Cap. 1' },
+			{ text: 'Mente fría, corazón caliente.', attribution: 'Emilio J. Curcio, citado por Alejandro Curcio — Cap. 3' },
+		],
+	},
+	{
+		year: '2001',
+		label: 'La personal',
+		title: 'El año que le dio nombre al concepto',
+		body: 'Cáncer de piel, divorcio y una empresa al borde de la quiebra, los tres en el mismo año — mientras estaba en Japón durante el 11 de septiembre. De esa convergencia, cuenta, nace la necesidad de lo que años después tituló su primer libro.',
+	},
+	{
+		year: 'El cuerpo',
+		label: 'La corporal',
+		title: 'El cuerpo como laboratorio',
+		body: 'El pánico de un casi ahogamiento haciendo kitesurf. Un calabozo en Nueva York, 24 horas preso por una acusación falsa — contado contra sí mismo, no a su favor. Después, el hielo: el récord Guinness Ice Challenge, adentro del barril, no en el palco.',
+		imgId: 'guinness-02',
+		imgAlt: 'Ice Challenge 2024 — entrada al barril de hielo',
+		quotes: [
+			{ text: 'En resumen, fui rehén de mi sistema límbico, que le pasó por arriba a mi lóbulo frontal.', attribution: 'Capital de Vida, Cap. 7' },
+		],
+	},
+];
+---
+
+<Base
+	title="Capital de Vida — Alejandro Curcio"
+	description="El libro que sistematiza el legado de valores: el protocolo de cinco pasos nacido del cordón Andon, Kaizen aplicado a la vida y las crisis que lo forjaron."
+>
+	<!-- HERO -->
+	<EdHero
+		variant="split"
+		imgId="ale-brazos"
+		imgAlt="Alejandro Curcio sonriendo de brazos cruzados, fondo de estudio azul"
+		focus="50% 18%"
+		kicker="Capital de Vida · 2018 · Editorial Conecta"
+		title="El verdadero capital no está en el banco."
+		sub="Un sistema de valores, principios y herramientas para la vida. Forjado en caídas, no recibido en bandeja."
+		ctaHref="#origen"
+		ctaLabel="Conocé el origen"
+		ctaArrow="down"
+		titleTag="h1"
+		titleSize="md"
+		n="00"
+		eager
+	/>
+
+	<!-- EL ORIGEN -->
+	<EdSection
+		id="origen"
+		n="01"
+		tone="light"
+		sheet
+		kicker="El origen"
+		title="Un legado que se observa, no se recibe."
+		lead="Alejandro Curcio no recibió un imperio. Recibió algo más difícil de transferir: conducta observada. Su padre, Emilio J. Curcio, fundó AYAX en 1945. En 1982 hipotecó todo, incluso la casa familiar, para sostener la empresa. Nunca lo vio quejarse."
+	>
+		<div class="cdv-row">
+			<div class="cdv-col-text">
+				<p class="cdv-para" data-reveal>
+					Esa escena —la adversidad enfrentada con método y temple— fue el verdadero capital que
+					Alejandro tomó de él. En 2015, Don Emilio transfirió las acciones a sus hijos y nietos.
+					Pero para entonces Alejandro ya había entendido que lo valioso no eran los papeles. En
+					2017 formalizó el «Estilo Comercial Curcio Capital», el documento madre de cultura y
+					principios que hoy vive en curciocapital.com.
+				</p>
+				<PullQuote
+					quote="El capital de vida constituido por el legado de valores y principios heredados de nuestro fundador"
+					attribution='Alejandro Curcio, sobre el logo de Curcio Capital — dos "C": Curcio y Capital'
+				/>
+				<p class="cdv-para" data-reveal>
+					Legado de valores. No herencia material. Valores que hubo que convertir en sistema
+					propio.
+				</p>
+			</div>
+			<div class="cdv-col-media ed-crop" data-reveal="mask">
+				<div class="cdv-media-in" data-parallax="-0.08">
+					<BlurImage
+						id="padre-hijo-barco-v"
+						alt="Alejandro Curcio junto a su hijo Lucca, con un trofeo en forma de barco"
+						class="cdv-media-img"
+					/>
+				</div>
+			</div>
+		</div>
+
+		<h3 class="cdv-subhead"><span class="ed-mono" aria-hidden="true">01.1</span>Qué es el Capital de Vida</h3>
+
+		<div class="cdv-row cdv-row--reverse">
+			<div class="cdv-col-media cdv-col-media--cover" data-ed-tilt="12">
+				<div class="ed-tilt__obj ed-crop">
+					<MediaCard
+						id="capital-de-vida-front"
+						kind="cover"
+						size="sm"
+						ratio="2048 / 3216"
+						alt="Tapa del libro Capital de Vida, de Alejandro Curcio"
+					/>
+				</div>
+			</div>
+			<div class="cdv-col-text">
+				<PullQuote
+					quote="Todo ese gran paquete de información y herramientas para la vida compuesto por nuestros valores, creencias, experiencias y principios es lo que denomino capital de vida."
+					attribution="Capital de Vida, Introducción"
+				/>
+				<p class="cdv-para" data-reveal>
+					Es la convicción central: no puede haber un juego de valores para la casa y otro para
+					la empresa.
+				</p>
+				<PullQuote
+					size="sm"
+					quote="Si a mis hijos, en casa, les fomento la importancia de la honestidad y la integridad, pero cuando van a la empresa les digo 'si podemos hacer trampa, mejor', estoy generando una grave inconsistencia en el mensaje que les quiero legar."
+					attribution='Pilar "La Intimidad"'
+				/>
+			</div>
+		</div>
+
+		<div class="cdv-pilares">
+			<span class="cdv-pilares-label ed-mono">Los tres pilares del Estilo</span>
+			<div class="cdv-pilares-tags">
+				<span class="cdv-tag" data-reveal><i class="ed-mono" aria-hidden="true">01</i>Mejora Continua</span>
+				<span class="cdv-tag" data-reveal><i class="ed-mono" aria-hidden="true">02</i>Respeto hacia las Personas</span>
+				<span class="cdv-tag" data-reveal><i class="ed-mono" aria-hidden="true">03</i>Crecimiento Sustentable</span>
+			</div>
+			<p class="cdv-mission" data-split="lines">«El cliente primero, el cliente fiel, el cliente para toda la vida.»</p>
+		</div>
+	</EdSection>
+
+	<!-- PROTOCOLO — LA PIEZA CENTRAL -->
+	<EdSection
+		id="protocolo"
+		n="02"
+		sheet
+		kicker="La pieza central · Cap. 7-9"
+		title="El cordón que se tira antes de romper."
+		lead="En las fábricas Toyota hay un mecanismo llamado cordón Andon: cada vez que un empleado detecta un error en la línea de ensamblado, tira de un cordón que automáticamente detiene todo el proceso productivo. La lógica es contraintuitiva pero impecable — parar todo cuesta menos que dejar avanzar un defecto."
+	>
+		<div class="cdv-narrow">
+			<PullQuote
+				quote="Si se deja avanzar el problema, el costo final es muy grande y el daño muy difícil —si no imposible— de solucionar."
+				attribution="Capital de Vida, Cap. 8"
+			/>
+
+			<p class="cdv-para" data-reveal>
+				Alejandro aprendió esta lección del modo más duro posible. En una tienda de Nueva York fue
+				acusado falsamente y pasó 24 horas preso. Su relato del Capítulo 7 del libro es
+				brutalmente honesto — lo cuenta contra sí mismo, no a su favor.
+			</p>
+
+			<PullQuote
+				quote="En resumen, fui rehén de mi sistema límbico, que le pasó por arriba a mi lóbulo frontal."
+				attribution="Capital de Vida, Cap. 7"
+			/>
+
+			<p class="cdv-para" data-reveal>De esa experiencia nació su conclusión personal.</p>
+		</div>
+
+		<div class="cdv-quote-pair">
+			<PullQuote size="sm" quote="Era tiempo de que me inventara mi propio cordón Andon." attribution="Capital de Vida, Cap. 7" />
+			<PullQuote
+				size="sm"
+				quote="La autoconciencia es la capacidad para entender nuestras emociones y dominarlas a tiempo."
+				attribution="Capital de Vida, Cap. 7"
+			/>
+		</div>
+
+		<h3 class="cdv-subhead"><span class="ed-mono" aria-hidden="true">02.1</span>El protocolo: cinco pasos</h3>
+		<p class="cdv-para" data-reveal>
+			Del cordón Andon nació un protocolo personal aplicable a cualquier situación
+			emocionalmente cargada.
+		</p>
+
+		<ProtocoloAndon steps={protocolSteps} />
+
+		<div class="cdv-protocol-close">
+			<p class="cdv-para" data-reveal>Porque, en el fondo, todo el mundo quiere lo mismo.</p>
+			<PullQuote size="sm" quote="Todo el mundo quiere ser feliz y desea evitar el dolor." attribution="Capital de Vida, Cap. 8" />
+		</div>
+	</EdSection>
+
+	<!-- KAIZEN -->
+	<EdSection
+		id="kaizen"
+		n="03"
+		tone="light"
+		sheet
+		kicker="Kaizen · 改善"
+		title="Mejorar todos los días, aunque hoy esté perfecto."
+		lead="Kaizen no es una herramienta de fábrica. Es la manera en que Alejandro piensa el negocio, la familia y la propia vida — el puente entre la historia empresarial y el método personal."
+	>
+		<KaizenBlock
+			ohnoQuote="No importa cuántas veces haya sido mejorado, cada parte en la línea de producción está llena de desperdicios, y aunque hoy esté perfecta, mañana cambiará y el desperdicio volverá a crecer."
+			ohnoSource="Taiichi Ohno, citado en curciocapital.com"
+		/>
+
+		<div class="cdv-quote-pair">
+			<PullQuote
+				size="sm"
+				quote="La velocidad sin dirección puede destruir la cadena de valor. La innovación sin calidad puede destruir confianza."
+				attribution="Alejandro Curcio — El País, 09/08/2026"
+			/>
+			<PullQuote
+				size="sm"
+				quote="La cultura japonesa nos enseñó el valor de la calidad, la mejora continua, el respeto, la palabra y el largo plazo."
+				attribution="Alejandro Curcio — El País, 09/08/2026"
+			/>
+		</div>
+	</EdSection>
+
+	<!-- FRASES — QUOTE ROTATOR -->
+	<EdSection
+		id="frases"
+		n="04"
+		sheet
+		kicker="En sus palabras"
+		title="Un solo mapa de valores."
+		lead="Cuatro citas del libro, sobre el dinero, la felicidad y el propósito. El mismo mapa que usa en la empresa y en la casa."
+	>
+		<div class="cdv-rotator ed-crop">
+			<QuoteRotator items={quoteRotatorItems} dwell={4200} />
+		</div>
+	</EdSection>
+
+	<!-- TRES FUEGOS -->
+	<EdSection
+		id="tres-fuegos"
+		n="05"
+		tone="dark2"
+		kicker="Tres fuegos"
+		title="No vino de la teoría. Vino de romperse tres veces."
+		lead="Su credibilidad no viene de la lectura. Viene de tres tipos de crisis atravesadas — y las cuenta sin heroísmo."
+	>
+		<TresFuegos fuegos={fuegos} />
+	</EdSection>
+
+	<!-- CTA FINAL -->
+	<EdHero
+		id="libros"
+		variant="cta"
+		imgId="capital-de-vida-front"
+		imgKind="cover"
+		imgAlt="Tapa del libro Capital de Vida, de Alejandro Curcio"
+		kicker="Capital de Vida"
+		title="El método completo está en los libros."
+		sub="«Hacé lo que tengas que hacer hasta que puedas hacer lo que querés.» El protocolo completo, con historias y capítulos, está en el libro."
+		ctaHref="/libros"
+		ctaLabel="Leé Capital de Vida"
+		titleSize="md"
+		n="06"
+	/>
+</Base>
+
+<style>
+	.cdv-row {
+		display: grid;
+		grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+		gap: clamp(32px, 6vw, 112px);
+		align-items: center;
+		margin-top: clamp(48px, 6vw, 96px);
+	}
+	.cdv-row--reverse {
+		grid-template-columns: minmax(0, 0.45fr) minmax(0, 1.2fr);
+	}
+	.cdv-row--reverse .cdv-col-media {
+		order: -1;
+	}
+	.cdv-para {
+		max-width: 60ch;
+		font-size: clamp(1.0625rem, 1rem + 0.25vw, 1.25rem);
+		line-height: 1.65;
+		color: rgb(12 10 6 / 0.74);
+		margin: 8px 0 0;
+	}
+	:global(.ed-sec:not(.ed-sec--light)) .cdv-para {
+		color: rgb(255 255 255 / 0.72);
+	}
+	.cdv-col-media {
+		position: relative;
+		border-radius: var(--ed-r-lg);
+		align-self: stretch;
+		min-height: 420px;
+	}
+	.cdv-media-in {
+		position: absolute;
+		inset: -8% 0;
+		border-radius: inherit;
+		overflow: hidden;
+	}
+	.cdv-col-media:not(.cdv-col-media--cover) {
+		overflow: hidden;
+	}
+	.cdv-col-media :global(.cdv-media-img) {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		display: block;
+	}
+	.cdv-col-media--cover {
+		min-height: 0;
+		align-self: center;
+		max-width: 280px;
+		perspective: 1200px;
+	}
+	.cdv-col-media--cover :global(.media-card) {
+		box-shadow: 0 40px 80px rgb(12 10 6 / 0.3);
+	}
+	.cdv-subhead {
+		display: flex;
+		align-items: baseline;
+		gap: 18px;
+		font-family: var(--ed-display);
+		font-weight: 560;
+		font-size: var(--fs-display-3, clamp(1.75rem, 1.15rem + 2.4vw, 3.75rem));
+		line-height: 1.02;
+		letter-spacing: -0.04em;
+		text-wrap: balance;
+		margin: clamp(72px, 9vw, 140px) 0 16px;
+		padding-top: 20px;
+		border-top: 1px solid currentColor;
+	}
+	.cdv-subhead .ed-mono {
+		font-family: var(--ed-mono);
+		font-weight: 500;
+		letter-spacing: 0.08em;
+		flex: none;
+		color: var(--ed-accent-ink);
+	}
+	:global(.ed-sec:not(.ed-sec--light)) .cdv-subhead {
+		border-top-color: var(--ed-line-strong);
+	}
+	:global(.ed-sec:not(.ed-sec--light)) .cdv-subhead .ed-mono {
+		color: var(--ed-accent);
+	}
+	.cdv-narrow {
+		max-width: 1080px;
+		margin-top: clamp(24px, 4vw, 56px);
+	}
+	.cdv-quote-pair {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: clamp(24px, 4vw, 72px);
+		margin-top: 24px;
+		padding-top: 12px;
+		border-top: 1px solid var(--ed-line-strong);
+	}
+	:global(.ed-sec--light) .cdv-quote-pair {
+		border-top-color: rgb(12 10 6 / 0.14);
+	}
+	.cdv-quote-pair :global(.cdv-quote) {
+		margin: 24px 0 0;
+	}
+	.cdv-protocol-close {
+		margin-top: clamp(56px, 7vw, 112px);
+		padding-top: 32px;
+		border-top: 1px solid var(--ed-line-strong);
+	}
+	.cdv-pilares {
+		margin-top: clamp(72px, 9vw, 140px);
+		padding-top: 24px;
+		border-top: 1px solid rgb(12 10 6 / 0.2);
+	}
+	.cdv-pilares-label {
+		display: block;
+		color: var(--ed-accent-ink);
+		margin-bottom: 22px;
+	}
+	.cdv-pilares-tags {
+		display: grid;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		gap: 0;
+		margin-bottom: clamp(40px, 5vw, 72px);
+		border: 1px solid rgb(12 10 6 / 0.16);
+		border-radius: 18px;
+		overflow: hidden;
+	}
+	.cdv-tag {
+		display: flex;
+		flex-direction: column;
+		gap: 28px;
+		padding: 22px;
+		font-family: var(--ed-display);
+		font-weight: 540;
+		font-size: clamp(1.375rem, 1rem + 1vw, 2rem);
+		line-height: 1.05;
+		letter-spacing: -0.035em;
+		color: var(--ed-ink);
+		transition: background 0.5s var(--ed-expo), color 0.5s var(--ed-expo);
+	}
+	.cdv-tag + .cdv-tag {
+		border-left: 1px solid rgb(12 10 6 / 0.16);
+	}
+	.cdv-tag i {
+		font-style: normal;
+		color: var(--ed-accent-ink);
+	}
+	.cdv-tag:hover {
+		background: var(--ed-ink);
+		color: #fff;
+	}
+	.cdv-tag:hover i {
+		color: var(--ed-accent);
+	}
+	.cdv-mission {
+		font-family: var(--ed-serif);
+		font-style: italic;
+		font-size: clamp(2rem, 1rem + 3.6vw, 4.75rem);
+		line-height: 1.02;
+		letter-spacing: -0.015em;
+		color: var(--ed-ink);
+		max-width: 18em;
+		margin: 0;
+		text-wrap: balance;
+	}
+	.cdv-rotator {
+		margin-top: clamp(48px, 6vw, 88px);
+	}
+
+	@media (max-width: 900px) {
+		.cdv-row,
+		.cdv-row--reverse {
+			grid-template-columns: 1fr;
+			gap: 32px;
+		}
+		.cdv-row--reverse .cdv-col-media {
+			order: 0;
+		}
+		.cdv-col-media {
+			min-height: 360px;
+		}
+		.cdv-col-media--cover {
+			max-width: 180px;
+			min-height: 0;
+		}
+		.cdv-quote-pair {
+			grid-template-columns: 1fr;
+			gap: 0;
+		}
+		.cdv-pilares-tags {
+			grid-template-columns: 1fr;
+		}
+		.cdv-tag {
+			flex-direction: row;
+			align-items: baseline;
+			gap: 16px;
+		}
+		.cdv-tag + .cdv-tag {
+			border-left: 0;
+			border-top: 1px solid rgb(12 10 6 / 0.16);
+		}
+	}
+</style>

@@ -1,0 +1,654 @@
+---
+/**
+ * Timeline.astro — /historia. La pieza central: 1945→2026.
+ *
+ * REDISEÑO 21/10/2026 (referencia landonorris.com). Mismos datos y mismo
+ * orden que antes —eras con un flujo de bloques milestone/text/quote, que
+ * sale de src/data/timeline.json vía historia.astro—; cambia el tratamiento:
+ *
+ *  · DESKTOP (≥1024px y sin reduced-motion): recorrido HORIZONTAL pineado.
+ *    Un contenedor alto con un escenario sticky de 100vh; el scroll vertical
+ *    mueve la pista en X. Abajo, una telemetría: año que cuenta mientras
+ *    avanzás (interpolado entre los hitos), era activa, porcentaje y una
+ *    barra con una marca por hito.
+ *  · MÓVIL / reduced-motion / sin JS: vertical, apilado y legible. En móvil
+ *    la telemetría queda como una cápsula sticky al pie.
+ *
+ * Regla del proyecto (D8, la adversidad antes que el apellido): los hitos
+ * `pivot` (1982 y 1999–2001) son paneles MÁS anchos, con el año en el
+ * degradé dorado y marco con crop-marks: nunca más chicos que las victorias.
+ *
+ * Mecánica con scroll + getBoundingClientRect + rAF (no IntersectionObserver:
+ * en el preview del proyecto no dispara). Sólo se anima transform/opacity.
+ * El estado «vivo» cuelga de .is-live, que pone el script.
+ */
+
+interface MilestoneBlock {
+  type: 'milestone';
+  year: number;
+  label: string;
+  body: string;
+  pivot?: boolean;
+}
+interface TextBlock {
+  type: 'text';
+  text: string;
+}
+interface QuoteBlock {
+  type: 'quote';
+  text: string;
+  attribution: string;
+}
+type Block = MilestoneBlock | TextBlock | QuoteBlock;
+
+interface Era {
+  id: string;
+  range: string;
+  title: string;
+  blocks: Block[];
+}
+
+interface Props {
+  eras: Era[];
+  class?: string;
+}
+
+const { eras, class: className = '' } = Astro.props;
+
+const years = eras.flatMap((e) => e.blocks.filter((b): b is MilestoneBlock => b.type === 'milestone'));
+const first = years[0]?.year ?? 0;
+const pad2 = (n: number) => String(n).padStart(2, '0');
+---
+
+<div class:list={['tlx', className]} data-tlx>
+  <div class="tlx-stage">
+    <div class="tlx-track" data-tlx-track>
+      <div class="tlx-panel tlx-panel--intro">
+        <slot name="intro" />
+      </div>
+
+      {
+        eras.map((era, ei) => (
+          <div class="tlx-era" data-era={era.id} data-era-range={era.range}>
+            <div class="tlx-panel tlx-panel--head" data-tlx-head>
+              <span class="tlx-era-idx pa-mono" aria-hidden="true">
+                Era {pad2(ei + 1)} / {pad2(eras.length)}
+              </span>
+              <span class="tlx-era-range">{era.range}</span>
+              <h3 class="tlx-era-title pa-display">{era.title}</h3>
+            </div>
+
+            {era.blocks.map((block) => {
+              if (block.type === 'milestone') {
+                return (
+                  <article
+                    class:list={['tlx-panel', 'tlx-panel--ms', block.pivot && 'is-pivot', block.pivot && 'pa-crop']}
+                    data-tlx-year={block.year}
+                  >
+                    <span class="tlx-year pa-display">{block.year}</span>
+                    <div class="tlx-ms-body">
+                      <span class="tlx-ms-label">{block.label}</span>
+                      <p>{block.body}</p>
+                    </div>
+                  </article>
+                );
+              }
+              if (block.type === 'quote') {
+                return (
+                  <figure class="tlx-panel tlx-panel--quote pa-quote">
+                    <span class="tlx-qmark" aria-hidden="true">
+                      &ldquo;
+                    </span>
+                    <blockquote>{block.text}</blockquote>
+                    <figcaption>{block.attribution}</figcaption>
+                  </figure>
+                );
+              }
+              return (
+                <div class="tlx-panel tlx-panel--text">
+                  <p>{block.text}</p>
+                </div>
+              );
+            })}
+          </div>
+        ))
+      }
+      <div class="tlx-panel tlx-panel--end" aria-hidden="true"></div>
+    </div>
+
+    <!-- Telemetría: decorativa (aria-hidden). Todo lo que muestra ya está
+         en la línea: años de los hitos, nombres de las eras. -->
+    <div class="tlx-hud" aria-hidden="true">
+      <div class="tlx-hud-year">
+        <span class="tlx-hud-k pa-mono">Año</span>
+        <span class="tlx-hud-num" data-tlx-num>{first}</span>
+      </div>
+      <div class="tlx-hud-mid">
+        <div class="tlx-hud-meta pa-mono">
+          <span data-tlx-era>{eras[0]?.range}</span>
+          <span><span data-tlx-pct>000</span>%</span>
+        </div>
+        <div class="tlx-hud-bar">
+          <span class="tlx-hud-fill" data-tlx-fill></span>
+          {
+            years.map((m, i) => (
+              <span
+                class:list={['tlx-tick', m.pivot && 'is-pivot']}
+                data-tlx-tick={i}
+                style={`--i:${i};--n:${years.length - 1}`}
+              >
+                <b>{String(m.year).slice(2)}</b>
+              </span>
+            ))
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  /* ======================= BASE (vertical) ======================= */
+  .tlx {
+    position: relative;
+    --tlx-gold: var(--oro-degrade, linear-gradient(135deg, #b8892a 0%, #e8c874 46%, #c9992f 100%));
+  }
+  .tlx-track {
+    position: relative;
+  }
+  .tlx-era {
+    position: static;
+  }
+  .tlx-panel {
+    position: relative;
+  }
+  .tlx-panel--intro {
+    padding-bottom: clamp(40px, 6vw, 80px);
+  }
+  .tlx-panel--end {
+    display: none;
+  }
+
+  .tlx-panel--head {
+    padding: clamp(64px, 9vw, 120px) 0 28px;
+    border-top: 1px solid var(--pa-line-strong);
+  }
+  .tlx-era-idx {
+    display: block;
+    color: var(--ink-low, rgb(255 255 255 / 0.45));
+    margin-bottom: 18px;
+  }
+  .tlx-era-range {
+    display: block;
+    font-family: var(--pa-mono);
+    font-size: 13px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--pa-accent);
+    margin-bottom: 16px;
+  }
+  .tlx-era-title {
+    font-size: clamp(36px, 5vw, 84px);
+    max-width: 14ch;
+    color: #fff;
+  }
+
+  .tlx-panel--ms {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+    gap: 14px clamp(24px, 4vw, 64px);
+    align-items: end;
+    padding: clamp(36px, 5vw, 64px) 0;
+    border-top: 1px solid var(--pa-line);
+  }
+  .tlx-year {
+    font-size: clamp(72px, 10.5vw, 172px);
+    line-height: 0.86;
+    color: #fff;
+    letter-spacing: -0.05em;
+    font-variant-numeric: tabular-nums;
+    display: block;
+  }
+  .tlx-ms-body {
+    max-width: 52ch;
+    padding-bottom: 4px;
+  }
+  .tlx-ms-label {
+    display: block;
+    font-family: var(--pa-mono);
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--pa-accent);
+    margin-bottom: 12px;
+  }
+  .tlx-ms-body p {
+    font-size: 16.5px;
+    line-height: 1.62;
+    color: var(--ink-mid, rgb(255 255 255 / 0.7));
+    margin: 0;
+  }
+
+  /* — CRISIS: mismo o más peso que las victorias — */
+  .tlx-panel--ms.is-pivot {
+    --pa-crop-c: rgb(232 200 116 / 0.7);
+    --pa-crop-o: 0px;
+    padding-left: clamp(18px, 2.4vw, 36px);
+    padding-right: clamp(18px, 2.4vw, 36px);
+    background:
+      repeating-linear-gradient(-45deg, rgb(232 200 116 / 0.05) 0 1px, transparent 1px 11px),
+      linear-gradient(180deg, rgb(232 200 116 / 0.07), transparent 70%);
+    border-top-color: rgb(232 200 116 / 0.5);
+  }
+  .is-pivot .tlx-year {
+    font-size: clamp(84px, 12.4vw, 204px);
+    background: var(--tlx-gold);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: var(--pa-accent);
+  }
+  .is-pivot .tlx-ms-body p {
+    color: var(--ink-hi, rgb(255 255 255 / 0.92));
+    font-size: 17.5px;
+  }
+
+  .tlx-panel--quote {
+    padding: clamp(36px, 5vw, 64px) 0 clamp(36px, 5vw, 64px) clamp(20px, 3vw, 44px);
+    border-left: 1px solid var(--pa-accent);
+    margin: 12px 0;
+    max-width: 30em;
+  }
+  .tlx-qmark {
+    display: block;
+    font-family: var(--pa-serif);
+    font-size: 88px;
+    line-height: 0.6;
+    color: var(--pa-accent);
+    margin-bottom: 8px;
+  }
+  .tlx-panel--quote blockquote {
+    font-size: clamp(26px, 1.2rem + 1.6vw, 44px);
+  }
+
+  .tlx-panel--text {
+    padding: 22px 0 30px;
+  }
+  .tlx-panel--text p {
+    font-size: 18px;
+    line-height: 1.6;
+    color: var(--ink-hi, rgb(255 255 255 / 0.88));
+    max-width: 46ch;
+    margin: 0;
+  }
+
+  /* ---------- HUD ---------- */
+  .tlx-hud {
+    display: none;
+  }
+  .tlx.is-live .tlx-hud {
+    display: grid;
+  }
+  .tlx-hud {
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+    gap: 22px;
+    color: #fff;
+  }
+  .tlx-hud-year {
+    display: grid;
+    gap: 2px;
+  }
+  .tlx-hud-k {
+    color: var(--ink-low, rgb(255 255 255 / 0.45));
+    font-size: 10px;
+  }
+  .tlx-hud-num {
+    font-family: var(--pa-mono);
+    font-weight: 600;
+    font-size: 30px;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums;
+    color: var(--pa-accent);
+  }
+  .tlx-hud-meta {
+    display: flex;
+    justify-content: space-between;
+    gap: 14px;
+    color: var(--ink-mid, rgb(255 255 255 / 0.65));
+    margin-bottom: 10px;
+    white-space: nowrap;
+  }
+  .tlx-hud-bar {
+    position: relative;
+    height: 2px;
+    background: rgb(255 255 255 / 0.14);
+  }
+  .tlx-hud-fill {
+    position: absolute;
+    inset: 0;
+    background: var(--pa-accent);
+    transform-origin: 0 50%;
+    transform: scaleX(0);
+  }
+  .tlx-tick {
+    position: absolute;
+    top: 50%;
+    left: calc(var(--i) / var(--n) * 100%);
+    width: 1px;
+    height: 10px;
+    background: rgb(255 255 255 / 0.4);
+    transform: translate(-50%, -50%);
+    transition: background 300ms;
+  }
+  .tlx-tick.is-pivot {
+    height: 16px;
+    width: 2px;
+    background: var(--pa-accent);
+  }
+  .tlx-tick b {
+    position: absolute;
+    top: 14px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: var(--pa-mono);
+    font-weight: 500;
+    font-size: 9.5px;
+    letter-spacing: 0.04em;
+    color: var(--ink-low, rgb(255 255 255 / 0.45));
+    transition: color 300ms;
+  }
+  .tlx-tick.is-pivot b {
+    top: 18px;
+  }
+  .tlx-tick.is-past {
+    background: var(--pa-accent);
+  }
+  .tlx-tick.is-past b {
+    color: var(--pa-accent);
+  }
+
+  /* ======================= MÓVIL / vertical vivo ======================= */
+  .tlx.is-live:not(.is-h) .tlx-hud {
+    position: sticky;
+    bottom: 12px;
+    z-index: 5;
+    margin-top: 24px;
+    padding: 12px 16px 24px;
+    border-radius: 18px;
+    background: rgb(12 10 6 / 0.82);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: inset 0 0 0 1px var(--pa-line-strong);
+    gap: 16px;
+  }
+  .tlx.is-live:not(.is-h) .tlx-tick b {
+    display: none;
+  }
+  .tlx.is-live:not(.is-h) .tlx-hud-num {
+    font-size: 24px;
+  }
+  /* la cápsula va al final del flujo y se pega al pie mientras la línea pasa */
+  .tlx.is-live:not(.is-h) .tlx-stage {
+    display: flex;
+    flex-direction: column;
+  }
+
+  @media (max-width: 760px) {
+    .tlx-panel--ms {
+      grid-template-columns: 1fr;
+      align-items: start;
+    }
+    .tlx-year {
+      font-size: clamp(72px, 22vw, 116px);
+    }
+    .is-pivot .tlx-year {
+      font-size: clamp(80px, 25vw, 128px);
+    }
+    .tlx-panel--quote blockquote {
+      font-size: clamp(24px, 7vw, 32px);
+    }
+  }
+
+  @media (min-width: 1024px) and (prefers-reduced-motion: no-preference) {
+    .tlx:not(.is-h) .tlx-stage {
+      padding: clamp(88px, 10vw, 140px) var(--pa-pad-x) 80px;
+    }
+  }
+
+  /* ======================= DESKTOP: horizontal pineado ======================= */
+  .tlx.is-h .tlx-stage {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow: hidden;
+    display: grid;
+    grid-template-columns: minmax(0, 100%);
+    grid-template-rows: minmax(0, 1fr) auto;
+  }
+  .tlx.is-h .tlx-track {
+    display: flex;
+    align-items: stretch;
+    height: 100%;
+    width: max-content;
+    padding: var(--pa-head-clear) 0 24px var(--pa-pad-x);
+    will-change: transform;
+  }
+  .tlx.is-h .tlx-era {
+    display: contents;
+  }
+  .tlx.is-h .tlx-panel {
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0 clamp(36px, 3.4vw, 64px);
+    border-top: 0;
+    border-left: 1px solid var(--pa-line);
+    margin: 0;
+  }
+  .tlx.is-h .tlx-panel--intro {
+    width: max-content;
+    border-left: 0;
+    padding-left: 0;
+    padding-right: clamp(60px, 6vw, 120px);
+  }
+  .tlx.is-h .tlx-panel--head {
+    width: clamp(340px, 30vw, 520px);
+    justify-content: center;
+    border-left: 1px solid var(--pa-line-strong);
+  }
+  .tlx.is-h .tlx-era-title {
+    font-size: clamp(40px, 4vw, 72px);
+  }
+  .tlx.is-h .tlx-panel--ms {
+    width: clamp(380px, 36vw, 620px);
+    display: flex;
+    justify-content: center;
+    gap: 5vh;
+  }
+  .tlx.is-h .tlx-year {
+    font-size: min(22vh, 10.5vw);
+    transform: translate3d(calc((1 - var(--e, 1)) * 5vw), 0, 0);
+    opacity: calc(0.25 + var(--e, 1) * 0.75);
+    will-change: transform, opacity;
+  }
+  .tlx.is-h .tlx-ms-body {
+    max-width: 40ch;
+  }
+  .tlx.is-h .tlx-panel--ms.is-pivot {
+    width: clamp(460px, 46vw, 820px);
+    padding-left: clamp(40px, 3.6vw, 68px);
+    padding-right: clamp(40px, 3.6vw, 68px);
+    border-left: 1px solid rgb(232 200 116 / 0.5);
+  }
+  .tlx.is-h .is-pivot .tlx-year {
+    font-size: min(27vh, 13vw);
+  }
+  .tlx.is-h .tlx-panel--quote {
+    width: clamp(360px, 32vw, 560px);
+    border-left: 1px solid var(--pa-accent);
+  }
+  .tlx.is-h .tlx-panel--quote blockquote {
+    font-size: clamp(28px, 2.4vw, 44px);
+  }
+  .tlx.is-h .tlx-panel--text {
+    width: clamp(300px, 24vw, 420px);
+  }
+  .tlx.is-h .tlx-panel--end {
+    display: block;
+    width: 22vw;
+    border-left: 0;
+  }
+  .tlx.is-h .tlx-hud {
+    position: relative;
+    padding: 18px var(--pa-pad-x) 34px;
+    border-top: 1px solid var(--pa-line);
+    background: linear-gradient(0deg, var(--pa-bg) 60%, transparent);
+    gap: 40px;
+  }
+  .tlx.is-h .tlx-hud-num {
+    font-size: 44px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .tlx-year {
+      transform: none !important;
+      opacity: 1 !important;
+    }
+  }
+</style>
+
+<script>
+  const MQ = '(min-width: 1024px) and (prefers-reduced-motion: no-preference)';
+
+  function wire(root: HTMLElement) {
+    const stage = root.querySelector<HTMLElement>('.tlx-stage')!;
+    const track = root.querySelector<HTMLElement>('[data-tlx-track]')!;
+    const ms = [...root.querySelectorAll<HTMLElement>('[data-tlx-year]')];
+    const eras = [...root.querySelectorAll<HTMLElement>('[data-era]')];
+    const ticks = [...root.querySelectorAll<HTMLElement>('[data-tlx-tick]')];
+    const num = root.querySelector<HTMLElement>('[data-tlx-num]')!;
+    const pct = root.querySelector<HTMLElement>('[data-tlx-pct]')!;
+    const eraEl = root.querySelector<HTMLElement>('[data-tlx-era]')!;
+    const fill = root.querySelector<HTMLElement>('[data-tlx-fill]')!;
+    const mq = matchMedia(MQ);
+    const reduced = matchMedia('(prefers-reduced-motion: reduce)');
+
+    let horizontal = false;
+    let dist = 0;
+    let pos: number[] = []; // centro de cada hito en coords de la pista
+    let eraPos: number[] = [];
+    let lastYear = -1;
+    let lastEra = '';
+    let raf = 0;
+
+    root.classList.add('is-live');
+
+    function layout() {
+      horizontal = mq.matches;
+      root.classList.toggle('is-h', horizontal);
+      track.style.transform = '';
+      if (horizontal) {
+        dist = Math.max(0, track.scrollWidth - stage.clientWidth);
+        root.style.height = `${dist + window.innerHeight}px`;
+        pos = ms.map((el) => el.offsetLeft + el.offsetWidth * 0.35);
+        eraPos = eras.map((el) => {
+          const h = el.querySelector<HTMLElement>('[data-tlx-head]');
+          return h ? h.offsetLeft : 0;
+        });
+      } else {
+        root.style.height = '';
+        ms.forEach((el) => el.style.removeProperty('--e'));
+        const base = track.getBoundingClientRect().top;
+        pos = ms.map((el) => el.getBoundingClientRect().top - base + 60);
+        eraPos = eras.map((el) => el.getBoundingClientRect().top - base);
+      }
+      // Cada marca de la barra cae donde la telemetría pasa por ese hito.
+      const span = horizontal ? dist : track.offsetHeight;
+      const off = horizontal ? window.innerWidth * 0.55 : 0;
+      ticks.forEach((t, i) => {
+        const f = span > 0 ? Math.min(1, Math.max(0, (pos[i] - off) / span)) : 0;
+        t.style.left = `${(f * 100).toFixed(2)}%`;
+      });
+      paint();
+    }
+
+    function yearAt(c: number): number {
+      const years = ms.map((el) => Number(el.dataset.tlxYear));
+      if (c <= pos[0]) return years[0];
+      for (let i = 0; i < pos.length - 1; i++) {
+        if (c < pos[i + 1]) {
+          const t = (c - pos[i]) / (pos[i + 1] - pos[i]);
+          return Math.round(years[i] + (years[i + 1] - years[i]) * t);
+        }
+      }
+      return years[years.length - 1];
+    }
+
+    function paint() {
+      raf = 0;
+      const r = root.getBoundingClientRect();
+      const vw = window.innerWidth;
+      const vh = window.innerHeight;
+      let p: number;
+      let c: number;
+      if (horizontal) {
+        const travel = r.height - vh;
+        p = travel > 0 ? Math.min(1, Math.max(0, -r.top / travel)) : 0;
+        const x = p * dist;
+        track.style.transform = `translate3d(${-x}px,0,0)`;
+        c = x + vw * 0.55;
+        // entrada de cada año: 0 cuando el panel asoma a la derecha, 1 al llegar al 40%
+        for (const el of ms) {
+          const left = el.offsetLeft - x;
+          if (left > vw * 1.2 || left + el.offsetWidth < -vw * 0.2) continue;
+          const e = Math.min(1, Math.max(0, (vw - left) / (vw * 0.6)));
+          el.style.setProperty('--e', e.toFixed(3));
+        }
+      } else {
+        const tr = track.getBoundingClientRect();
+        p = Math.min(1, Math.max(0, (vh * 0.6 - tr.top) / tr.height));
+        c = vh * 0.6 - tr.top;
+      }
+
+      const y = yearAt(c);
+      if (y !== lastYear) {
+        num.textContent = String(y);
+        lastYear = y;
+      }
+      let ei = 0;
+      eraPos.forEach((ep, i) => {
+        if (c >= ep - 10) ei = i;
+      });
+      const range = eras[ei]?.dataset.eraRange || '';
+      if (range !== lastEra) {
+        eraEl.textContent = range;
+        lastEra = range;
+      }
+      pct.textContent = String(Math.round(p * 100)).padStart(3, '0');
+      fill.style.transform = `scaleX(${p.toFixed(4)})`;
+      ticks.forEach((t, i) => t.classList.toggle('is-past', c >= pos[i]));
+    }
+
+    const schedule = () => {
+      if (!raf) raf = requestAnimationFrame(paint);
+    };
+    let rz = 0;
+    const relayout = () => {
+      clearTimeout(rz);
+      rz = window.setTimeout(layout, 120);
+    };
+
+    window.addEventListener('scroll', schedule, { passive: true });
+    window.addEventListener('resize', relayout, { passive: true });
+    mq.addEventListener('change', layout);
+    reduced.addEventListener('change', layout);
+    window.addEventListener('load', layout);
+    document.fonts?.ready.then(layout);
+    layout();
+  }
+
+  document.querySelectorAll<HTMLElement>('[data-tlx]').forEach(wire);
+</script>

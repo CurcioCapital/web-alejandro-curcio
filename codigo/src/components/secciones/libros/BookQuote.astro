@@ -1,0 +1,42 @@
+---
+/**
+ * BookQuote.astro — Libros-only. Cita verificada de un libro dentro del
+ * cuerpo de cada libro. Rediseño 21/10/2026: Instrument Serif grande con
+ * split por líneas (data-split del motion global), atribución en mono con
+ * una regla fina. `sm` para las citas secundarias.
+ */
+interface Props {
+  quote: string;
+  attribution: string;
+  size?: 'default' | 'sm';
+}
+
+const { quote, attribution, size = 'default' } = Astro.props;
+---
+
+<figure class:list={['ed-quote', 'book-quote', size === 'sm' ? 'ed-quote--sm' : 'ed-quote--wide']}>
+  <span class="book-quote-mark" aria-hidden="true">&ldquo;</span>
+  <blockquote data-split="lines">{quote}</blockquote>
+  <figcaption class="ed-mono">{attribution}</figcaption>
+</figure>
+
+<style>
+  .book-quote {
+    position: relative;
+  }
+  .book-quote-mark {
+    display: block;
+    font-family: var(--ed-serif);
+    font-style: italic;
+    font-size: clamp(64px, 7vw, 120px);
+    line-height: 0.5;
+    height: 0.42em;
+    color: var(--ed-accent-ink);
+  }
+  :global(.ed-sec:not(.ed-sec--light)) .book-quote-mark {
+    color: var(--ed-accent);
+  }
+  .ed-quote--sm .book-quote-mark {
+    font-size: 56px;
+  }
+</style>

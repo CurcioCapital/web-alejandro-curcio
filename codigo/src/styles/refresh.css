@@ -1,0 +1,436 @@
+/*
+  refresh.css — rediseño 21/10/2026 de las piezas COMPARTIDAS que viven en
+  components.css (pill, kicker, títulos de sección, hero, photo-section,
+  quote-section, pillar-row, media-card, section.white).
+
+  Por qué un archivo aparte: components.css es el port 1:1 de la dirección
+  aprobada y las páginas interiores todavía consumen sus clases. Acá se
+  cambia el TRATAMIENTO encima, sin renombrar ni borrar selectores. Si hay
+  que volver atrás, alcanza con sacar el @import de global.css.
+
+  Contraste: todo lo que es texto sigue los topes de tokens.css (dorado
+  brillante sólo sobre oscuro; sobre claro, --accent-ink).
+*/
+
+/* ---------------------------------------------------------------
+   Pill — relleno que crece desde el cursor
+   El script de Header.astro escribe --px/--py al entrar/salir. Sin JS el
+   relleno nace del centro. El label va arriba del relleno (isolation +
+   z-index -1 en el ::before). Sin lift en hover: el desplazamiento lo da
+   data-magnetic (agente de motion), y dos transforms se pelearían.
+   --------------------------------------------------------------- */
+.pill {
+  --_bg: var(--color-white);
+  --_fg: var(--color-black);
+  --_fill: var(--accent);
+  --_fg-hover: var(--color-black);
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  min-height: 48px;
+  padding: 0 24px;
+  gap: 10px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  line-height: 1;
+  background: var(--_bg);
+  color: var(--_fg);
+  transition:
+    color 450ms var(--ease-expo),
+    background-color var(--dur-sm) var(--ease-out),
+    box-shadow var(--dur-sm) var(--ease-out);
+  -webkit-tap-highlight-color: transparent;
+}
+.pill::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  left: var(--px, 50%);
+  top: var(--py, 50%);
+  width: max(260%, 200px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--_fill);
+  transform: translate(-50%, -50%) scale(0);
+  transition: transform 650ms var(--ease-expo);
+  pointer-events: none;
+}
+.pill:hover::before,
+.pill:focus-visible::before {
+  transform: translate(-50%, -50%) scale(1);
+}
+.pill:hover,
+.pill.pill--outline:hover,
+.pill.pill--dark:hover,
+.pill.pill--accent:hover {
+  background: var(--_bg);
+  color: var(--_fg-hover);
+  transform: none;
+  box-shadow: none;
+}
+.pill.pill--outline,
+.pill.pill--outline:hover {
+  --_bg: transparent;
+  --_fg: var(--color-white);
+  --_fill: var(--color-white);
+  --_fg-hover: var(--color-black);
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.45);
+}
+.pill.pill--dark {
+  --_bg: var(--color-black);
+  --_fg: var(--color-white);
+  --_fill: var(--accent);
+  --_fg-hover: var(--color-black);
+}
+/* Dorado de marca: rampa metálica (fondo) + relleno hueso. Texto tinta:
+   8.9:1 sobre la rampa, ~16:1 sobre el hueso. */
+.pill.pill--accent,
+.pill.pill--accent:hover {
+  --_fill: var(--color-off);
+  --_fg: var(--color-ink);
+  --_fg-hover: var(--color-ink);
+  background: var(--oro-degrade), var(--color-cobalt-bright);
+}
+.pill svg {
+  flex: 0 0 auto;
+  transition: transform 500ms var(--ease-expo);
+}
+.pill:hover svg {
+  transform: translateX(3px);
+}
+/* label con data-roll: el agente de motion lo parte; el clip lo pone acá */
+.pill .pill-label {
+  display: inline-block;
+}
+/* pill deshabilitado (link pendiente / formulario apagado): sin relleno */
+.pill[aria-disabled='true']::before {
+  display: none;
+}
+.pill[aria-disabled='true']:hover {
+  color: var(--_fg);
+}
+.pill.pill--outline[aria-disabled='true']:hover {
+  background: transparent;
+  color: var(--color-white);
+}
+.pill.pill--accent[aria-disabled='true']:hover {
+  background: var(--oro-degrade), var(--color-cobalt-bright);
+  color: var(--color-ink);
+}
+/* sobre hojas claras el outline se invierte */
+.sheet--cap-3 .pill.pill--outline,
+.sheet--light .pill.pill--outline,
+section.white:not(.white--dark) .pill.pill--outline {
+  --_fg: var(--color-ink);
+  --_fill: var(--color-ink);
+  --_fg-hover: var(--color-white);
+  box-shadow: inset 0 0 0 1px rgb(12 10 6 / 0.35);
+}
+@media (prefers-reduced-motion: reduce) {
+  .pill::before {
+    transition: none;
+  }
+  .pill:hover svg {
+    transform: none;
+  }
+}
+
+/* ---------------------------------------------------------------
+   Kicker — mono «tech» con raya
+   --------------------------------------------------------------- */
+.kicker,
+.stub-kicker,
+.hero-kicker {
+  font-family: var(--font-mono);
+  font-size: var(--fs-mono);
+  font-weight: 500;
+  font-stretch: 100%;
+  letter-spacing: 0.08em;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+.kicker::before,
+.hero-kicker::before {
+  content: '';
+  display: inline-block;
+  width: 22px;
+  height: 1px;
+  margin-right: 10px;
+  vertical-align: 0.3em;
+  background: currentColor;
+  opacity: 0.75;
+}
+/* centrados (photo-section) no llevan raya: desbalancea el eje */
+.photo-section:not(.photo-section--plate) .photo-content .kicker::before {
+  display: none;
+}
+
+/* ---------------------------------------------------------------
+   Títulos — corte display (Geist, caja normal; decisión de cliente
+   21/10/2026: reemplaza a la Archivo condensada en MAYÚSCULAS)
+   --------------------------------------------------------------- */
+h2.section-title,
+.photo-title,
+.hero-title,
+.stub-title,
+.final-cta h2 {
+  font-family: var(--font-display);
+  font-weight: var(--display-wght);
+  font-stretch: normal;
+  text-transform: none;
+  letter-spacing: var(--display-track);
+  text-wrap: balance;
+  font-synthesis: none;
+  overflow-wrap: break-word;
+  hyphens: manual;
+}
+h2.section-title {
+  font-size: clamp(2.125rem, 1.05rem + 3.6vw, 4.75rem);
+  line-height: 1.02;
+  max-width: 18ch;
+  margin-bottom: 28px;
+}
+.photo-title {
+  font-size: var(--fs-display-2);
+  line-height: 1;
+}
+.hero-title {
+  font-size: var(--fs-display-2);
+  line-height: 1;
+  max-width: 16ch;
+}
+.stub-title {
+  font-size: var(--fs-display-2);
+  line-height: 1.02;
+}
+.final-cta h2 {
+  font-size: var(--fs-display-2);
+  line-height: 1.02;
+}
+p.section-lead {
+  font-size: var(--text-lead);
+  line-height: 1.55;
+}
+
+/* ---------------------------------------------------------------
+   Hero (InsetHeroCard)
+   --------------------------------------------------------------- */
+.hero-card {
+  border-radius: var(--radius-lg);
+  --crop-inset: 18px;
+}
+.hero-content {
+  gap: 26px;
+}
+/* Variante corta (páginas interiores): la copia va en el flujo para que la
+   tarjeta crezca con el titular display en vez de recortarlo arriba. */
+.hero-card.hero-card--short {
+  display: flex;
+  align-items: flex-end;
+}
+.hero-card--short .hero-content {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  padding-top: clamp(110px, 11vw, 170px);
+}
+.hero-kicker {
+  color: rgb(255 255 255 / 0.78);
+}
+.hero-sub {
+  max-width: 44ch;
+}
+@media (max-width: 720px) {
+  .hero-card {
+    border-radius: 22px;
+    --crop-inset: 12px;
+  }
+}
+
+/* ---------------------------------------------------------------
+   Lámina (SectionWhite)
+   --------------------------------------------------------------- */
+section.white {
+  border-radius: var(--radius-lg);
+}
+section.white:not(.white--dark) .kicker {
+  color: var(--accent-ink);
+}
+@media (max-width: 720px) {
+  section.white {
+    border-radius: 22px;
+  }
+}
+
+/* ---------------------------------------------------------------
+   Foto a sangre (SectionPhoto) — crop-marks + zoom con el scroll
+   --p (0→1) lo escribe data-scrub (agente de motion). Sin JS: estático.
+   --------------------------------------------------------------- */
+.photo-section,
+.quote-section {
+  border-radius: var(--radius-lg);
+  --crop-inset: 18px;
+}
+.photo-section > picture > img,
+.photo-section > img {
+  transform: scale(calc(1.14 - 0.14 * var(--p, 1)));
+  transition: filter var(--dur-lg) var(--ease-out);
+  will-change: transform;
+}
+.photo-content {
+  gap: 22px;
+}
+.photo-content .kicker {
+  color: rgb(255 255 255 / 0.8);
+}
+@media (max-width: 720px) {
+  .photo-section,
+  .quote-section {
+    border-radius: 22px;
+    --crop-inset: 12px;
+  }
+}
+
+/* ---------------------------------------------------------------
+   Cita (QuoteOverlay)
+   --------------------------------------------------------------- */
+.quote-mark {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(88px, 9vw, 140px);
+  line-height: 0.5;
+  height: 0.42em;
+  color: var(--accent);
+}
+.quote-attr {
+  font-family: var(--font-mono);
+  font-size: var(--fs-mono);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgb(255 255 255 / 0.75);
+}
+/* La <img> dentro del <picture> no tenía alto: en móvil (cuadro vertical) la
+   foto cubría sólo la franja de arriba. Ahora llena el cuadro. */
+.quote-section > picture > img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(calc(1.12 - 0.12 * var(--p, 1)));
+  will-change: transform;
+}
+
+/* ---------------------------------------------------------------
+   Facetas (PillarRow)
+   --------------------------------------------------------------- */
+.pillar-row {
+  position: relative;
+  padding: clamp(28px, 3.2vw, 44px) 0;
+}
+.pillar-idx {
+  font-family: var(--font-mono);
+  font-size: var(--fs-mono);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  color: rgb(12 10 6 / 0.45);
+}
+.pillar-idx::before {
+  content: '[\00a0';
+}
+.pillar-idx::after {
+  content: '\00a0]';
+}
+.pillar-word {
+  font-family: var(--font-display);
+  font-weight: var(--display-wght);
+  font-stretch: normal;
+  text-transform: none;
+  letter-spacing: var(--display-track);
+  line-height: 1;
+  font-size: var(--fs-display-2);
+  margin-bottom: 14px;
+}
+.pillar-row:hover .pillar-word {
+  color: var(--accent-ink);
+}
+.pillar-explore {
+  font-family: var(--font-mono);
+  font-size: var(--fs-mono);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.pillar-photo {
+  border-radius: 20px;
+  position: relative;
+}
+.pillar-photo img {
+  transition: transform 900ms var(--ease-expo);
+}
+.pillar-row:hover .pillar-photo img {
+  transform: scale(1.06);
+}
+.pillar-photo {
+  clip-path: inset(0 round 20px);
+  transition: clip-path 700ms var(--ease-expo);
+}
+.pillar-row:hover .pillar-photo {
+  clip-path: inset(6px round 16px);
+}
+
+/* ---------------------------------------------------------------
+   Media card — zoom contenido en hover, etiquetas mono
+   --------------------------------------------------------------- */
+.media-card {
+  position: relative;
+}
+.media-card img {
+  transition:
+    filter var(--dur-lg) var(--ease-out),
+    transform 900ms var(--ease-expo);
+}
+.media-card:not(.typographic):hover img,
+.book-card:hover .media-card img,
+a:hover > .media-card img {
+  transform: scale(1.05);
+}
+/* exacta/natural: la tapa no se recorta; el zoom es mínimo */
+.media-card--exacta:hover img,
+.book-card:hover .media-card--exacta img,
+.media-card--natural:hover img {
+  transform: scale(1.02);
+}
+.media-card.typographic .tk,
+.book-year {
+  font-family: var(--font-mono);
+  font-size: var(--fs-mono);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+}
+.book-link {
+  font-family: var(--font-mono);
+  font-size: var(--fs-mono);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .photo-section > picture > img,
+  .photo-section > img,
+  .quote-section > picture > img,
+  .pillar-row:hover .pillar-photo img,
+  .media-card:hover img,
+  .book-card:hover .media-card img,
+  a:hover > .media-card img {
+    transform: none !important;
+  }
+  .pillar-photo,
+  .pillar-row:hover .pillar-photo {
+    clip-path: none;
+    transition: none;
+  }
+}

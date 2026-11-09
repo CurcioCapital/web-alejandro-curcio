@@ -1,0 +1,243 @@
+---
+/**
+ * InsetHeroCard.astro — the inset rounded hero card (20px margin,
+ * --radius-sheet radius) with a blur-up video or image background. Usage:
+ * <InsetHeroCard variant="video" videoSrc="/media/video/x.mp4" poster="/media/video/x-poster.jpg"
+ *   kicker="..." title="..." sub="..." ctaHref="/x" ctaLabel="..." />
+ *
+ * Home v2 (chapter 1): `compact` renders the ~70vh opening card with the
+ * spec's load choreography (title/sub/kicker rise 24px + fade at
+ * 200/280/360ms, all 700ms --ease-out) and the hero display cut (Archivo
+ * wght 620, stretch 118%, lh 0.95, balance). A named slot `ticker` mounts
+ * a media marquee INSIDE the card as a bottom strip over the scrim (12px /
+ * 500 / 0.08em / uppercase / rgba(233,237,255,0.4), no label, no box); it
+ * fades in last (500ms, delay 600ms — enters already rolling) and an IO
+ * pauses it while the card is off-screen. PRM: everything static.
+ *
+ * Rediseño 21/10/2026: titular en display condensada (refresh.css), radio
+ * --radius-lg, crop-marks (.u-crop) y ticker en mono. Props sin cambios.
+ */
+import BlurImage from './BlurImage.astro';
+import PillButton from './PillButton.astro';
+
+interface Props {
+  variant?: 'video' | 'img';
+  videoSrc?: string; // public path, e.g. "/media/video/sucesion-hero-loop-1600.mp4"
+  poster?: string; // public path, e.g. "/media/video/sucesion-poster.jpg"
+  imgId?: string; // manifest asset id, used with kind="img" via BlurImage
+  imgAlt?: string;
+  kicker?: string; // opcional: el hero de la home ya no lo usa
+  title: string;
+  sub?: string;
+  ctaHref?: string;
+  ctaLabel?: string;
+  short?: boolean; // shorter card height, for non-home inset heroes
+  compact?: boolean; // ~70vh home-v2 opening card + load choreography
+  /**
+   * Encuadre del media dentro de la tarjeta (object-position). Por defecto
+   * va centrado. Hace falta cuando el sujeto NO está en el centro vertical
+   * del cuadro: la tarjeta es mucho más ancha que el video (en 2000px de
+   * viewport queda en ratio 3.47 contra 1.78 del archivo), así que `cover`
+   * recorta arriba y abajo, y si la cabeza está en el tercio superior se
+   * pierde. Ej: "50% 12%" sube el encuadre.
+   */
+  focus?: string;
+}
+
+const {
+  variant = 'video',
+  videoSrc,
+  poster,
+  imgId,
+  imgAlt = '',
+  kicker,
+  title,
+  sub,
+  ctaHref,
+  ctaLabel,
+  short = false,
+  compact = false,
+  focus = '50% 50%',
+} = Astro.props;
+
+const hasTicker = Astro.slots.has('ticker');
+---
+
+<div class="hero-stage">
+  <div
+    class:list={[
+      'hero-card',
+      'u-crop',
+      short && 'hero-card--short',
+      compact && 'hero-card--compact',
+      hasTicker && 'hero-card--has-ticker',
+    ]}
+  >
+    {
+      variant === 'video' && videoSrc ? (
+        <video
+          class="hero-media blur-up"
+          style={`object-position:${focus}`}
+          autoplay
+          muted
+          loop
+          playsinline
+          poster={poster}
+        >
+          <source src={videoSrc} type="video/mp4" />
+        </video>
+      ) : (
+        imgId && (
+          <BlurImage id={imgId} alt={imgAlt} kind="img" eager class="hero-media" style={`object-position:${focus}`} />
+        )
+      )
+    }
+    <div class="hero-scrim"></div>
+    <div class="hero-content">
+      {kicker && <span class="hero-kicker">{kicker}</span>}
+      <h1 class="hero-title">{title}</h1>
+      {sub && <p class="hero-sub">{sub}</p>}
+      {ctaHref && ctaLabel && <PillButton href={ctaHref}>{ctaLabel}</PillButton>}
+    </div>
+    {
+      hasTicker && (
+        <div class="hero-ticker">
+          <slot name="ticker" />
+        </div>
+      )
+    }
+  </div>
+</div>
+
+<style>
+  /* ---------- compact (home v2 chapter 1, ~70vh) ---------- */
+  .hero-card.hero-card--compact {
+    /* Antes 70svh. Al sacar el kicker el bloque de texto se achicó y la
+       tarjeta quedaba baja (ratio 1.53) para un video de 1.78: se recortaba
+       de más y el clip perdía presencia. */
+    height: calc(84svh - 54px);
+    min-height: 460px;
+    max-height: none;
+  }
+  /* Corte display del titular de marca (rediseño 21/10/2026): Geist, caja
+     normal. El tratamiento base (.hero-title) vive en styles/refresh.css;
+     acá sólo el tamaño de la versión compacta. */
+  .hero-card--compact .hero-title {
+    font-size: var(--fs-display-1);
+    line-height: 0.98;
+    letter-spacing: -0.045em;
+    max-width: 14ch;
+  }
+  /* Menos texto encima ⇒ el scrim puede aflojar y se ve más video. */
+  .hero-card--compact .hero-scrim {
+    background: linear-gradient(0deg, rgba(10, 8, 5, 0.82) 0%, rgba(10, 8, 5, 0.28) 42%, transparent 66%);
+  }
+
+  /* ---------- load choreography (1400ms total, runs once) ----------
+     Poster blur-up (700ms, .blur-up) + titular a 200ms (rise 24px + fade,
+     700ms --ease-out) → ticker sólo fade, 500ms a 600ms. El hero de la home
+     ya no lleva kicker ni subtítulo: quedó el titular solo sobre el video.
+     Nada más se mueve — el loop es el único movedor autónomo. */
+  .hero-card--compact .hero-title {
+    animation: hero-rise 700ms var(--ease-out) 200ms both;
+  }
+  .hero-card--compact .hero-kicker {
+    animation: hero-rise 700ms var(--ease-out) 360ms both;
+  }
+  .hero-card--compact .hero-ticker {
+    animation: hero-fade 500ms var(--ease-out) 600ms both;
+  }
+  @keyframes hero-rise {
+    from {
+      opacity: 0;
+      transform: translateY(24px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @keyframes hero-fade {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  /* ---------- ticker strip (inside the card, over the scrim) ---------- */
+  .hero-ticker {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 2;
+    padding: 18px 56px 22px;
+  }
+  .hero-ticker :global(span) {
+    font-family: var(--font-mono);
+    font-size: var(--fs-mono-sm);
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(233, 237, 255, 0.4);
+    white-space: nowrap;
+  }
+  /* Paused while the hero is off-screen (class toggled by the IO below;
+     a class — not an inline style — so kit/Ticker's own visibilitychange
+     handler can't accidentally clear it). */
+  .hero-ticker.is-offscreen :global(.kit-ticker__track) {
+    animation-play-state: paused;
+  }
+  /* Content clears the ticker strip. */
+  .hero-card--has-ticker .hero-content {
+    padding-bottom: 104px;
+  }
+  @media (max-width: 720px) {
+    .hero-ticker {
+      padding: 14px 24px 18px;
+    }
+    .hero-card--has-ticker .hero-content {
+      padding-bottom: 88px;
+    }
+  }
+
+  /* PRM: static poster, static text, no choreography. */
+  @media (prefers-reduced-motion: reduce) {
+    .hero-card--compact .hero-title,
+    .hero-card--compact .hero-sub,
+    .hero-card--compact .hero-kicker,
+    .hero-card--compact .hero-ticker {
+      animation: none;
+    }
+  }
+</style>
+
+<script>
+  // Blur-up for the hero <video> (BlurImage's script only wires <img>).
+  document.querySelectorAll<HTMLVideoElement>('video.hero-media.blur-up').forEach((video) => {
+    if (video.readyState >= 2) {
+      video.classList.add('is-loaded');
+      return;
+    }
+    video.addEventListener('loadeddata', () => video.classList.add('is-loaded'), { once: true });
+  });
+
+  // PRM gate: no autoplay — the poster stands in for the loop.
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    document.querySelectorAll<HTMLVideoElement>('video.hero-media').forEach((video) => {
+      video.removeAttribute('autoplay');
+      video.pause();
+    });
+  }
+
+  // Pause the in-card ticker marquee while the hero is off-screen (spec:
+  // pause on hover — kit/Ticker's own CSS — AND offscreen via IO).
+  document.querySelectorAll<HTMLElement>('.hero-ticker').forEach((strip) => {
+    new IntersectionObserver(
+      ([entry]) => strip.classList.toggle('is-offscreen', !entry.isIntersecting),
+      { threshold: 0.2 }
+    ).observe(strip);
+  });
+</script>

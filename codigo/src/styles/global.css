@@ -1,0 +1,26 @@
+/*
+  global.css — single stylesheet entry point for the site.
+
+  Load order matters: tokens first (custom properties + minimal reset),
+  then components.css (the ported design-system component CSS), then
+  system.css (capa del rediseño 21/10/2026: utilidades .t-*, .u-* y
+  refinamientos de los componentes heredados), then Tailwind's layers last
+  so utility classes can still override any of them when a section builder
+  needs a one-off tweak. applyBaseStyles is off in astro.config.mjs so
+  tokens.css owns the reset instead of Tailwind's preflight — that keeps a
+  single source of truth for base styling.
+
+  Geist Variable (display + texto) y la mono (JetBrains Mono Variable) se
+  autoalojan desde los paquetes de
+  fontsource; con unicode-range el navegador baja sólo el subset latino.
+*/
+@import "@fontsource-variable/geist/wght.css";
+@import "@fontsource-variable/jetbrains-mono/wght.css";
+@import "./tokens.css";
+@import "./components.css";
+@import "./system.css";
+@import "./refresh.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;

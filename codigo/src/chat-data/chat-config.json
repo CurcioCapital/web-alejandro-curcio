@@ -1,0 +1,11 @@
+{
+  "model": "deepseek/deepseek-v4-flash-0731",
+  "temperature": 0.2,
+  "frequency_penalty": 0.4,
+  "max_tokens": 1200,
+  "reasoning": {
+    "enabled": false
+  },
+  "top_k": 6,
+  "note": "provider pin NOT allowed here — structured/consumer runtime, allow default routing"
+}

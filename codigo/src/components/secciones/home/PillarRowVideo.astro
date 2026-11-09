@@ -1,0 +1,64 @@
+---
+/**
+ * secciones/home/PillarRowVideo.astro — home-page-only variant of the
+ * shared PillarRow (src/components/PillarRow.astro) that swaps the static
+ * photo for a kit/HoverPlayCard (real trackside footage plays on hover).
+ * Mirrors PillarRow's markup/classes 1:1 — same .pillar-row/.pillar-idx/
+ * .pillar-main/.pillar-word/.pillar-desc/.pillar-explore/.pillar-photo
+ * classes from components.css — so it's visually identical to the static
+ * row except the media itself. Usage:
+ * <PillarRowVideo index="02" word="Deportista" description="..." exploreLabel="Explorar Aventura"
+ *   exploreHref="/aventura" videoSrc="/media/video/brindis.mp4" poster="/media/video/brindis-poster.jpg"
+ *   photoAlt="..." />
+ *
+ * Lives here (not in components.css or PillarRow.astro) per the home-page
+ * upgrade scope: src/pages/index.astro owns only itself + new components
+ * under src/components/secciones/home/ — shared files are off-limits.
+ */
+import Reveal from '../../Reveal.astro';
+import HoverPlayCard from '../../kit/HoverPlayCard.astro';
+
+interface Props {
+  index: string; // "01".."06"
+  word: string;
+  description: string;
+  exploreLabel: string;
+  exploreHref: string;
+  videoSrc: string; // e.g. "/media/video/brindis.mp4"
+  poster: string; // e.g. "/media/video/brindis-poster.jpg"
+  photoAlt: string;
+}
+
+const { index, word, description, exploreLabel, exploreHref, videoSrc, poster, photoAlt } = Astro.props;
+---
+
+<Reveal as="div" class="pillar-row">
+	<span class="pillar-idx">{index}</span>
+	<div class="pillar-main">
+		<span class="pillar-word">{word}</span>
+		<p class="pillar-desc">{description}</p>
+		<a class="pillar-explore" href={exploreHref}>
+			{exploreLabel}
+			<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+				<line x1="5" y1="12" x2="19" y2="12"></line>
+				<polyline points="12 5 19 12 12 19"></polyline>
+			</svg>
+		</a>
+	</div>
+	<div class="pillar-photo pillar-photo--video">
+		<HoverPlayCard src={videoSrc} poster={poster} alt={photoAlt} />
+	</div>
+</Reveal>
+
+<style>
+	/* Reset kit/HoverPlayCard's own 3:4 aspect-ratio + radius so it fills
+	   the fixed-size .pillar-photo box exactly like the static BlurImage
+	   it replaces (260x170 desktop / full-width x 200|180 mobile — see
+	   components.css .pillar-photo + its @media rules, unchanged here). */
+	.pillar-photo--video :global(.kit-hover-card) {
+		width: 100%;
+		height: 100%;
+		aspect-ratio: auto;
+		border-radius: 0;
+	}
+</style>

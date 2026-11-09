@@ -1,0 +1,63 @@
+---
+/**
+ * AventuraQuote.astro — Aventura-only. Inline pull-quote for verified quotes
+ * inside a <SectionWhite> body (white bg, black ink, cobalt rule) — same
+ * pattern as Negocios' PressQuote, kept as its own instance here per the
+ * section-ownership rule (this page only edits/owns files under
+ * secciones/aventura/). Usage:
+ * <AventuraQuote quote="Pará —me dije—. Tranquilo..." attribution="Alejandro Curcio — Capital de Vida, Cap. 1" />
+ */
+interface Props {
+  quote: string;
+  attribution: string;
+  size?: 'default' | 'sm';
+}
+
+const { quote, attribution, size = 'default' } = Astro.props;
+---
+
+<figure class:list={['aventura-quote', size === 'sm' && 'aventura-quote--sm']} data-reveal>
+  <span class="aventura-quote-mark" aria-hidden="true">&ldquo;</span>
+  <blockquote data-split="lines">{quote}</blockquote>
+  <figcaption>{attribution}</figcaption>
+</figure>
+
+<style>
+  .aventura-quote {
+    max-width: 900px;
+    margin: 28px 0;
+    padding-left: clamp(20px, 2.4vw, 36px);
+    border-left: 1px solid var(--accent-ink, #7a5c10);
+  }
+  .aventura-quote-mark {
+    display: block;
+    font-family: var(--font-serif, Georgia, serif);
+    font-size: 96px;
+    line-height: 0.55;
+    color: var(--accent-ink, #7a5c10);
+    margin-bottom: 10px;
+  }
+  .aventura-quote blockquote {
+    font-family: var(--font-serif, Georgia, serif);
+    font-style: italic;
+    font-weight: 400;
+    font-size: clamp(30px, 1.2rem + 2.6vw, 64px);
+    line-height: 1.05;
+    color: var(--color-ink, #0b0e17);
+    text-wrap: balance;
+  }
+  .aventura-quote figcaption {
+    margin-top: 18px;
+    font-family: var(--font-mono, ui-monospace, monospace);
+    font-size: 11.5px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(11, 14, 23, 0.6);
+  }
+  .aventura-quote--sm .aventura-quote-mark {
+    font-size: 64px;
+  }
+  .aventura-quote--sm blockquote {
+    font-size: clamp(24px, 1rem + 1.4vw, 38px);
+  }
+</style>

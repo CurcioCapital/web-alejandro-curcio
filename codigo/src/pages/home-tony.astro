@@ -1,0 +1,612 @@
+---
+/**
+ * home-tony.astro — VERSIÓN DE COMPARACIÓN. No reemplaza el home.
+ *
+ * Pedido de Dolores (01/09/2026): «que sea más parecida a la web de Tony
+ * Robbins, cómo hace el scrolling y cómo están organizados los contenidos.
+ * Hacé una versión así para compararla con la que ya tengo.»
+ *
+ * QUÉ HACE REALMENTE tonyrobbins.com/es (medido el 01/09/2026, no de memoria):
+ *  · NO hay scroll-jacking, ni snap, ni secciones pinneadas. Sólo el navbar
+ *    es sticky. El scroll es vertical y común.
+ *  · El ritmo lo dan BANDAS a sangre que alternan claro/oscuro. Doce
+ *    secciones, 12.572px de alto: dark, dark, foto, light, foto, light,
+ *    light, dark, light, light, dark.
+ *  · El movimiento vive DENTRO de las bandas: rieles horizontales con
+ *    paginación por puntos (programas, testimonios, productos, podcast).
+ *  · Anatomía del hero: media a sangre + titular abajo a la izquierda + CTA
+ *    + una tarjeta flotante abajo a la derecha con el próximo evento.
+ *  · Bloque de pilares: lista de palabras apiladas, gigantes, al lado de una
+ *    foto. Es el pariente directo de nuestras facetas.
+ *  · Banda de testimonios: retrato a sangre, cita gigante encima, y una fila
+ *    de chips con cara + nombre + credencial que cambia la cita.
+ *  · Cifras gigantes con etiqueta corta como prueba.
+ *  · Agenda con fecha y lugar. Grilla de catálogo con precios.
+ *
+ * ESTA VERSIÓN TOMA LA ESTRUCTURA Y LA MECÁNICA. El contenido es 100% real y
+ * verificado: nada de esta página inventa una credencial, una cifra ni una
+ * cita (regla 1 del proyecto). Donde Tony pone precios y promesas de
+ * transformación, acá va el expediente: años, premios con jurado, y notas de
+ * prensa con medio y fecha, tomadas de src/data/press.json.
+ *
+ * DÓNDE CHOCA CON LA LEY DE DISEÑO DEL PROYECTO — está anotado sección por
+ * sección más abajo, para que la comparación sea informada y no estética.
+ */
+import Base from '../layouts/Base.astro';
+import BlurImage from '../components/BlurImage.astro';
+import MediaCard from '../components/MediaCard.astro';
+import Reveal from '../components/Reveal.astro';
+import pressData from '../data/press.json';
+import FacetasCarrusel from '../components/secciones/home/FacetasCarrusel.astro';
+import ArcoLibros from '../components/secciones/home/ArcoLibros.astro';
+import PreguntaleAle from '../components/secciones/home/PreguntaleAle.astro';
+
+// ── Riel de facetas — el equivalente honesto al riel de programas de Tony.
+// Mismas seis facetas y mismas citas verificadas que el home actual.
+const facetas = [
+  { index: '01', word: 'Empresario', linea: 'Ayax S.A. y Curcio Capital', href: '/negocios',
+    videoSrc: '/media/video/bz4x-card.mp4', poster: '/media/video/bz4x-card-poster.jpg',
+    alt: 'Alejandro Curcio en el lanzamiento del Toyota bZ4X' },
+  { index: '02', word: 'Deportista', linea: 'Toyota Gazoo Racing Uruguay', href: '/deportista',
+    videoSrc: '/media/video/drift-park-card.mp4', poster: '/media/video/drift-park-card-poster.jpg',
+    alt: 'Casco de Alejandro Curcio en el Toyota Drift Park' },
+  { index: '03', word: 'Aventurero', linea: 'Récord Guinness, 2024', href: '/aventura',
+    photoSrc: '/media/img/guinness-03-1280.jpg',
+    alt: 'Alejandro Curcio en el barril de hielo del récord Guinness 2024' },
+  { index: '04', word: 'Pensador', linea: 'Dos libros publicados', href: '/libros',
+    videoSrc: '/media/video/toolbook-aftermovie-card.mp4', poster: '/media/video/toolbook-aftermovie-card-poster.jpg',
+    alt: 'Presentación del libro Toolbook' },
+  { index: '05', word: 'Solidario', linea: 'Drift Arena Solidario, Teletón', href: '/negocios',
+    videoSrc: '/media/video/drift-solidario-card.mp4', poster: '/media/video/drift-solidario-card-poster.jpg',
+    alt: 'Drift Arena Solidario, noviembre de 2024' },
+  { index: '06', word: 'Legado', linea: 'AYAX, desde 1945', href: '/historia',
+    videoSrc: '/media/video/fiat600r-card.mp4', poster: '/media/video/fiat600r-card-poster.jpg',
+    focus: '50% 25%', alt: 'Alejandro Curcio y la anécdota del Fiat 600R' },
+];
+
+// ── Banda de voces. Tony usa avales de famosos (Serena Williams, Marc
+// Benioff). Alejandro NO tiene avales de terceros verificados, y el proyecto
+// prohíbe inventarlos. El equivalente honesto es la prensa: cada cita es de
+// él, con medio y fecha, y el chip muestra la FUENTE en vez de una celebridad.
+const voces = [
+  { quote: 'Nos templaron, nos forjaron, nos afilaron, nos hicieron más duros, pero también mucho más humanos.',
+    medio: 'Forbes Uruguay', fecha: '13/10/2025', pie: 'Los 80 años de Ayax' },
+  { quote: 'Es una entidad viva. Yo a veces pienso que es como una construcción colectiva que late.',
+    medio: 'El Observador', fecha: '11/08/2025', pie: 'Sobre la empresa familiar' },
+  { quote: 'Una empresa familiar no se vuelve sostenible porque un apellido se repita, sino porque cada generación entiende que recibe algo que debe mejorar y entregar más fuerte.',
+    medio: 'El País', fecha: '09/08/2026', pie: 'Sobre la sucesión' },
+  { quote: 'En el fondo lo que me encanta es la aventura del descubrimiento y la curiosidad por generar valor donde otros aún no lo ven.',
+    medio: 'Forbes Uruguay', fecha: '23/01/2025', pie: 'Entrevista de perfil' },
+];
+
+// ── Cifras. Donde Tony pone «300% de aumento del rendimiento cognitivo»
+// (un estudio sobre sus propios asistentes), acá va el expediente: hechos
+// con fecha, todos en 05 — Hechos verificados.md.
+const cifras = [
+  { n: '1945', label: 'Enero. Emilio J. Curcio funda AYAX con 22 años.' },
+  { n: '1968', label: 'AYAX obtiene la representación de Toyota. 58 años.' },
+  { n: '2021', label: 'Cannes Lions por HY Project, con The Electric Factory.' },
+  { n: '2024', label: 'Récord Guinness de baño de hielo simultáneo.' },
+];
+
+// ── Agenda. Tony lista siete eventos con fecha y lugar. Nosotros tenemos UNO
+// confirmado. No se rellena con supuestos: lo pendiente se marca pendiente.
+const agenda = [
+  { estado: 'CONFIRMADO', titulo: 'CEO DE TU VIDA', bajada: 'Lanzamiento del tercer libro.',
+    fecha: 'Noviembre 2026', lugar: 'Montevideo', href: '/ceo-de-tu-vida', cta: 'Enterate del lanzamiento' },
+  { estado: 'A DEFINIR', titulo: 'Evento de lanzamiento', bajada: 'Concepto japonés, 400 personas. Fecha y sede sin confirmar.',
+    fecha: 'Pendiente', lugar: 'Pendiente', href: null, cta: null },
+];
+
+// ── Riel de prensa. Tony cierra con su podcast; el activo equivalente de
+// Alejandro es el archivo de prensa: 45 notas normalizadas con medio, fecha
+// y enlace. Es la prueba dura del respaldo.
+const prensa = (pressData as any[])
+  .filter((x) => x.priority === 'Alta' && x.speaksAC === 'Sí' && x.url)
+  .slice(0, 8);
+---
+
+<Base
+  title="Alejandro Curcio — versión comparativa"
+  description="Versión de comparación con la estructura y el scrolling de tonyrobbins.com. No reemplaza el home."
+>
+  <div class="tr">
+    <div class="aviso">
+      <strong>Versión de comparación.</strong> Misma estructura y mecánica de scroll que
+      tonyrobbins.com/es, con el contenido verificado de Alejandro. El home actual sigue intacto en
+      <a href="/">/</a>.
+    </div>
+
+    <!-- ═══ 1 · HERO ═══ Anatomía exacta de Tony: media a sangre, titular
+         abajo a la izquierda, CTA, y tarjeta flotante del próximo evento. -->
+    <section class="tr-hero">
+      <video class="tr-hero-media" src="/media/video/sucesion-hero-loop-1600.mp4"
+        poster="/media/video/sucesion-poster.jpg" autoplay muted loop playsinline></video>
+      <div class="tr-hero-scrim"></div>
+
+      <div class="tr-hero-inner">
+        <div class="tr-hero-copy">
+          <h1 class="tr-hero-title">El verdadero capital se forja.</h1>
+          <a class="tr-btn tr-btn--solid" href="/historia">Conocé la historia</a>
+        </div>
+
+        <a class="tr-next" href="/ceo-de-tu-vida">
+          <span class="tr-next-kicker"><span class="tr-dot-live"></span>Próximo</span>
+          <span class="tr-next-title">CEO DE TU VIDA</span>
+          <span class="tr-next-meta">Noviembre 2026 · el tercer libro</span>
+          <span class="tr-next-count" data-countdown="2026-11-17T00:00:00-03:00" hidden></span>
+        </a>
+      </div>
+    </section>
+
+    <!-- ═══ 2 · QUIÉN ES ═══ El bloque «¿Tienes ganas de mejorar tu calidad
+         de vida?»: titular grande a la izquierda, video, y copy + CTA a la
+         derecha. -->
+    <section class="tr-band tr-band--light">
+      <div class="tr-wrap">
+        <h2 class="tr-h2">¿Quién es Alejandro Curcio?</h2>
+        <div class="tr-meet">
+          <div class="tr-meet-media">
+            <video src="/media/video/gala80-card.mp4" poster="/media/video/gala80-card-poster.jpg"
+              muted loop playsinline preload="none" data-rail-video></video>
+          </div>
+          <div class="tr-meet-copy">
+            <p>Presidente de Ayax S.A. —importador oficial de Toyota y Suzuki en Uruguay, empresa
+              familiar fundada en enero de 1945— y de Curcio Capital, su firma de inversión en
+              tecnología, biotecnología y real estate.</p>
+            <p>Escribió dos libros. Ganó un Cannes Lions. Tiene un récord Guinness. El tercero
+              llega en noviembre.</p>
+            <a class="tr-btn tr-btn--ink" href="/historia">Conocé la historia</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ 3 · CARRUSEL DE FACETAS ═══ Es el riel de programas de Tony
+         (Business Mastery / Leadership Academy / …), ahora con su anatomía
+         exacta: encabezado con título + enlace + flechas, tarjetas
+         verticales con el texto adentro y puntos abajo. -->
+    <section class="tr-band tr-band--dark">
+      <FacetasCarrusel
+        facetas={facetas}
+        titulo="Una vida. Seis facetas."
+        enlaceLabel="Elegí por dónde entrar"
+        enlaceHref="/historia"
+      />
+    </section>
+
+    <!-- ═══ 4 · BANDA DECLARACIÓN ═══ Tony intercala fotos a sangre a
+         viewport completo con el titular centrado ("Domina cada área de tu
+         vida"). Misma pieza, con la frase que sí podemos sostener. -->
+    <section class="tr-statement">
+      <BlurImage id="padre-hijo-barco-v" kind="img"
+        alt="Alejandro Curcio junto a su hijo Lucca Curcio, con un trofeo en forma de barco" />
+      <div class="tr-statement-scrim"></div>
+      <div class="tr-statement-copy">
+        <h2 class="tr-h1">Ochenta años se cuentan por lo construido.</h2>
+        <p class="tr-lead">Una empresa que casi murió dos veces. Un hombre que aprendió a nadar
+          antes de saber que estaba en aguas profundas.</p>
+        <a class="tr-btn tr-btn--solid" href="/historia">Ver la línea de tiempo</a>
+      </div>
+    </section>
+
+    <!-- ═══ 5 · CIFRAS ═══ Las cifras gigantes de Tony (300%, 139%, 81%).
+         ACÁ ESTÁ LA INVERSIÓN: las suyas miden transformación prometida;
+         éstas son expediente con fecha. Misma forma, prueba en vez de
+         promesa — es el único lugar donde el formato de Tony JUEGA A FAVOR. -->
+    <section class="tr-band tr-band--light">
+      <div class="tr-wrap">
+        <h2 class="tr-h2 tr-h2--center">Nada acá es una promesa.</h2>
+        <p class="tr-lead tr-lead--center">Cada dato tiene fuente y fecha.</p>
+        <div class="tr-cifras">
+          {cifras.map((c) => (
+            <Reveal as="div" class="tr-cifra">
+              <span class="tr-cifra-n">{c.n}</span>
+              <span class="tr-cifra-l">{c.label}</span>
+            </Reveal>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ 6 · VOCES ═══ La banda de testimonios de Tony: retrato a
+         sangre, cita gigante, y chips abajo que cambian la cita.
+         ⚠️ DIFERENCIA DE FONDO: los chips de Tony son avales de famosos.
+         Acá son MEDIOS con fecha, porque avales de terceros no tenemos y no
+         se inventan. -->
+    <section class="tr-voces" data-voces>
+      <BlurImage id="retrato-estudio" kind="img" alt="Retrato de estudio de Alejandro Curcio" />
+      <div class="tr-voces-scrim"></div>
+
+      <div class="tr-voces-inner">
+        <blockquote class="tr-voces-quote" data-voces-quote>{voces[0].quote}</blockquote>
+        <div class="tr-voces-chips" role="tablist">
+          {voces.map((v, i) => (
+            <button class:list={['tr-chip', i === 0 && 'is-on']} data-voces-chip={i}
+              type="button" role="tab" aria-selected={i === 0 ? 'true' : 'false'}>
+              <span class="tr-chip-medio">{v.medio}</span>
+              <span class="tr-chip-meta">{v.fecha} · {v.pie}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ 7 · AGENDA ═══ La lista de eventos de Tony, con FECHA y LUGAR en
+         columnas. Tenemos un solo evento confirmado; el segundo se muestra
+         explícitamente como pendiente en vez de rellenarse. -->
+    <section class="tr-band tr-band--dark">
+      <div class="tr-wrap">
+        <span class="tr-kicker">Agenda</span>
+        <h2 class="tr-h2">Lo que viene.</h2>
+
+        <ul class="tr-agenda">
+          {agenda.map((e) => (
+            <li class:list={['tr-agenda-row', !e.href && 'is-pendiente']}>
+              <div class="tr-agenda-main">
+                <span class="tr-agenda-estado">{e.estado}</span>
+                <h3 class="tr-agenda-title">{e.titulo}</h3>
+                <p class="tr-agenda-sub">{e.bajada}</p>
+              </div>
+              <div class="tr-agenda-meta">
+                <span class="tr-agenda-k">Fecha</span><span class="tr-agenda-v">{e.fecha}</span>
+                <span class="tr-agenda-k">Lugar</span><span class="tr-agenda-v">{e.lugar}</span>
+              </div>
+              <div class="tr-agenda-cta">
+                {e.href ? <a class="tr-btn tr-btn--solid" href={e.href}>{e.cta}</a>
+                        : <span class="tr-agenda-nota">Sin confirmar</span>}
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+
+    <!-- ═══ 8 · PRENSA ═══ Donde Tony cierra con su podcast, acá cierra el
+         archivo de prensa: notas reales, con medio, fecha y enlace. Mismo
+         riel horizontal. -->
+    <section class="tr-band tr-band--dark tr-rail-section">
+      <div class="tr-wrap tr-rail-head">
+        <span class="tr-kicker">El respaldo</span>
+        <h2 class="tr-h2">Lo que dijeron otros.</h2>
+        <p class="tr-lead">45 apariciones registradas con medio, fecha y enlace.</p>
+      </div>
+
+      <div class="tr-rail" data-rail>
+        {prensa.map((n) => (
+          <a class="tr-nota" href={n.url} target="_blank" rel="noopener noreferrer">
+            <span class="tr-nota-medio">{n.medium}</span>
+            <span class="tr-nota-fecha">{n.date}</span>
+            <h3 class="tr-nota-title">{n.title}</h3>
+            <span class="tr-nota-tipo">{n.type}</span>
+          </a>
+        ))}
+      </div>
+
+      <div class="tr-dots" data-dots aria-hidden="true"></div>
+    </section>
+
+    <!-- ═══ 9 · LIBROS Y CHAT ═══ Idénticos al home: son los mismos
+         componentes, no una copia. Pedido de Dolores (01/09/2026): «dejar lo
+         de los libros y el chat como estaba la primera página». El CTA final
+         propio se quitó — en el home el cierre es la quietud del chat, y dos
+         cierres seguidos se pisaban. -->
+    <ArcoLibros />
+    <PreguntaleAle />
+
+  </div>
+</Base>
+
+<style>
+  /* Todo scopeado a .tr — esta página no toca ni un estilo del sitio. */
+  .tr {
+    --tr-edge: clamp(20px, 5vw, 72px);
+    --tr-ink: #0b0b0c;
+    --tr-paper: #f4f2ee;
+    --tr-oro: var(--color-cobalt-bright, #d9a93c);
+  }
+
+  .aviso {
+    background: rgb(var(--accent-rgb) / 0.14);
+    border-bottom: 1px solid rgb(var(--accent-rgb) / 0.3);
+    color: var(--ink-hi);
+    font-size: 13.5px;
+    text-align: center;
+    padding: 12px 20px;
+  }
+  .aviso a { color: var(--tr-oro); text-decoration: underline; }
+
+  /* ── tipografía compartida ───────────────────────────────────────── */
+  .tr-h1 {
+    font-size: clamp(2.4rem, 1.3rem + 4.6vw, 5.2rem);
+    font-weight: 700; line-height: 0.96; letter-spacing: -0.035em;
+    margin: 0; text-wrap: balance;
+  }
+  .tr-h2 {
+    font-size: clamp(1.9rem, 1.2rem + 2.6vw, 3.4rem);
+    font-weight: 700; line-height: 1.02; letter-spacing: -0.03em;
+    margin: 10px 0 0; text-wrap: balance;
+  }
+  .tr-h2--center { text-align: center; }
+  .tr-lead {
+    font-size: clamp(1rem, 0.95rem + 0.3vw, 1.15rem);
+    line-height: 1.55; margin: 16px 0 0; max-width: 56ch; opacity: 0.78;
+  }
+  .tr-lead--center { margin-inline: auto; text-align: center; }
+  .tr-kicker {
+    display: inline-flex; align-items: center; gap: 9px;
+    font-size: 12px; font-weight: 600; letter-spacing: 0.14em;
+    text-transform: uppercase; opacity: 0.72;
+  }
+  .tr-bullet { width: 6px; height: 6px; border-radius: 999px; background: currentColor; }
+  .tr-wrap { max-width: 1240px; margin: 0 auto; padding: 0 var(--tr-edge); }
+
+  .tr-btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    padding: 15px 30px; border-radius: 999px;
+    font-size: 15px; font-weight: 650; letter-spacing: -0.01em;
+    transition: transform 200ms var(--ease-out), background-color 200ms var(--ease-out);
+  }
+  .tr-btn--lg { padding: 18px 38px; font-size: 16.5px; }
+  .tr-btn--solid { background: #fff; color: #0b0b0c; }
+  .tr-btn--ink { background: var(--tr-ink); color: #fff; }
+  .tr-btn:hover { transform: translateY(-2px); }
+
+  /* ── bandas: el mecanismo de ritmo de Tony ───────────────────────── */
+  .tr-band { padding: clamp(64px, 8vw, 132px) 0; }
+    .tr-band--dark { background: #08090c; color: #fff; }
+  .tr-band--light { background: var(--tr-paper); color: var(--tr-ink); }
+  .tr-band--light .tr-kicker--ink { opacity: 0.6; }
+
+  /* ── 1 · hero ─────────────────────────────────────────────────────── */
+  .tr-hero { position: relative; min-height: 88svh; display: flex; overflow: hidden; }
+  .tr-hero-media { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 14%; }
+  .tr-hero-scrim {
+    position: absolute; inset: 0;
+    background:
+      linear-gradient(0deg, rgba(6,7,10,0.9) 0%, rgba(6,7,10,0.35) 42%, transparent 72%),
+      linear-gradient(90deg, rgba(6,7,10,0.72) 0%, transparent 62%);
+  }
+  .tr-hero-inner {
+    position: relative; z-index: 2; width: 100%;
+    max-width: 1240px; margin: 0 auto; padding: 0 var(--tr-edge) clamp(40px, 5vw, 72px);
+    display: flex; align-items: flex-end; justify-content: space-between; gap: 32px;
+  }
+  .tr-hero-copy { color: #fff; max-width: 40rem; }
+  .tr-hero-title {
+    font-size: clamp(2.6rem, 1.2rem + 5.4vw, 5.6rem);
+    font-weight: 700; line-height: 0.94; letter-spacing: -0.038em; margin: 0 0 26px;
+  }
+  /* tarjeta flotante del próximo evento — la pieza firma del hero de Tony */
+  .tr-next {
+    flex-shrink: 0; width: min(320px, 84vw);
+    display: flex; flex-direction: column; gap: 4px;
+    padding: 20px 22px; border-radius: 16px;
+    background: rgba(14,15,19,0.72); backdrop-filter: blur(14px);
+    border: 1px solid rgba(255,255,255,0.14); color: #fff;
+    transition: transform 220ms var(--ease-out), border-color 220ms var(--ease-out);
+  }
+  .tr-next:hover { transform: translateY(-3px); border-color: rgb(var(--accent-rgb) / 0.6); }
+  .tr-next-kicker {
+    display: inline-flex; align-items: center; gap: 7px;
+    font-size: 11px; font-weight: 700; letter-spacing: 0.16em;
+    text-transform: uppercase; color: var(--tr-oro);
+  }
+  .tr-dot-live { width: 6px; height: 6px; border-radius: 999px; background: var(--tr-oro); }
+  .tr-next-title { font-size: 1.35rem; font-weight: 700; letter-spacing: -0.02em; margin-top: 6px; }
+  .tr-next-meta { font-size: 13px; opacity: 0.66; }
+  .tr-next-count {
+    margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.16);
+    font-size: 13px; font-weight: 650; font-variant-numeric: tabular-nums; color: var(--tr-oro);
+  }
+
+  /* ── 8 · riel de prensa ─────────────────────────────────────────── */
+  .tr-rail-section {
+    padding-bottom: clamp(40px, 5vw, 72px);
+  }
+  .tr-rail-head {
+    margin-bottom: 34px;
+  }
+  .tr-rail {
+    display: flex; gap: 18px;
+    overflow-x: auto; scroll-snap-type: x mandatory;
+    padding: 4px var(--tr-edge) 22px;
+    scrollbar-width: none;
+  }
+  .tr-rail::-webkit-scrollbar { display: none; }
+  .tr-rail > * { scroll-snap-align: start; flex: 0 0 auto; }
+
+  .tr-nota {
+    width: min(330px, 78vw); display: flex; flex-direction: column; gap: 7px;
+    padding: 24px; border-radius: 14px; min-height: 210px;
+    background: #101218; border: 1px solid rgba(255,255,255,0.08);
+    transition: border-color 220ms var(--ease-out), transform 220ms var(--ease-out);
+  }
+  .tr-nota:hover { border-color: rgb(var(--accent-rgb) / 0.5); transform: translateY(-3px); }
+  .tr-nota-medio { font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--tr-oro); }
+  .tr-nota-fecha { font-size: 12.5px; opacity: 0.5; font-variant-numeric: tabular-nums; }
+  .tr-nota-title { font-size: 1.05rem; font-weight: 600; line-height: 1.3; letter-spacing: -0.015em; margin: 6px 0 0; }
+  .tr-nota-tipo { margin-top: auto; font-size: 12px; opacity: 0.45; }
+
+  .tr-dots { display: flex; gap: 7px; justify-content: center; margin-top: 6px; }
+  .tr-dots span {
+    width: 7px; height: 7px; border-radius: 999px;
+    background: rgba(255,255,255,0.26); transition: background-color 200ms var(--ease-out), width 200ms var(--ease-out);
+  }
+  .tr-dots span.is-on { background: var(--tr-oro); width: 20px; }
+
+  /* ── 4 · banda declaración ────────────────────────────────────────── */
+  .tr-statement {
+    position: relative; min-height: 84svh; display: flex; align-items: center;
+    justify-content: center; text-align: center; overflow: hidden; color: #fff;
+  }
+  .tr-statement :global(picture) { position: absolute; inset: 0; }
+  .tr-statement :global(img) { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 32%; }
+  .tr-statement-scrim { position: absolute; inset: 0; background: rgba(6,7,10,0.6); }
+  .tr-statement-copy {
+    position: relative; z-index: 2; max-width: 40rem; padding: 0 var(--tr-edge);
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+  }
+  .tr-statement-copy .tr-btn { margin-top: 22px; }
+
+  /* ── 5 · cifras ───────────────────────────────────────────────────── */
+  .tr-cifras { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 40px 32px; margin-top: 56px; }
+  .tr-cifra { display: flex; flex-direction: column; gap: 10px; }
+  .tr-cifra-n {
+    font-size: clamp(2.6rem, 1.4rem + 4vw, 4.4rem);
+    font-weight: 700; line-height: 0.9; letter-spacing: -0.04em;
+    font-variant-numeric: tabular-nums; color: var(--color-cobalt, #7a5c10);
+  }
+  .tr-cifra-l { font-size: 14.5px; line-height: 1.5; opacity: 0.72; max-width: 26ch; }
+
+  /* ── 6 · voces ────────────────────────────────────────────────────── */
+  .tr-voces { position: relative; min-height: 88svh; display: flex; align-items: flex-end; overflow: hidden; color: #fff; }
+  .tr-voces :global(picture) { position: absolute; inset: 0; }
+  .tr-voces :global(img) { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 22%; }
+  .tr-voces-scrim {
+    position: absolute; inset: 0;
+    background: linear-gradient(0deg, rgba(6,7,10,0.94) 0%, rgba(6,7,10,0.6) 44%, rgba(6,7,10,0.15) 78%);
+  }
+  .tr-voces-inner { position: relative; z-index: 2; width: 100%; max-width: 1240px; margin: 0 auto; padding: 0 var(--tr-edge) clamp(36px,4vw,64px); }
+  .tr-voces-quote {
+    font-size: clamp(1.5rem, 1rem + 2.2vw, 2.9rem);
+    font-weight: 600; line-height: 1.16; letter-spacing: -0.028em;
+    max-width: 24ch; margin: 0 0 40px; text-wrap: balance;
+  }
+  .tr-voces-quote::before { content: '“'; }
+  .tr-voces-quote::after { content: '”'; }
+  .tr-voces-chips { display: flex; gap: 10px; overflow-x: auto; scrollbar-width: none; padding-bottom: 4px; }
+  .tr-voces-chips::-webkit-scrollbar { display: none; }
+  .tr-chip {
+    flex: 0 0 auto; text-align: left; cursor: pointer;
+    display: flex; flex-direction: column; gap: 3px;
+    padding: 13px 18px; border-radius: 12px;
+    background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12);
+    color: rgba(255,255,255,0.62);
+    transition: background-color 200ms var(--ease-out), color 200ms var(--ease-out), border-color 200ms var(--ease-out);
+  }
+  .tr-chip.is-on { background: rgba(255,255,255,0.12); border-color: rgb(var(--accent-rgb) / 0.7); color: #fff; }
+  .tr-chip-medio { font-size: 13px; font-weight: 700; letter-spacing: -0.01em; }
+  .tr-chip-meta { font-size: 11.5px; opacity: 0.6; }
+
+  /* ── 2 · quién es ─────────────────────────────────────────────────── */
+  .tr-meet { display: grid; grid-template-columns: minmax(0,1.1fr) minmax(0,1fr); gap: clamp(28px,4vw,60px); align-items: center; margin-top: 40px; }
+  .tr-meet-media { border-radius: 16px; overflow: hidden; aspect-ratio: 16 / 10; background: #14151a; }
+  .tr-meet-media video { width: 100%; height: 100%; object-fit: cover; }
+  .tr-meet-copy p { font-size: 1rem; line-height: 1.62; margin: 0 0 16px; opacity: 0.82; max-width: 46ch; }
+  .tr-meet-copy .tr-btn { margin-top: 10px; }
+
+  /* ── 7 · agenda ───────────────────────────────────────────────────── */
+  .tr-agenda { list-style: none; margin: 44px 0 0; padding: 0; }
+  .tr-agenda-row {
+    display: grid; grid-template-columns: minmax(0,1.4fr) minmax(0,0.8fr) auto;
+    gap: 28px; align-items: center;
+    padding: 32px 0; border-top: 1px solid rgba(255,255,255,0.13);
+  }
+  .tr-agenda-row:last-child { border-bottom: 1px solid rgba(255,255,255,0.13); }
+  .tr-agenda-row.is-pendiente { opacity: 0.5; }
+  .tr-agenda-estado { font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--tr-oro); }
+  .tr-agenda-row.is-pendiente .tr-agenda-estado { color: rgba(255,255,255,0.5); }
+  .tr-agenda-title { font-size: clamp(1.4rem,1rem+1.4vw,2rem); font-weight: 700; letter-spacing: -0.025em; margin: 8px 0 0; }
+  .tr-agenda-sub { font-size: 14.5px; opacity: 0.66; margin: 8px 0 0; max-width: 44ch; }
+  .tr-agenda-meta { display: grid; grid-template-columns: auto 1fr; gap: 4px 14px; align-content: center; }
+  .tr-agenda-k { font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; opacity: 0.45; }
+  .tr-agenda-v { font-size: 14.5px; font-weight: 600; }
+  .tr-agenda-nota { font-size: 13px; opacity: 0.6; }
+
+  /* ── responsive ───────────────────────────────────────────────────── */
+  @media (max-width: 900px) {
+    .tr-meet { grid-template-columns: 1fr; }
+    .tr-hero-inner { flex-direction: column; align-items: flex-start; gap: 26px; }
+    .tr-agenda-row { grid-template-columns: 1fr; gap: 18px; align-items: start; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .tr-rail { scroll-snap-type: none; }
+    .tr-btn:hover, .tr-next:hover, .tr-nota:hover { transform: none; }
+  }
+</style>
+
+<script>
+  /* Riel horizontal + puntos de paginación. Es la única mecánica de scroll
+     propia de esta versión: tal como en tonyrobbins.com, la página scrollea
+     vertical y normal, y el movimiento vive DENTRO de las bandas. Sin
+     scroll-jacking, sin pin, sin snap vertical. */
+  document.querySelectorAll<HTMLElement>('[data-rail]').forEach((rail) => {
+    const dots = rail.parentElement?.querySelector<HTMLElement>('[data-dots]');
+    const items = Array.from(rail.children) as HTMLElement[];
+    if (!items.length) return;
+
+    if (dots) {
+      items.forEach((_, i) => {
+        const d = document.createElement('span');
+        if (i === 0) d.classList.add('is-on');
+        dots.appendChild(d);
+      });
+    }
+
+    let raf = 0;
+    const paint = () => {
+      // tarjeta cuyo borde izquierdo está más cerca del borde del riel
+      const base = rail.getBoundingClientRect().left;
+      let best = 0, bestD = Infinity;
+      items.forEach((el, i) => {
+        const d = Math.abs(el.getBoundingClientRect().left - base);
+        if (d < bestD) { bestD = d; best = i; }
+      });
+      dots?.querySelectorAll('span').forEach((d, i) => d.classList.toggle('is-on', i === best));
+
+      // los videos sólo se reproducen mientras se ven: no calentamos el
+      // dispositivo con seis loops a la vez
+      items.forEach((el) => {
+        const v = el.querySelector<HTMLVideoElement>('video');
+        if (!v) return;
+        const r = el.getBoundingClientRect();
+        const dentro = r.right > 0 && r.left < window.innerWidth;
+        if (dentro) { if (v.paused) v.play().catch(() => {}); }
+        else if (!v.paused) v.pause();
+      });
+    };
+
+    rail.addEventListener('scroll', () => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(paint);
+    }, { passive: true });
+    window.addEventListener('resize', paint);
+    paint();
+  });
+
+  /* Banda de voces: los chips cambian la cita (patrón de testimonios de Tony). */
+  const voces = [
+    'Nos templaron, nos forjaron, nos afilaron, nos hicieron más duros, pero también mucho más humanos.',
+    'Es una entidad viva. Yo a veces pienso que es como una construcción colectiva que late.',
+    'Una empresa familiar no se vuelve sostenible porque un apellido se repita, sino porque cada generación entiende que recibe algo que debe mejorar y entregar más fuerte.',
+    'En el fondo lo que me encanta es la aventura del descubrimiento y la curiosidad por generar valor donde otros aún no lo ven.',
+  ];
+  const banda = document.querySelector<HTMLElement>('[data-voces]');
+  if (banda) {
+    const salida = banda.querySelector<HTMLElement>('[data-voces-quote]');
+    const chips = Array.from(banda.querySelectorAll<HTMLButtonElement>('[data-voces-chip]'));
+    chips.forEach((chip) => {
+      chip.addEventListener('click', () => {
+        const i = Number(chip.dataset.vocesChip);
+        if (!salida || !voces[i]) return;
+        salida.textContent = voces[i];
+        chips.forEach((c, j) => {
+          c.classList.toggle('is-on', j === i);
+          c.setAttribute('aria-selected', j === i ? 'true' : 'false');
+        });
+      });
+    });
+  }
+
+  /* Los videos que no están en un riel también arrancan sólo al verse. */
+  const sueltos = Array.from(document.querySelectorAll<HTMLVideoElement>('.tr-meet-media video'));
+  const revisar = () => sueltos.forEach((v) => {
+    const r = v.getBoundingClientRect();
+    const dentro = r.bottom > 0 && r.top < window.innerHeight;
+    if (dentro) { if (v.paused) v.play().catch(() => {}); }
+    else if (!v.paused) v.pause();
+  });
+  window.addEventListener('scroll', revisar, { passive: true });
+  revisar();
+</script>

@@ -1,0 +1,1615 @@
+---
+/**
+ * negocios.astro — la puerta «Explorar Negocios» de la faceta Empresario.
+ *
+ * JERARQUÍA (2026-08-22, segunda pasada). AYAX es la sección principal y
+ * ocupa la página: no comparte nivel con nada. Curcio Capital, El Nido y
+ * HY Project pasan a un segundo tier, «Más allá de AYAX», resuelto con
+ * filas desplegables (<details> nativo) — sin numerar y sin pestañas. El
+ * formato 01/02/03/04 se descartó: ponía los cuatro frentes en pie de
+ * igualdad, y no lo están.
+ *
+ * Antes de esto el hero era una foto grupal de la gala donde Alejandro no
+ * era el sujeto y el titular caía sobre las caras. Ahora abre con VIDEO de
+ * él hablando (anuncio de sucesión, gala de los 80 años): loop ambiente
+ * mudo + control para escucharlo con subtítulos.
+ *
+ * Copy: sitio-copy/negocios.md + Empresa/*.md. TODAS las citas trazan a la
+ * lista quotes_used de ese archivo, salvo la del HY Project, verbatim del
+ * transcript del video (public/media/video/hyproject-moma.vtt). Ninguna
+ * cifra de este archivo se inventa: ver 05 — Hechos verificados.md.
+ *
+ * Media: sucesion (hero), gala-quinteto, elnido-01 y hyproject-moma —este
+ * último no se usaba en ninguna página—. El bZ4X y Curcio Capital siguen
+ * sin foto propia: se resuelven tipográficamente, no con imágenes
+ * inventadas.
+ */
+import Base from '../layouts/Base.astro';
+import QuoteOverlay from '../components/QuoteOverlay.astro';
+import AyaxScrollStory from '../components/secciones/negocios/AyaxScrollStory.astro';
+import '../components/secciones/historia/pa-kit.css';
+
+const ayaxBeats = [
+	{
+		year: '1945',
+		title: 'No empezó con autos.',
+		body: 'Ayax nació trayendo al país insumos de laboratorio y telares de última generación que revolucionaron la industria textil. El movimiento estaba en el ADN desde el primer día: anticiparse, adaptarse, reinventarse.',
+	},
+	{
+		year: 'Opel',
+		title: 'La primera apuesta sobre ruedas.',
+		body: 'Poco después empezó a importar automóviles Opel, apostando por modelos como el Kadett y su carrocería monocasco: más liviano, más resistente, más preparado para lo que venía.',
+	},
+	{
+		year: '1968',
+		title: 'La decisión que marcó el rumbo.',
+		body: 'Representar a Toyota en Uruguay. Una marca que, como Ayax, no se define solo por lo que vende, sino por cómo piensa. Suzuki llegaría a fines de los 70.',
+	},
+	{
+		year: 'Pioneros',
+		title: 'No solo vendieron autos.',
+		body: 'Los ensamblaron y los transformaron, y los hicieron parte de la historia productiva del país. Tuvieron el primer tren de lavado del Uruguay. Y fueron pioneros en movilidad híbrida, cuando hablar de sustentabilidad todavía no era tema.',
+	},
+	{
+		year: 'Dos crisis',
+		title: 'Casi muere dos veces.',
+		body: 'En 1982, y otra vez entre 1999 y 2001. Alejandro entró joven, cuando la casa tambaleaba, y la reconstruyó pieza por pieza. Lo que recibió de su padre no fue un negocio terminado: fue conducta observada.',
+		note: '⚠ Fechas tomadas del copy aprobado; pendientes de confirmar en Hechos verificados.',
+	},
+	{
+		year: '2025',
+		title: 'Ochenta años de presencia ininterrumpida.',
+		body: 'La gala en el Sodre reunió a casi 2.000 personas, con el presidente Yamandú Orsi y delegaciones de Toyota y Suzuki llegadas desde Japón. No es un punto de llegada.',
+	},
+];
+---
+
+<Base
+	title="Negocios — Alejandro Curcio"
+	description="AYAX: ochenta años de una empresa que casi muere dos veces. Y tres frentes más que la extienden — Curcio Capital, El Nido y HY Project."
+>
+<div class="pa pa--negocios">
+	<!-- ============ HERO — plancha a sangre ============================
+	     Mismo material que antes (loop ambiente del Solís + clip completo
+	     con subtítulos al pedir sonido). Rediseño: plancha a sangre de
+	     100svh, display condensado gigante y pie técnico en mono. El sujeto
+	     vive en el 45–68% del ancho: el titular se apoya abajo a la
+	     izquierda, sobre un scrim lateral + inferior. -->
+	<section class="neg-hero" data-scrub>
+		<figure class="plate" data-hero-video>
+			<div class="plate-media" data-parallax="0.18">
+				<video
+					class="plate-video"
+					src="/media/video/sucesion-plate-loop.mp4"
+					data-full="/media/video/sucesion.mp4"
+					poster="/media/video/sucesion-poster.jpg"
+					muted
+					loop
+					autoplay
+					playsinline
+					preload="metadata"
+					aria-label="Alejandro Curcio anuncia la sucesión en la gala de los 80 años de AYAX"
+				>
+					<track kind="captions" src="/media/video/sucesion.vtt" srclang="es" label="Español" default />
+				</video>
+			</div>
+
+			<span class="plate-scrim" aria-hidden="true"></span>
+
+			<div class="wrap plate-copy">
+				<p class="pa-kick"><span class="pa-idx">[ 01 ]</span>AYAX · 1945 — 2026</p>
+				<h1 class="plate-title pa-display" data-split="lines">Ochenta años no se heredan.<br />Se sobreviven.</h1>
+				<div class="plate-row">
+					<p class="plate-sub pa-lead">
+						La empresa que hoy cumple 80 años de presencia ininterrumpida casi murió dos veces.
+					</p>
+					<a class="pa-btn" href="#ayax" data-magnetic data-roll>
+						<span>Entrá a la historia de AYAX</span>
+						<span class="pa-btn-ico" aria-hidden="true">
+							<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M6 13l6 6 6-6"></path></svg>
+						</span>
+					</a>
+				</div>
+			</div>
+
+			<!-- Pie técnico: control de sonido + crédito sobre una hairline. -->
+			<div class="plate-foot">
+				<div class="wrap plate-foot-in">
+					<button class="plate-sound" type="button" data-sound-toggle data-magnetic>
+						<span class="plate-sound-ico" aria-hidden="true">
+							<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2">
+								<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" fill="currentColor" stroke="none"></polygon>
+								<path d="M15.5 8.5a5 5 0 0 1 0 7" data-wave></path>
+							</svg>
+						</span>
+						<span data-sound-label>Escuchar el discurso</span>
+					</button>
+					<span class="plate-eq" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
+					<figcaption class="plate-credit pa-mono">
+						Gala de los 80 años · Sodre, octubre de 2025
+					</figcaption>
+				</div>
+			</div>
+		</figure>
+	</section>
+
+	<!-- ============ AYAX — la sección principal ========================== -->
+	<section id="ayax" class="neg-ayax pa-grid">
+		<div class="wrap">
+			<AyaxScrollStory beats={ayaxBeats}>
+				<dl class="stat-strip" slot="ultimo">
+					<div class="stat pa-crop">
+						<dt class="stat-value pa-display"><span data-counter>1945</span></dt><dd class="stat-label pa-mono">Fundación, por Emilio J. Curcio</dd>
+					</div>
+					<div class="stat pa-crop">
+						<dt class="stat-value pa-display"><span data-counter>97</span>%</dt><dd class="stat-label pa-mono">De los clientes vuelve a elegir la marca</dd>
+					</div>
+					<div class="stat pa-crop">
+						<dt class="stat-value pa-display"><span data-counter>23</span></dt><dd class="stat-label pa-mono">Concesionarios en todo el país</dd>
+					</div>
+					<div class="stat pa-crop">
+						<dt class="stat-value pa-display"><span data-counter>66</span></dt><dd class="stat-label pa-mono">Talleres autorizados</dd>
+					</div>
+				</dl>
+			</AyaxScrollStory>
+
+			<!-- Bloque editorial: cita grande + video al costado -->
+			<div class="ayax-body">
+				<div class="ayax-col">
+					<figure class="q pa-quote" data-reveal>
+						<blockquote>
+							No creemos en introducir un producto, aprovechar una oportunidad coyuntural y
+							desaparecer cuando cambian las condiciones. Quien compra un automóvil necesita saber
+							que detrás habrá una organización presente durante muchos años.
+						</blockquote>
+						<figcaption>Alejandro Curcio — El País, 09/08/2026</figcaption>
+					</figure>
+
+					<figure class="q q--sm pa-quote" data-reveal>
+						<blockquote>
+							Nos templaron, nos forjaron, nos afilaron, nos hicieron más duros, pero también mucho
+							más humanos.
+						</blockquote>
+						<figcaption>Alejandro Curcio — Forbes Uruguay, 13/10/2025</figcaption>
+					</figure>
+				</div>
+
+				<!-- Aftermovie del evento (recorte 8–18s). Loop mudo; sólo carga
+				     cuando se acerca al viewport (ver el script al final). -->
+				<figure class="ayax-media">
+					<div class="ayax-video-box pa-media pa-crop" data-reveal="mask">
+						<video
+							class="ayax-video"
+							data-lazy-video="/media/video/gala80-card.mp4"
+							poster="/media/video/gala80-card-poster.jpg"
+							muted
+							loop
+							playsinline
+							preload="none"
+							aria-label="Alejandro Curcio junto al presidente Yamandú Orsi en la alfombra roja de la gala de los 80 años de AYAX"
+						></video>
+					</div>
+					<figcaption class="media-caption">
+						Octubre de 2025: la gala de los 80 años en el Sodre reunió a casi 2.000 personas, con el
+						presidente Yamandú Orsi y delegaciones de Toyota y Suzuki llegadas desde Japón.
+					</figcaption>
+				</figure>
+			</div>
+
+			<!-- Electrificación: parte de AYAX, no una apuesta aparte -->
+			<div class="subfrente">
+				<div class="subfrente-head">
+					<span class="subfrente-tag pa-mono">Electrificación · 2026</span>
+					<h3 class="subfrente-title pa-display" data-split="lines">Toyota bZ4X</h3>
+					<span class="subfrente-gauge" aria-hidden="true"><i></i></span>
+				</div>
+				<div class="subfrente-body">
+					<p class="body-text">
+						El primer SUV eléctrico japonés en Uruguay. Autonomía de hasta <b>525 km WLTP</b>, dos
+						versiones —Limited 4x2 a <b>USD 49.990</b> y Limited 4x4 a <b>USD 52.990</b>— y garantía
+						extendida de hasta <b>10 años</b> vía Ayax Value, la cobertura más amplia entre los
+						eléctricos del mercado uruguayo.
+					</p>
+					<figure class="q q--sm pa-quote">
+						<blockquote>
+							Hace 18 años que introdujimos los primeros autos electrificados en Uruguay… en 18 años
+							no cambiamos una batería.
+						</blockquote>
+						<figcaption>Forbes Uruguay, 24/04/2026</figcaption>
+					</figure>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- Ticker de medios: decorativo (aria-hidden). Sólo nombra los medios
+	     que ya firman las citas de esta página; no agrega ningún dato. -->
+	<div class="neg-ticker pa-marquee" data-marquee data-marquee-speed="70" aria-hidden="true">
+		{['El País', 'Forbes Uruguay', 'El País', 'Forbes Uruguay'].map((m) => (
+			<span class="neg-ticker-item pa-display">{m}<i>✦</i></span>
+		))}
+	</div>
+
+	<!-- ============ MÁS ALLÁ DE AYAX — segundo tier ======================
+	     Filas desplegables (<details> nativo: teclado y sin-JS gratis). Sin
+	     numerar y sin pestañas: son extensiones de AYAX, no pares suyos.
+	     Rediseño: cada fila es una tarjeta con preview de medio en hover
+	     (video mudo en HY Project, póster en El Nido; Curcio Capital sigue
+	     tipográfico porque no tiene foto propia). -->
+	<section id="mas" class="neg-mas pa-cap pa-cap--bone pa-grid">
+		<div class="wrap">
+			<header class="pa-cap-head">
+				<p class="pa-kick"><span class="pa-idx">[ 03 ]</span>Más allá de AYAX</p>
+				<h2 class="pa-display pa-cap-title" data-split="lines">Tres frentes que la extienden.</h2>
+				<p class="pa-lead" data-reveal>
+					No reemplazan a la empresa: le estiran la lógica a otros terrenos. Abrí el que te interese.
+				</p>
+			</header>
+
+			<div class="rows">
+				<!-- ---------- Curcio Capital ---------- -->
+				<details class="row" id="curcio-capital">
+					<summary class="row-head" data-cursor="view" data-cursor-label="Abrir">
+						<span class="row-text">
+							<span class="row-name pa-display">Curcio Capital</span>
+							<span class="row-hook">El sello con el que la familia nombra su continuidad</span>
+						</span>
+						<span class="row-tag pa-mono">El sello</span>
+						<span class="row-thumb row-thumb--type" aria-hidden="true">
+							<span class="row-thumb-rings"><i></i><i></i><i></i><i></i></span>
+						</span>
+						<span class="row-sign" aria-hidden="true"><i></i><i></i></span>
+					</summary>
+
+					<div class="row-panel">
+						<p class="row-lead">
+							No es solo un vehículo de inversión: es la formalización escrita —en 2017, como «Estilo
+							Comercial Curcio Capital»— de una manera de hacer negocios que Emilio J. Curcio fundó y
+							Alejandro extendió.
+						</p>
+
+						<figure class="q pa-quote">
+							<blockquote>
+								Curcio Capital simboliza un conjunto de valores, normas, creencias y experiencias de
+								referencia que se traducen en este sello específico de continuidad.
+							</blockquote>
+							<figcaption>curciocapital.com</figcaption>
+						</figure>
+
+						<div class="pillars">
+							<div class="pillar">
+								<h4 class="pillar-title">Mejora Continua</h4>
+								<p class="pillar-body">
+									Kaizen — la filosofía japonesa que AYAX heredó de casi seis décadas de relación con
+									Toyota.
+								</p>
+							</div>
+							<div class="pillar">
+								<h4 class="pillar-title">Respeto hacia las Personas</h4>
+								<p class="pillar-body">
+									Cada cliente, empleado y proveedor, tratado como una relación de largo plazo, no una
+									transacción.
+								</p>
+							</div>
+							<div class="pillar">
+								<h4 class="pillar-title">Crecimiento Sustentable</h4>
+								<p class="pillar-body">
+									Crecer de una forma que se pueda sostener en el tiempo, sin sacrificar el mañana por
+									el resultado de hoy.
+								</p>
+							</div>
+						</div>
+
+						<div class="cc-split">
+							<div class="cc-col">
+								<span class="cc-label pa-mono">Hacia uno mismo</span>
+								<ul class="cc-list"><li>Coraje</li><li>Creatividad</li><li>Convicción</li></ul>
+							</div>
+							<div class="cc-col">
+								<span class="cc-label pa-mono">Hacia el cliente</span>
+								<ul class="cc-list"><li>Comunicación</li><li>Cooperación</li><li>Consideración</li></ul>
+							</div>
+						</div>
+
+						<p class="cc-mission">«El cliente primero, el cliente fiel, el cliente para toda la vida.»</p>
+
+						<p class="body-text">
+							El foco inversor está puesto en tecnología, biotecnología —incluidos laboratorios de
+							exosomas en Estados Unidos— y real estate.
+						</p>
+
+						<figure class="q q--sm pa-quote">
+							<blockquote>
+								La disrupción no es una amenaza, es la mayor oportunidad para quienes están dispuestos
+								a aprender y adaptarse. En Curcio Capital, no invertimos solo en tecnología,
+								invertimos en mentalidades ágiles.
+							</blockquote>
+							<figcaption>Alejandro Curcio — Pilar «El Negocio»</figcaption>
+						</figure>
+					</div>
+				</details>
+
+				<!-- ---------- El Nido ---------- -->
+				<details class="row" id="el-nido">
+					<summary class="row-head" data-cursor="view" data-cursor-label="Abrir">
+						<span class="row-text">
+							<span class="row-name pa-display">El Nido</span>
+							<span class="row-hook">200 hectáreas de bosque nativo que bajan hacia el mar</span>
+						</span>
+						<span class="row-tag pa-mono">Real estate</span>
+						<span class="row-thumb" aria-hidden="true">
+							<img src="/media/img/elnido-video-poster.jpg" alt="" loading="lazy" width="1600" height="900" />
+						</span>
+						<span class="row-sign" aria-hidden="true"><i></i><i></i></span>
+					</summary>
+
+					<div class="row-panel">
+						<p class="row-lead">
+							<strong>El Nido — Beach &amp; Surf Homes.</strong> Entre Manantiales y José Ignacio, con 450
+							lotes dentro de un bosque nativo. Lo lidera un equipo de profesionales, entre ellos el
+							arquitecto Martín Gómez Platero.
+						</p>
+
+						<!-- Video de surf de El Nido (archivo propio, entregado 26/10/2026).
+						     Reemplaza al embed de Vimeo, que no cargaba. Mudo, en loop, se
+						     reproduce sólo mientras la fila está abierta y en pantalla. -->
+						<figure class="row-media row-media--wide">
+							<div class="nido-video">
+								<video
+									src="/media/video/elnido-surf.mp4"
+									poster="/media/video/elnido-surf-poster.jpg"
+									muted
+									loop
+									playsinline
+									preload="none"
+									data-nido-video
+									aria-label="Surf en una ola perfecta: un surfista dentro del tubo, en piscina de olas"
+								></video>
+							</div>
+							<figcaption class="media-caption media-caption--split">
+								<span>El Nido — Beach &amp; Surf Homes.</span>
+								<a class="media-link" href="https://www.elnido.uy/" target="_blank" rel="noopener noreferrer" data-roll>
+									Conocé el proyecto en elnido.uy
+									<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+										<line x1="7" y1="17" x2="17" y2="7"></line><polyline points="9 7 17 7 17 15"></polyline>
+									</svg>
+								</a>
+							</figcaption>
+						</figure>
+						<dl class="cifras">
+							<div><dt class="pa-display"><span data-counter>200</span></dt><dd>hectáreas de bosque nativo</dd></div>
+							<div><dt class="pa-display"><span data-counter>450</span></dt><dd>lotes</dd></div>
+							<div><dt class="pa-display"><span data-counter>1.000</span></dt><dd>olas por hora en el Wavegarden</dd></div>
+						</dl>
+
+						<!-- Texto + video vertical de Ale en el Wavegarden (entregado 27/10/2026),
+						     en el espacio libre a la derecha. -->
+						<div class="nido-split">
+							<div class="nido-split__text">
+							<p class="row-body">
+								El proyecto se presenta sobre tres ejes —<b>innovación, naturaleza y lifestyle</b>— y su
+								corazón es el <b>Wavegarden</b>, que El Nido describe como la primera playa artificial
+								con olas de Uruguay y la región, con olas todo el año para principiantes y expertos.
+							</p>
+
+							<ul class="indice">
+								<li>Wavegarden</li>
+								<li>Beach club</li>
+								<li>Gimnasio</li>
+								<li>Canchas</li>
+								<li>Laguna interior</li>
+								<li>Senderos</li>
+								<li>Piscinas</li>
+								<li>Eventos</li>
+								<li>Seguridad permanente</li>
+							</ul>
+
+							<figure class="q q--sm pa-quote">
+								<blockquote>
+									No solo es una excelente inversión en bienes raíces, sino que es una nueva forma de
+									entender el bienestar y la conexión con la naturaleza.
+								</blockquote>
+								<figcaption>Alejandro Curcio — Forbes Uruguay, 10/12/2024</figcaption>
+							</figure>
+							</div>
+							<figure class="nido-ale">
+								<div class="nido-ale__media" data-reveal="mask">
+									<video
+										src="/media/video/elnido-ale.mp4"
+										poster="/media/video/elnido-ale-poster.jpg"
+										muted
+										loop
+										playsinline
+										preload="none"
+										data-nido-video
+										aria-label="Alejandro Curcio surfeando en el Wavegarden"
+									></video>
+								</div>
+							</figure>
+						</div>
+					</div>
+				</details>
+
+				<!-- ---------- HY Project ---------- -->
+				<details class="row" id="hy-project">
+					<summary class="row-head" data-cursor="play" data-cursor-label="Play">
+						<span class="row-text">
+							<span class="row-name pa-display">HY Project</span>
+							<span class="row-hook">Un sonido para autos eléctricos que regenera plantas</span>
+						</span>
+						<span class="row-tag pa-mono">Cannes Lions 2021</span>
+						<span class="row-thumb" aria-hidden="true" data-thumb-video>
+							<img src="/media/video/hyproject-moma-poster.jpg" alt="" loading="lazy" />
+							<video data-src="/media/video/hyproject-moma-page.mp4" muted loop playsinline preload="none"></video>
+							<span class="row-thumb-play"><svg viewBox="0 0 24 24" width="12" height="12"><path d="M7 5v14l12-7z" fill="currentColor"></path></svg></span>
+						</span>
+						<span class="row-sign" aria-hidden="true"><i></i><i></i></span>
+					</summary>
+
+					<div class="row-panel">
+						<p class="row-lead">
+							Los motores híbridos y eléctricos son casi silenciosos. AYAX, junto a la agencia uruguaya
+							The Electric Factory, convirtió esa limitación técnica en un beneficio ambiental.
+							Presentado en 2019 como desarrollo pionero a nivel mundial.
+						</p>
+
+						<figure class="row-media">
+							<video
+								src="/media/video/hyproject-moma-page.mp4"
+								poster="/media/video/hyproject-moma-poster.jpg"
+								controls
+								playsinline
+								preload="none"
+								aria-label="Alejandro Curcio cuenta la historia del HY Project y el reconocimiento del MoMA"
+							>
+								<track
+									kind="captions"
+									src="/media/video/hyproject-moma.vtt"
+									srclang="es"
+									label="Español"
+									default
+								/>
+							</video>
+							<figcaption class="media-caption">
+								Alejandro cuenta la historia completa: de la investigación en epigenética hasta el
+								reconocimiento del MoMA. 1 min 16 s, con subtítulos.
+							</figcaption>
+						</figure>
+
+						<figure class="q q--sm pa-quote">
+							<blockquote>
+								Ganamos el oro en Nueva York. Ganamos plata en Londres. Ganamos plata en Cannes… y
+								también el museo MoMA de Nueva York nos reconoce como inventores de este sonido —el HY
+								Project— y está la obra ahí.
+							</blockquote>
+							<figcaption>Alejandro Curcio, contando la historia del HY Project</figcaption>
+						</figure>
+					</div>
+				</details>
+			</div>
+		</div>
+	</section>
+
+	<!-- ============ CITA DESTACADA ====================================== -->
+	<QuoteOverlay
+		id="quote"
+		bgId="gala-alfombra"
+		bgAlt="Alejandro Curcio en la alfombra roja de la gala de los 80 años de AYAX en el Sodre"
+		quote="El precio es el último recurso, nunca el primero. Preferimos construir valor antes que destruir precios."
+		attribution="Alejandro Curcio — El País, 09/08/2026"
+		avatars={[
+			{ id: 'ale-living', alt: '' },
+			{ id: 'gala-quinteto', alt: '' },
+			{ src: '/media/video/brindis-poster.jpg', alt: '' },
+			{ src: '/media/video/sucesion-poster.jpg', alt: '' },
+		]}
+	/>
+
+	<!-- ============ CIERRE ============================================== -->
+	<section class="neg-cierre pa-grid">
+		<div class="wrap">
+			<p class="pa-kick"><span class="pa-idx">[ 04 ]</span>AYAX · Legado</p>
+			<h2 class="neg-cierre-title pa-display" data-split="lines">Forjado, no heredado.</h2>
+			<div class="neg-cierre-foot">
+				<p class="pa-lead" data-reveal>
+					Lo que Alejandro recibió de su padre Emilio J. Curcio no fue un imperio terminado — fue
+					conducta observada. Ochenta años después, el mismo gesto se repite con la generación que
+					sigue.
+				</p>
+				<a class="pa-btn" href="/historia" data-magnetic data-roll>
+					<span>Conocé la historia completa</span>
+					<span class="pa-btn-ico" aria-hidden="true">
+						<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
+					</span>
+				</a>
+			</div>
+		</div>
+	</section>
+</div>
+</Base>
+
+<style>
+	/* ================= HERO — plancha a sangre ================= */
+	.neg-hero {
+		--p: 0;
+		position: relative;
+	}
+	.plate {
+		position: relative;
+		margin: 0;
+		min-height: var(--pa-hero-h);
+		display: flex;
+		flex-direction: column;
+		justify-content: flex-end;
+		overflow: hidden;
+		background: var(--pa-bg-2);
+		isolation: isolate;
+	}
+	.plate-media {
+		position: absolute;
+		inset: -6% 0;
+		z-index: -2;
+	}
+	.plate-video {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		/* El sujeto vive en el 45–68% del ancho y su cabeza en el tercio
+		   superior: se encuadra a la derecha y arriba. */
+		object-position: 68% 20%;
+	}
+	.plate-scrim {
+		position: absolute;
+		inset: 0;
+		z-index: -1;
+		background:
+			linear-gradient(90deg, rgba(10, 8, 5, 0.9) 0%, rgba(10, 8, 5, 0.62) 34%, rgba(10, 8, 5, 0.1) 62%, transparent 80%),
+			linear-gradient(0deg, rgba(10, 8, 5, 0.96) 0%, rgba(10, 8, 5, 0.55) 30%, transparent 58%);
+		transition: opacity var(--dur-md, 500ms) var(--pa-ease);
+	}
+	.plate-copy {
+		width: 100%;
+		display: grid;
+		gap: clamp(18px, 2.4vw, 30px);
+		padding-top: var(--pa-hero-pad);
+		padding-bottom: clamp(100px, 12vh, 140px);
+		transition: opacity var(--dur-md, 500ms) var(--pa-ease);
+	}
+	.plate-title {
+		font-size: clamp(42px, min(6.6vw, 12.5vh), 128px);
+		line-height: 0.98;
+		letter-spacing: -0.045em;
+		color: #fff;
+		max-width: 17ch;
+	}
+	.plate-row {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: flex-end;
+		gap: 24px 40px;
+	}
+	.plate-sub {
+		max-width: 36ch;
+	}
+
+	.plate-foot {
+		position: absolute;
+		inset: auto 0 0 0;
+		border-top: 1px solid var(--pa-line-strong);
+		background: linear-gradient(0deg, rgba(10, 8, 5, 0.5), transparent);
+	}
+	.plate-foot-in {
+		display: flex;
+		align-items: center;
+		gap: 20px;
+		padding-top: 16px;
+		padding-bottom: 16px;
+	}
+	.plate-sound {
+		min-height: 44px;
+		display: inline-flex;
+		align-items: center;
+		gap: 9px;
+		padding: 9px 16px 9px 12px;
+		border: 1px solid rgba(233, 237, 255, 0.3);
+		border-radius: 999px;
+		background: rgba(11, 14, 23, 0.5);
+		backdrop-filter: blur(10px);
+		color: var(--ink-hi);
+		font-family: var(--pa-mono);
+		font-size: 11.5px;
+		letter-spacing: 0.06em;
+		text-transform: uppercase;
+		font-weight: 500;
+		cursor: pointer;
+		transition:
+			background 250ms var(--pa-ease),
+			border-color 250ms var(--pa-ease),
+			color 250ms var(--pa-ease);
+	}
+	.plate-sound:hover {
+		background: var(--pa-accent);
+		border-color: var(--pa-accent);
+		color: var(--pa-ink);
+	}
+	.plate-sound:focus-visible {
+		outline: 2px solid var(--pa-accent);
+		outline-offset: 3px;
+	}
+	.plate-sound-ico {
+		display: grid;
+		place-items: center;
+		width: 15px;
+		height: 15px;
+	}
+	[data-wave] {
+		opacity: 0.35;
+		transition: opacity 250ms;
+	}
+	.plate.is-loud [data-wave] {
+		opacity: 1;
+	}
+	/* ecualizador decorativo: se mueve sólo con sonido */
+	.plate-eq {
+		display: inline-flex;
+		align-items: flex-end;
+		gap: 3px;
+		height: 14px;
+	}
+	.plate-eq i {
+		width: 2px;
+		height: 100%;
+		background: var(--pa-accent);
+		transform-origin: 50% 100%;
+		transform: scaleY(0.25);
+	}
+	.plate.is-loud .plate-eq i {
+		animation: eq 900ms ease-in-out infinite alternate;
+	}
+	.plate.is-loud .plate-eq i:nth-child(2) { animation-delay: -200ms; }
+	.plate.is-loud .plate-eq i:nth-child(3) { animation-delay: -500ms; }
+	.plate.is-loud .plate-eq i:nth-child(4) { animation-delay: -100ms; }
+	.plate.is-loud .plate-eq i:nth-child(5) { animation-delay: -700ms; }
+	@keyframes eq {
+		to {
+			transform: scaleY(1);
+		}
+	}
+	.plate-credit {
+		margin-left: auto;
+		color: var(--ink-low);
+		text-align: right;
+	}
+	/* Con sonido: aparecen los controles nativos y la copia se corre. */
+	.plate.is-loud .plate-scrim,
+	.plate.is-loud .plate-copy {
+		opacity: 0;
+		pointer-events: none;
+	}
+	.plate.is-loud .plate-foot {
+		inset: 0 0 auto 0;
+		border-top: 0;
+		background: none;
+	}
+	.plate.is-loud .plate-credit {
+		display: none;
+	}
+
+	/* ================= AYAX ================= */
+	.neg-ayax {
+		background: var(--color-cap-2, #0a0805);
+		padding: clamp(40px, 6vw, 80px) 0 clamp(96px, 12vw, 168px);
+	}
+	.ayax-body {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+		gap: clamp(30px, 5vw, 88px);
+		align-items: start;
+		margin-top: clamp(80px, 10vw, 150px);
+	}
+	.ayax-col {
+		display: flex;
+		flex-direction: column;
+		gap: 48px;
+	}
+	.ayax-media {
+		margin: 0;
+	}
+	.ayax-video-box {
+		aspect-ratio: 16 / 9;
+		--pa-crop-o: -10px;
+	}
+	.ayax-video {
+		display: block;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		border-radius: var(--pa-r-lg);
+	}
+
+	/* ================= cifras (data-counter) ================= */
+	.stat-strip {
+		display: grid;
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+		gap: 0;
+		margin: 0;
+		border-top: 1px solid var(--pa-line-strong);
+		border-bottom: 1px solid var(--pa-line-strong);
+	}
+	.stat {
+		padding: clamp(26px, 3vw, 44px) clamp(16px, 2vw, 32px);
+		margin: 0;
+		--pa-crop-o: -1px;
+		--pa-crop-c: rgb(232 200 116 / 0.55);
+		--pa-crop-s: 10px;
+	}
+	.stat + .stat {
+		border-left: 1px solid var(--pa-line);
+	}
+	.stat-value {
+		font-size: clamp(52px, 6vw, 112px);
+		line-height: 0.9;
+		letter-spacing: -0.05em;
+		color: #fff;
+		font-variant-numeric: tabular-nums;
+		margin: 0;
+	}
+	.stat:nth-child(2) .stat-value {
+		color: var(--pa-accent);
+	}
+	.stat-label {
+		color: var(--ink-low);
+		margin: 18px 0 0;
+		max-width: 22ch;
+	}
+
+	/* ================= citas ================= */
+	.q {
+		margin: 0;
+		padding-left: 24px;
+		border-left: 1px solid var(--pa-accent);
+	}
+	.q.pa-quote blockquote {
+		font-size: clamp(24px, 1.1rem + 1.4vw, 40px);
+		line-height: 1.16;
+	}
+	.q--sm.pa-quote blockquote {
+		font-size: clamp(20px, 1rem + 0.8vw, 28px);
+		line-height: 1.24;
+	}
+	.row-panel .q,
+	.subfrente .q {
+		margin-top: 34px;
+	}
+	.body-text {
+		font-size: var(--text-body, 17px);
+		line-height: 1.68;
+		color: var(--ink-mid);
+		margin: 26px 0 0;
+	}
+	.body-text b {
+		color: var(--ink-hi);
+		font-weight: 600;
+	}
+	.media-caption {
+		font-size: 13.5px;
+		line-height: 1.55;
+		color: var(--ink-low);
+		margin: 16px 0 0;
+		max-width: 58ch;
+	}
+
+	/* ================= sub-frente bZ4X ================= */
+	.subfrente {
+		display: grid;
+		grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+		gap: clamp(24px, 5vw, 88px);
+		margin: clamp(80px, 10vw, 140px) 0 0;
+		padding: 36px 0 0;
+		border-top: 1px solid var(--pa-line-strong);
+	}
+	.subfrente-tag {
+		display: block;
+		color: var(--pa-accent);
+	}
+	.subfrente-title {
+		font-size: clamp(44px, 6vw, 108px);
+		color: #fff;
+		margin: 16px 0 0;
+	}
+	/* barra de carga decorativa: se llena con el scroll (data-scrub en Base) */
+	.subfrente-gauge {
+		display: block;
+		position: relative;
+		height: 2px;
+		margin-top: 28px;
+		max-width: 280px;
+		background: rgb(255 255 255 / 0.14);
+		overflow: hidden;
+	}
+	.subfrente-gauge i {
+		position: absolute;
+		inset: 0;
+		background: var(--pa-accent);
+		transform-origin: 0 50%;
+		animation: gauge 3.2s var(--pa-ease) infinite;
+	}
+	@keyframes gauge {
+		0% { transform: scaleX(0); }
+		70%, 100% { transform: scaleX(1); opacity: 0.2; }
+	}
+	.subfrente-body .body-text:first-child {
+		margin-top: 0;
+	}
+
+	/* ================= ticker de medios ================= */
+	.neg-ticker {
+		background: var(--pa-bg);
+		border-top: 1px solid var(--pa-line);
+		padding: clamp(22px, 3vw, 40px) 0;
+	}
+	.neg-ticker-item {
+		display: inline-flex;
+		align-items: center;
+		gap: clamp(28px, 4vw, 64px);
+		padding-right: clamp(28px, 4vw, 64px);
+		font-size: clamp(44px, 7vw, 128px);
+		color: transparent;
+		-webkit-text-stroke: 1px rgb(255 255 255 / 0.4);
+		line-height: 1;
+	}
+	.neg-ticker-item:nth-child(even) {
+		color: #fff;
+		-webkit-text-stroke: 0;
+	}
+	.neg-ticker-item i {
+		font-style: normal;
+		font-size: 0.3em;
+		color: var(--pa-accent);
+		-webkit-text-stroke: 0;
+	}
+
+	/* ================= filas / tarjetas ================= */
+	.neg-mas .pa-cap-head {
+		max-width: 1100px;
+	}
+	.rows {
+		display: grid;
+		gap: 14px;
+	}
+	.row {
+		border-radius: var(--pa-r-lg);
+		background: #fff;
+		box-shadow: inset 0 0 0 1px var(--pa-line-light);
+		transition: box-shadow 400ms var(--pa-ease), background 400ms var(--pa-ease);
+	}
+	.row:hover,
+	.row[open] {
+		box-shadow: inset 0 0 0 1px rgb(11 14 23 / 0.22);
+	}
+	.row-head {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) auto auto auto;
+		align-items: center;
+		gap: clamp(16px, 2.4vw, 36px);
+		padding: clamp(22px, 2.6vw, 34px) clamp(20px, 2.6vw, 40px);
+		cursor: pointer;
+		list-style: none;
+		color: var(--pa-ink);
+	}
+	.row-head::-webkit-details-marker {
+		display: none;
+	}
+	.row-head:focus-visible {
+		outline: 2px solid var(--pa-accent-ink);
+		outline-offset: 3px;
+		border-radius: var(--pa-r-lg);
+	}
+	.row-text {
+		display: flex;
+		flex-direction: column;
+		gap: 12px;
+		min-width: 0;
+	}
+	.row-name {
+		font-size: clamp(36px, 5vw, 92px);
+		color: var(--pa-ink);
+		transition: color 300ms var(--pa-ease), transform 600ms var(--pa-ease);
+		transform-origin: 0 50%;
+	}
+	.row-head:hover .row-name {
+		transform: translateX(10px);
+	}
+	.row[open] .row-name {
+		color: var(--pa-accent-ink);
+	}
+	.row-hook {
+		font-size: 15px;
+		line-height: 1.45;
+		color: rgb(11 14 23 / 0.62);
+	}
+	.row-tag {
+		color: rgb(11 14 23 / 0.6);
+		white-space: nowrap;
+	}
+	/* Preview de medio: crece en hover; el de HY Project reproduce video. */
+	.row-thumb {
+		position: relative;
+		display: block;
+		width: clamp(140px, 16vw, 260px);
+		aspect-ratio: 16 / 10;
+		border-radius: 18px;
+		overflow: hidden;
+		background: var(--pa-ink);
+		transform: scale(0.92) rotate(-2deg);
+		transition: transform 700ms var(--pa-ease);
+	}
+	.row-head:hover .row-thumb,
+	.row[open] .row-thumb {
+		transform: scale(1) rotate(0deg);
+	}
+	.row-thumb img,
+	.row-thumb video {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		transition: transform 900ms var(--pa-ease), opacity 400ms;
+	}
+	.row-head:hover .row-thumb img {
+		transform: scale(1.08);
+	}
+	.row-thumb video {
+		opacity: 0;
+	}
+	.row-thumb.is-playing video {
+		opacity: 1;
+	}
+	.row-thumb-play {
+		position: absolute;
+		right: 10px;
+		bottom: 10px;
+		display: grid;
+		place-items: center;
+		width: 30px;
+		height: 30px;
+		border-radius: 50%;
+		background: var(--pa-accent);
+		color: var(--pa-ink);
+		transition: transform 400ms var(--pa-ease);
+	}
+	.row-thumb.is-playing .row-thumb-play {
+		transform: scale(0);
+	}
+	.row-thumb--type {
+		background: var(--oro-degrade, linear-gradient(135deg, #b8892a 0%, #e8c874 46%, #c9992f 100%));
+	}
+	.row-thumb-rings {
+		position: absolute;
+		inset: 0;
+		display: grid;
+		place-items: center;
+	}
+	.row-thumb-rings i {
+		position: absolute;
+		border-radius: 50%;
+		border: 1px solid rgb(11 14 23 / 0.35);
+		width: calc(var(--k, 1) * 22%);
+		aspect-ratio: 1;
+		transition: transform 900ms var(--pa-ease);
+	}
+	.row-thumb-rings i:nth-child(1) { --k: 1; }
+	.row-thumb-rings i:nth-child(2) { --k: 2; }
+	.row-thumb-rings i:nth-child(3) { --k: 3; }
+	.row-thumb-rings i:nth-child(4) { --k: 4; }
+	.row-head:hover .row-thumb-rings i {
+		transform: scale(1.18);
+	}
+	.row-sign {
+		position: relative;
+		width: 52px;
+		height: 52px;
+		border-radius: 50%;
+		background: var(--pa-ink);
+		transition: background 300ms var(--pa-ease), transform 600ms var(--pa-ease);
+	}
+	.row-sign i {
+		position: absolute;
+		inset: 50% auto auto 50%;
+		width: 16px;
+		height: 1.5px;
+		background: #fff;
+		transform: translate(-50%, -50%);
+		transition: transform 500ms var(--pa-ease);
+	}
+	.row-sign i:last-child {
+		transform: translate(-50%, -50%) rotate(90deg);
+	}
+	.row-head:hover .row-sign {
+		background: var(--pa-accent-ink);
+	}
+	.row[open] .row-sign {
+		background: var(--pa-accent-ink);
+		transform: rotate(180deg);
+	}
+	.row[open] .row-sign i:last-child {
+		transform: translate(-50%, -50%) rotate(0deg);
+	}
+
+	.row-panel {
+		padding: 8px clamp(20px, 2.6vw, 40px) clamp(36px, 4vw, 56px);
+		border-top: 1px solid var(--pa-line-light);
+		margin-top: 0;
+		padding-top: clamp(28px, 3vw, 40px);
+		animation: row-in 700ms var(--pa-ease) both;
+		color: var(--pa-ink);
+	}
+	@keyframes row-in {
+		from {
+			opacity: 0;
+			transform: translateY(16px);
+		}
+		to {
+			opacity: 1;
+			transform: none;
+		}
+	}
+	/* El panel vive en la hoja clara: tinta oscura. */
+	.row-panel .q {
+		border-left-color: var(--pa-accent-ink);
+	}
+	.row-panel .q blockquote {
+		color: var(--pa-ink);
+	}
+	.row-panel .q figcaption,
+	.row-panel .media-caption {
+		color: rgb(11 14 23 / 0.6);
+	}
+	.row-panel .body-text {
+		color: rgb(11 14 23 / 0.7);
+	}
+	.row-panel .body-text b {
+		color: var(--pa-ink);
+	}
+	.row-lead,
+	.row-body {
+		font-size: var(--text-lead, 18px);
+		line-height: 1.6;
+		color: rgb(11 14 23 / 0.72);
+		margin: 0;
+		max-width: 68ch;
+	}
+	.row-body {
+		font-size: var(--text-body, 17px);
+		line-height: 1.68;
+		margin-top: 34px;
+	}
+	.row-body b,
+	.row-lead strong {
+		color: var(--pa-ink);
+		font-weight: 600;
+	}
+	.row-panel .q,
+	.row-panel .indice {
+		max-width: 68ch;
+	}
+	.row-media {
+		margin: 34px 0 0;
+	}
+	.row-media video {
+		display: block;
+		width: 100%;
+		height: auto;
+		aspect-ratio: 16 / 9;
+		object-fit: cover;
+		background: var(--pa-ink);
+		border-radius: 20px;
+	}
+
+	.cifras {
+		display: flex;
+		flex-wrap: wrap;
+		margin: 40px 0 0;
+		border-top: 1px solid var(--pa-line-light);
+	}
+	.cifras > div {
+		flex: 1 1 180px;
+		padding: 24px 26px 24px 0;
+		border-bottom: 1px solid var(--pa-line-light);
+	}
+	.cifras > div + div {
+		padding-left: 26px;
+		border-left: 1px solid var(--pa-line-light);
+	}
+	.cifras dt {
+		font-size: clamp(42px, 4.6vw, 84px);
+		line-height: 0.92;
+		letter-spacing: -0.05em;
+		color: var(--pa-ink);
+		font-variant-numeric: tabular-nums;
+	}
+	.cifras dd {
+		margin: 12px 0 0;
+		font-family: var(--pa-mono);
+		font-size: 11.5px;
+		letter-spacing: 0.06em;
+		text-transform: uppercase;
+		line-height: 1.45;
+		color: rgb(11 14 23 / 0.6);
+	}
+
+	.indice {
+		list-style: none;
+		margin: 34px 0 0;
+		padding: 0;
+		columns: 3;
+		column-gap: 34px;
+	}
+	.indice li {
+		break-inside: avoid;
+		padding: 10px 0;
+		border-bottom: 1px solid var(--pa-line-light);
+		font-size: 14.5px;
+		color: rgb(11 14 23 / 0.74);
+	}
+	@media (max-width: 700px) {
+		.indice {
+			columns: 2;
+		}
+		.cifras > div + div {
+			padding-left: 0;
+			border-left: 0;
+		}
+	}
+
+	.row-media--wide {
+		width: 100%;
+		margin-top: 40px;
+	}
+	.vimeo {
+		position: relative;
+		aspect-ratio: 16 / 9;
+		border-radius: 20px;
+		overflow: hidden;
+		background: var(--pa-ink);
+	}
+	.vimeo :global(img),
+	.vimeo :global(iframe) {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		border: 0;
+		object-fit: cover;
+		display: block;
+	}
+	.vimeo:not(.is-playing)::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		background: rgba(10, 8, 5, 0.35);
+	}
+	.media-caption--split {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: baseline;
+		justify-content: space-between;
+		gap: 8px 20px;
+		max-width: 100%;
+	}
+	.media-link {
+		position: relative;
+		display: inline-flex;
+		align-items: center;
+		gap: 5px;
+		color: var(--pa-accent-ink);
+		font-weight: 600;
+		text-decoration: none;
+		border-bottom: 1px solid transparent;
+		transition: border-color 250ms;
+		white-space: nowrap;
+	}
+	/* Área táctil ≥44px sin cambiar el renglón. */
+	.media-link::after {
+		content: '';
+		position: absolute;
+		inset: -14px -4px;
+	}
+	.media-link:hover {
+		border-bottom-color: currentColor;
+	}
+
+	/* Curcio Capital */
+	.pillars {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+		gap: 12px;
+		margin: 34px 0 0;
+	}
+	.pillar {
+		padding: 24px 22px 26px;
+		border-radius: 20px;
+		background: var(--pa-bone);
+		box-shadow: inset 0 0 0 1px var(--pa-line-light);
+		transition: background 300ms var(--pa-ease), transform 500ms var(--pa-ease);
+	}
+	.pillar:hover {
+		background: var(--pa-ink);
+		transform: translateY(-4px);
+	}
+	.pillar:hover .pillar-title {
+		color: var(--pa-accent);
+	}
+	.pillar:hover .pillar-body {
+		color: rgb(255 255 255 / 0.7);
+	}
+	.pillar-title {
+		font-family: var(--pa-display);
+		font-weight: var(--display-wght, 560);
+		letter-spacing: -0.03em;
+		font-size: 24px;
+		line-height: 1.05;
+		color: var(--pa-ink);
+		margin: 0;
+		transition: color 300ms;
+	}
+	.pillar-body {
+		font-size: 14.5px;
+		line-height: 1.55;
+		color: rgb(11 14 23 / 0.66);
+		margin: 12px 0 0;
+		transition: color 300ms;
+	}
+	.cc-split {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+		gap: 26px;
+		margin: 32px 0 0;
+		padding: 26px 0 0;
+		border-top: 1px solid var(--pa-line-light);
+	}
+	.cc-label {
+		display: block;
+		color: rgb(11 14 23 / 0.6);
+		margin-bottom: 14px;
+	}
+	.cc-list {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 8px;
+	}
+	.cc-list li {
+		padding: 8px 16px;
+		border: 1px solid rgb(var(--accent-deep-rgb, 122 92 16) / 0.4);
+		border-radius: 999px;
+		font-size: 14px;
+		font-weight: 500;
+		color: var(--pa-ink);
+	}
+	.cc-mission {
+		margin: 30px 0 0;
+		font-family: var(--pa-serif);
+		font-style: italic;
+		font-size: clamp(22px, 1rem + 1vw, 32px);
+		line-height: 1.25;
+		color: var(--pa-accent-ink);
+	}
+
+	/* ================= cierre ================= */
+	.neg-cierre {
+		background:
+			radial-gradient(80% 60% at 50% 0%, rgb(var(--accent-rgb, 217 169 60) / 0.16), transparent 60%),
+			var(--color-cap-4, #181206);
+		padding: clamp(110px, 14vw, 200px) 0 clamp(80px, 10vw, 140px);
+	}
+	.neg-cierre .wrap {
+		display: grid;
+		gap: 28px;
+	}
+	.neg-cierre-title {
+		font-size: clamp(46px, 9vw, 176px);
+		color: #fff;
+	}
+	.neg-cierre-foot {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: flex-end;
+		justify-content: space-between;
+		gap: 28px;
+		padding-top: 28px;
+		border-top: 1px solid var(--pa-line-strong);
+	}
+
+	/* ================= responsive ================= */
+	@media (max-width: 900px) {
+		.ayax-body,
+		.subfrente {
+			grid-template-columns: 1fr;
+		}
+		.stat-strip {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+		}
+		.stat:nth-child(3) {
+			border-left: 0;
+		}
+		.stat:nth-child(n + 3) {
+			border-top: 1px solid var(--pa-line);
+		}
+	}
+	@media (max-width: 780px) {
+		.plate-video {
+			object-position: 58% 18%;
+		}
+		.plate-scrim {
+			background: linear-gradient(0deg, rgba(10, 8, 5, 0.96) 0%, rgba(10, 8, 5, 0.8) 40%, rgba(10, 8, 5, 0.2) 70%, transparent 90%);
+		}
+	}
+	@media (max-width: 640px) {
+		.row-head {
+			grid-template-columns: minmax(0, 1fr) auto;
+			gap: 16px;
+		}
+		.row-text {
+			grid-column: 1 / -1;
+		}
+		.row-thumb {
+			display: none;
+		}
+		.row-sign {
+			width: 44px;
+			height: 44px;
+		}
+		.plate-credit {
+			display: none;
+		}
+		.q {
+			padding-left: 16px;
+		}
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.row-panel,
+		.subfrente-gauge i,
+		.plate.is-loud .plate-eq i {
+			animation: none;
+		}
+		.row-thumb,
+		.row-name {
+			transition: none;
+			transform: none !important;
+		}
+	}
+	.nido-split {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) minmax(240px, 340px);
+		gap: clamp(32px, 5vw, 88px);
+		align-items: start;
+	}
+	.nido-split__text > :first-child {
+		margin-top: 0;
+	}
+	.nido-ale {
+		margin: clamp(8px, 2vw, 32px) 0 0;
+	}
+	.nido-ale__media {
+		position: relative;
+		aspect-ratio: 9 / 16;
+		border-radius: var(--pa-r-lg, 20px);
+		overflow: hidden;
+		background: #0b0e17;
+	}
+	.nido-ale__media video {
+		display: block;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+	@media (max-width: 860px) {
+		.nido-split {
+			grid-template-columns: 1fr;
+		}
+		.nido-ale {
+			width: min(100%, 340px);
+		}
+	}
+	.nido-video {
+		position: relative;
+		aspect-ratio: 16 / 9;
+		border-radius: var(--pa-r-lg, 20px);
+		overflow: hidden;
+		background: #0b0e17;
+	}
+	.nido-video video {
+		display: block;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+</style>
+
+<script>
+	// Video de surf de El Nido: corre sólo con la fila abierta y en pantalla.
+	document.querySelectorAll<HTMLVideoElement>('[data-nido-video]').forEach((nido) => {
+	const fila = nido.closest('details');
+	if (fila) {
+		const prm = matchMedia('(prefers-reduced-motion: reduce)');
+		let raf = 0;
+		const check = () => {
+			raf = 0;
+			const r = nido.getBoundingClientRect();
+			const ver = fila.open && r.bottom > 0 && r.top < innerHeight && !prm.matches;
+			if (ver && nido.paused) nido.play().catch(() => {});
+			else if (!ver && !nido.paused) nido.pause();
+		};
+		const pedir = () => { if (!raf) raf = requestAnimationFrame(check); };
+		fila.addEventListener('toggle', () => setTimeout(check, 350));
+		addEventListener('scroll', pedir, { passive: true });
+		addEventListener('resize', pedir, { passive: true });
+	}
+	});
+</script>
+
+<script>
+	// Hero: el loop entra mudo (autoplay sólo funciona así). El botón lo
+	// reinicia con sonido, muestra los controles nativos y enciende los
+	// subtítulos; volver a tocarlo lo devuelve a loop ambiente.
+	document.querySelectorAll<HTMLElement>('[data-hero-video]').forEach((card) => {
+		const video = card.querySelector('video');
+		const btn = card.querySelector<HTMLButtonElement>('[data-sound-toggle]');
+		const label = card.querySelector<HTMLElement>('[data-sound-label]');
+		if (!video || !btn || !label) return;
+
+		const setCaptions = (on: boolean) => {
+			const tracks = video.textTracks;
+			for (let i = 0; i < tracks.length; i++) tracks[i].mode = on ? 'showing' : 'disabled';
+		};
+		setCaptions(false);
+
+		// Dos fuentes: el loop corto de ambiente y el clip completo con audio.
+		// `data-full` guarda el segundo; el primero es el src inicial.
+		const loopSrc = video.getAttribute('src')!;
+		const fullSrc = video.dataset.full || loopSrc;
+
+		const aAmbiente = () => {
+			card.classList.remove('is-loud');
+			video.controls = false;
+			video.muted = true;
+			video.loop = true;
+			setCaptions(false);
+			label.textContent = 'Escuchar el discurso';
+			if (video.getAttribute('src') !== loopSrc) {
+				video.setAttribute('src', loopSrc);
+				video.load();
+			}
+			video.play().catch(() => {});
+		};
+
+		btn.addEventListener('click', () => {
+			const vaConSonido = video.muted;
+			if (!vaConSonido) {
+				aAmbiente();
+				return;
+			}
+			card.classList.add('is-loud');
+			video.setAttribute('src', fullSrc);
+			video.load();
+			video.muted = false;
+			video.controls = true;
+			video.loop = false;
+			label.textContent = 'Volver';
+			// Los subtítulos hay que re-armarlos después de cambiar la fuente.
+			video.addEventListener('loadeddata', () => setCaptions(true), { once: true });
+			video.play().catch(() => {
+				/* si el navegador lo rechaza quedan los controles nativos */
+			});
+		});
+
+		// Al terminar el discurso vuelve solo al loop ambiente.
+		video.addEventListener('ended', aAmbiente);
+	});
+
+	// Los videos decorativos no cargan hasta acercarse al viewport: con
+	// autoplay puro el navegador se baja el archivo aunque esté a tres
+	// pantallas de distancia.
+	// Se resuelve midiendo la caja en scroll (rAF-throttled) y no con
+	// IntersectionObserver: es una comprobación trivial, sin dependencias, y
+	// funciona igual en entornos donde el observer no se dispara.
+	const lazyVideos = [...document.querySelectorAll<HTMLVideoElement>('[data-lazy-video]')];
+	if (lazyVideos.length) {
+		const MARGEN = 300; // px antes de entrar en pantalla
+		let rafLazy = 0;
+		const revisar = () => {
+			rafLazy = 0;
+			for (const v of lazyVideos) {
+				const r = v.getBoundingClientRect();
+				const cerca = r.top < window.innerHeight + MARGEN && r.bottom > -MARGEN;
+				if (cerca) {
+					if (!v.getAttribute('src')) v.setAttribute('src', v.dataset.lazyVideo!);
+					if (v.paused) v.play().catch(() => {});
+				} else if (!v.paused) {
+					v.pause();
+				}
+			}
+		};
+		const agendar = () => {
+			if (!rafLazy) rafLazy = requestAnimationFrame(revisar);
+		};
+		addEventListener('scroll', agendar, { passive: true });
+		addEventListener('resize', agendar, { passive: true });
+		agendar();
+	}
+
+	// El iframe de Vimeo se inserta cuando se ABRE la fila que lo contiene:
+	// ni al cargar la página (sería un embed de terceros que quizá nadie mire)
+	// ni pidiendo un segundo clic (desplegar «El Nido» ya es intención). Mudo,
+	// porque es la única forma de que el navegador permita el autoplay.
+	function montarVimeo(box: HTMLElement) {
+		if (box.classList.contains('is-playing')) return;
+		const id = box.dataset.vimeo!;
+		const params = new URLSearchParams({
+			autoplay: '1',
+			muted: '1',
+			dnt: '1',
+			title: '0',
+			byline: '0',
+			portrait: '0',
+		});
+		if (box.dataset.vimeoHash) params.set('h', box.dataset.vimeoHash);
+		const iframe = document.createElement('iframe');
+		// El salto al minuto va en el fragmento (#t=), no en la query.
+		iframe.src = `https://player.vimeo.com/video/${id}?${params}#t=${box.dataset.vimeoStart || '0'}s`;
+		iframe.allow = 'autoplay; fullscreen; picture-in-picture';
+		iframe.setAttribute('allowfullscreen', '');
+		iframe.title = 'Video de El Nido';
+		box.classList.add('is-playing');
+		box.appendChild(iframe);
+	}
+
+	// Abrir la fila que pide el hash (#curcio-capital, #el-nido, #hy-project)
+	// y pausar el video de una fila al cerrarla.
+	document.querySelectorAll<HTMLDetailsElement>('.row').forEach((row) => {
+		const vimeoBox = row.querySelector<HTMLElement>('[data-vimeo]');
+		if (location.hash === `#${row.id}`) row.open = true;
+		if (row.open && vimeoBox) montarVimeo(vimeoBox);
+		row.addEventListener('toggle', () => {
+			if (row.open) {
+				if (vimeoBox) montarVimeo(vimeoBox);
+			} else {
+				row.querySelectorAll('video').forEach((v) => v.pause());
+			}
+		});
+	});
+	window.addEventListener('hashchange', () => {
+		// location.hash trae el '#', así que getElementById con el slice es más
+		// seguro que armar un selector (los ids con guiones no necesitan escape,
+		// pero un selector `.row#...` concatenado se rompe fácil).
+		const el = document.getElementById(decodeURIComponent(location.hash.slice(1)));
+		if (el instanceof HTMLDetailsElement && el.classList.contains('row')) el.open = true;
+	});
+
+	// Preview de video en la tarjeta de HY Project: carga y reproduce en
+	// hover (o foco de teclado), pausa al salir. Nada se baja hasta el hover.
+	// Con reduced-motion queda el póster.
+	const prmThumb = matchMedia('(prefers-reduced-motion: reduce)');
+	document.querySelectorAll<HTMLElement>('[data-thumb-video]').forEach((thumb) => {
+		const v = thumb.querySelector('video');
+		const head = thumb.closest('summary');
+		if (!v || !head) return;
+		const on = () => {
+			if (prmThumb.matches) return;
+			if (!v.getAttribute('src') && v.dataset.src) v.setAttribute('src', v.dataset.src);
+			v.play().then(() => thumb.classList.add('is-playing')).catch(() => {});
+		};
+		const off = () => {
+			v.pause();
+			thumb.classList.remove('is-playing');
+		};
+		head.addEventListener('pointerenter', on);
+		head.addEventListener('pointerleave', off);
+		head.addEventListener('focus', on);
+		head.addEventListener('blur', off);
+	});
+</script>

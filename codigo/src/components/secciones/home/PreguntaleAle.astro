@@ -1,0 +1,268 @@
+---
+/**
+ * PreguntaleAle.astro — Capítulo 4 del home: el chat.
+ *
+ * EXTRAÍDO de index.astro el 01/09/2026 sin cambios, por el mismo motivo que
+ * ArcoLibros.astro: /home-tony necesita este cierre idéntico al del home.
+ *
+ * Los chips y los placeholders son los mismos tres, y son la misma lista:
+ * el `chips` de acá alimenta los enlaces y `placeholders`, abajo en el
+ * script, rota sobre las mismas preguntas al pulso único de 5000ms.
+ */
+import Reveal from '../../Reveal.astro';
+
+const chips = [
+	'¿Qué es el capital de vida?',
+	'¿Cómo ves el futuro del trabajo con la IA?',
+	'¿Qué aprendiste en los 80 años de AYAX?',
+];
+---
+
+	<!-- ============ CAPÍTULO 4 — PREGUNTALE A ALE (cobalt night #0E1738) ==
+	     Native chat entry, no widget box. Chip click or Enter → /preguntale
+	     with the question preloaded (?q=). Minimal entrance (standard
+	     Reveal; the chat field +160ms). The stillness is the close. -->
+	<section id="preguntale" class="sheet sheet--cap-4 sheet--glow-top preguntale-section">
+		<div class="wrap pa-wrap">
+			<Reveal as="div" class="pa-head">
+				<span class="pa-kicker"><span class="pa-dot" aria-hidden="true"></span>El chat <span class="pa-num" aria-hidden="true">[ 04 ]</span></span>
+				<h2 class="section-title pa-title" data-split="chars">Preguntale a Ale.</h2>
+				<p class="section-lead">Un chat entrenado con sus libros y su prensa.</p>
+			</Reveal>
+			<Reveal as="div" class="pa-chat" stagger={2}>
+				<div class="pa-chips">
+					{chips.map((chip) => <a class="pa-chip" data-magnetic href={`/preguntale?q=${encodeURIComponent(chip)}`}>{chip}</a>)}
+				</div>
+				<form class="pa-form" action="/preguntale" method="get">
+					<input
+						class="pa-input"
+						type="text"
+						name="q"
+						placeholder="¿Qué es el capital de vida?"
+						autocomplete="off"
+						aria-label="Tu pregunta para Ale"
+					/>
+					<button class="pa-send" type="submit" aria-label="Enviar pregunta" data-magnetic>
+						<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+							<line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline>
+						</svg>
+					</button>
+				</form>
+				<p class="pa-micro">Responde solo con lo que Alejandro publicó. Si no lo sabe, lo dice.</p>
+			</Reveal>
+		</div>
+	</section>
+
+<style>
+	/* ============ Capítulo 4 — preguntale a Ale ============
+	   Glow radial from the top + the footer fusion: the sheet's own bottom
+	   fades cap-4 → ink so the footer (on the body's --color-black) melts
+	   in with no seam. */
+	.preguntale-section {
+		background-image:
+			radial-gradient(80% 60% at 50% 0%, rgb(var(--accent-rgb) / 0.18), transparent 60%),
+			linear-gradient(180deg, var(--color-cap-4) 0%, var(--color-cap-4) 72%, var(--color-black) 100%);
+		background-repeat: no-repeat;
+	}
+	.preguntale-section {
+		position: relative;
+		overflow: hidden;
+		--pa-mono: var(--font-mono, 'JetBrains Mono Variable', ui-monospace, Menlo, monospace);
+		--pa-display: var(--font-display, 'Geist Variable', system-ui, sans-serif);
+		--pa-gold: var(--accent, #e8c874);
+	}
+	/* Cinta en contorno con las mismas tres preguntas, detrás del título. */
+	.preguntale-section :global(.pa-marquee) {
+		margin: calc(-1 * clamp(24px, 4vw, 56px)) 0 clamp(32px, 5vw, 72px);
+		border: 0;
+		opacity: 0.7;
+	}
+	.pa-wrap {
+		position: relative;
+		z-index: 1;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		text-align: center;
+	}
+	/* .pa-head / .pa-chat are rendered by <Reveal> → no page scope attr. */
+	.pa-wrap :global(.pa-head) {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
+	.pa-wrap :global(.pa-chat) {
+		width: 100%;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
+	.preguntale-section .section-title {
+		margin-bottom: 18px;
+	}
+	.pa-kicker {
+		display: inline-flex;
+		align-items: center;
+		gap: 10px;
+		font-family: var(--pa-mono);
+		font-size: 12px;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: var(--pa-gold);
+	}
+	.pa-num {
+		color: var(--ink-low);
+	}
+	.pa-dot {
+		width: 7px;
+		height: 7px;
+		border-radius: 50%;
+		background: var(--pa-gold);
+		box-shadow: 0 0 0 0 rgb(232 200 116 / 0.6);
+		animation: pa-pulse 2.4s ease-out infinite;
+	}
+	@keyframes pa-pulse {
+		0% { box-shadow: 0 0 0 0 rgb(232 200 116 / 0.55); }
+		70%, 100% { box-shadow: 0 0 0 10px rgb(232 200 116 / 0); }
+	}
+	.preguntale-section .pa-title {
+		font-family: var(--pa-display);
+		font-weight: 600;
+		font-size: clamp(3.2rem, 1rem + 9vw, 10.5rem);
+		letter-spacing: -0.045em;
+		line-height: 0.95;
+		margin: 20px 0 22px;
+		color: var(--color-off, #f4f1ea);
+	}
+	.pa-chips {
+		display: flex;
+		gap: 12px;
+		flex-wrap: wrap;
+		justify-content: center;
+		margin-top: 40px;
+	}
+	.pa-chip {
+		font-size: 14px;
+		font-weight: 500;
+		color: var(--ink-mid);
+		padding: 11px 18px;
+		backdrop-filter: blur(8px);
+		border-radius: 999px;
+		border: 1px solid rgb(var(--accent-rgb) / 0.3);
+		background: rgba(255, 255, 255, 0.04);
+		transition:
+			color var(--dur-sm) var(--ease-out),
+			border-color var(--dur-sm) var(--ease-out),
+			background var(--dur-sm) var(--ease-out);
+	}
+	.pa-chip:hover {
+		color: var(--ink-hi);
+		border-color: var(--color-cobalt-bright);
+		background: rgb(var(--accent-rgb) / 0.12);
+	}
+	.pa-form {
+		display: flex;
+		gap: 12px;
+		width: 100%;
+		max-width: 640px;
+		margin-top: 24px;
+	}
+	.pa-input {
+		flex: 1;
+		min-width: 0;
+		background: rgba(255, 255, 255, 0.06);
+		border: 1px solid rgb(var(--accent-rgb) / 0.3);
+		border-radius: 999px;
+		padding: 16px 24px;
+		color: var(--ink-hi);
+		font-family: inherit;
+		font-size: 16px;
+		outline: none;
+		transition: border-color var(--dur-sm) var(--ease-out);
+	}
+	.pa-input:focus {
+		border-color: var(--color-cobalt-bright);
+		box-shadow: 0 0 0 6px rgb(232 200 116 / 0.12);
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.pa-dot {
+			animation: none;
+		}
+	}
+	.pa-input::placeholder {
+		color: rgba(233, 237, 255, 0.5);
+		opacity: 1;
+		transition: opacity 250ms var(--ease-out);
+	}
+	.pa-input.ph-fade::placeholder {
+		opacity: 0;
+	}
+	.pa-send {
+		width: 54px;
+		height: 54px;
+		flex-shrink: 0;
+		border: none;
+		border-radius: 999px;
+		background: var(--color-cobalt);
+		color: var(--color-white);
+		display: grid;
+		place-items: center;
+		cursor: pointer;
+		transition: background var(--dur-sm) var(--ease-out);
+	}
+	.pa-send:hover {
+		background: var(--color-cobalt-bright);
+	}
+	.pa-micro {
+		margin-top: 16px;
+		font-family: var(--pa-mono);
+		letter-spacing: 0.02em;
+		font-size: 12px;
+		color: var(--ink-low);
+	}
+	@media (max-width: 520px) {
+		.pa-chip {
+			font-size: 13px;
+			padding: 9px 14px;
+		}
+	}
+</style>
+
+<script>
+	const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+	// ---------- Capítulo 4 — placeholder heartbeat + never-empty send ----
+	// The placeholder rotates through the three chip questions at the
+	// page's single 5000ms heartbeat (fade 250ms out + 250ms in = 500ms
+	// crossfade), paused off-screen (IO) and under PRM. Submitting an
+	// empty input sends the current placeholder question instead.
+	const paInput = document.querySelector<HTMLInputElement>('.pa-input');
+	const paForm = document.querySelector<HTMLFormElement>('.pa-form');
+	const placeholders = [
+		'¿Qué es el capital de vida?',
+		'¿Cómo ves el futuro del trabajo con la IA?',
+		'¿Qué aprendiste en los 80 años de AYAX?',
+	];
+	if (paInput && !reduced) {
+		let idx = 0;
+		// Sin IntersectionObserver (no dispara en el preview): se mide al tick.
+		const enPantalla = () => {
+			const r = paInput.getBoundingClientRect();
+			return r.bottom > 0 && r.top < innerHeight;
+		};
+		setInterval(() => {
+			if (!enPantalla() || document.hidden || paInput.value) return;
+			paInput.classList.add('ph-fade');
+			setTimeout(() => {
+				idx = (idx + 1) % placeholders.length;
+				paInput.placeholder = placeholders[idx];
+				paInput.classList.remove('ph-fade');
+			}, 250);
+		}, 5000);
+	}
+	if (paForm && paInput) {
+		paForm.addEventListener('submit', () => {
+			if (!paInput.value.trim()) paInput.value = paInput.placeholder;
+		});
+	}
+</script>

@@ -1,0 +1,367 @@
+---
+/**
+ * EdHero.astro — hero con foto del sistema "editorial tech" de las Páginas B
+ * (capital-de-vida, prensa, seguime y los cierres con foto). Reemplaza a
+ * InsetHeroCard / SectionPhoto en esas páginas SIN tocar los compartidos:
+ * mismos props de contenido (kicker, title, sub, CTA, imagen y alt).
+ *
+ * Variantes:
+ *  - split  → título display enorme a la izquierda, foto en una tarjeta de
+ *             radio grande a la derecha (máscara de entrada + parallax).
+ *  - full   → foto a sangre con scrim, título display gigante al pie.
+ *  - cta    → como full pero más bajo, para el cierre de página.
+ * `cover` dibuja una tapa de libro (kind cover) inclinable con el mouse en
+ * vez de una foto recortada.
+ */
+import BlurImage from '../../BlurImage.astro';
+
+interface Props {
+  id?: string;
+  variant?: 'split' | 'full' | 'cta';
+  imgId?: string;
+  imgSrc?: string;
+  imgAlt: string;
+  imgKind?: 'img' | 'cover';
+  coverRatio?: string;
+  focus?: string;
+  kicker: string;
+  title: string;
+  sub?: string;
+  ctaHref?: string;
+  ctaLabel?: string;
+  ctaArrow?: 'down' | 'right';
+  titleTag?: 'h1' | 'h2';
+  n?: string;
+  titleSize?: 'xl' | 'lg' | 'md';
+  eager?: boolean;
+  /** Oculta el titular a la vista (queda para lectores de pantalla). */
+  hideTitle?: boolean;
+  /** split con foto apaisada (3:2) entera, en vez del recorte 4:5. */
+  landscape?: boolean;
+}
+
+const {
+  id,
+  variant = 'split',
+  imgId,
+  imgSrc,
+  imgAlt,
+  imgKind = 'img',
+  coverRatio = '2048 / 3216',
+  focus: focusProp,
+  kicker,
+  title,
+  hideTitle = false,
+  landscape = false,
+  sub,
+  ctaHref,
+  ctaLabel,
+  ctaArrow = 'right',
+  titleTag: T = 'h2',
+  n,
+  titleSize = 'lg',
+  eager = false,
+} = Astro.props;
+
+const isCover = imgKind === 'cover';
+// retrato en tarjeta: aire arriba de la cabeza (el parallax lo corre);
+// a sangre, el encuadre de siempre.
+const focus = focusProp ?? (variant === 'split' ? '50% 4%' : '50% 30%');
+---
+
+<section
+  id={id}
+  class:list={['eh', `eh--${variant}`, `eh--t-${titleSize}`, isCover && 'eh--cover', hideTitle && 'eh--notitle', landscape && 'eh--landscape', 'ed-grid']}
+  style={`--focus:${focus}`}
+>
+  {
+    variant !== 'split' && !isCover && (
+      <div class="eh-bg" data-reveal="mask">
+        <div class="eh-bg__img" data-parallax="-0.14">
+          <BlurImage id={imgId} src={imgSrc} alt={imgAlt} kind={imgKind} eager={eager} sizes="100vw" />
+        </div>
+        <div class="eh-bg__scrim" aria-hidden="true" />
+      </div>
+    )
+  }
+
+  <div class="ed-wrap eh-inner">
+    <div class="eh-top ed-mono">
+      <span class="eh-kicker">{kicker}</span>
+      {n && <span class="eh-n" aria-hidden="true">[ {n} ]</span>}
+    </div>
+
+    <div class="eh-body">
+      <div class="eh-copy">
+        {!hideTitle && <T class="ed-display eh-title" data-split="lines">{title}</T>}
+        {sub && <p class="eh-sub" data-reveal>{sub}</p>}
+        {
+          ctaHref && ctaLabel && (
+            <a class="ed-btn eh-cta" href={ctaHref} data-magnetic data-roll>
+              <span>{ctaLabel}</span>
+              {ctaArrow === 'down' ? (
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+                  <line x1="12" y1="5" x2="12" y2="19" />
+                  <polyline points="19 12 12 19 5 12" />
+                </svg>
+              ) : (
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+                  <line x1="5" y1="12" x2="19" y2="12" />
+                  <polyline points="12 5 19 12 12 19" />
+                </svg>
+              )}
+            </a>
+          )
+        }
+      </div>
+
+      {
+        variant === 'split' && !isCover && (
+          <div class="eh-photo ed-crop" data-reveal="mask">
+            <div class="eh-photo__in" data-parallax="-0.08">
+              <BlurImage id={imgId} src={imgSrc} alt={imgAlt} kind={imgKind} eager={eager} sizes="(max-width: 860px) 100vw, 45vw" />
+            </div>
+          </div>
+        )
+      }
+      {
+        isCover && (
+          <div class="eh-coverwrap" data-ed-tilt="14">
+            <div class="eh-cover ed-tilt__obj ed-crop" style={`--ar:${coverRatio}`}>
+              <BlurImage id={imgId} src={imgSrc} alt={imgAlt} kind="cover" sizes="360px" />
+              <span class="eh-cover__sheen" aria-hidden="true" />
+            </div>
+          </div>
+        )
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .eh {
+    position: relative;
+    isolation: isolate;
+    overflow: clip;
+    background: var(--ed-bg);
+    color: #fff;
+    display: flex;
+  }
+  /* El header (ribbon ~40px + barra --nav-h) ocupa lugar en el flujo: el
+     héroe llena el resto de la pantalla, no 100svh, para que título, bajada
+     y CTA queden arriba del pliegue. */
+  .eh--split,
+  .eh--full {
+    min-height: min(calc(100svh - var(--nav-h, 74px) - 40px), 1040px);
+  }
+  .eh--cta {
+    min-height: min(92svh, 900px);
+  }
+  .eh-inner {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: clamp(24px, 4vw, 56px);
+    padding-top: clamp(40px, 8vh, 120px);
+    padding-bottom: clamp(40px, 6vh, 80px);
+  }
+  .eh--full .eh-inner,
+  .eh--cta .eh-inner {
+    padding-top: clamp(96px, 14vh, 180px);
+  }
+  /* Sin titular: la etiqueta sube arriba a la izquierda (como en el resto
+     de las secciones) y la bajada + CTA quedan abajo. */
+  .eh--notitle .eh-inner {
+    justify-content: space-between;
+    padding-top: clamp(28px, 5vh, 56px);
+  }
+  .eh--notitle .eh-bg__img {
+    inset: -4% 0;
+  }
+  .eh-top {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid rgb(255 255 255 / 0.18);
+  }
+  .eh-kicker {
+    color: var(--ed-accent);
+  }
+  .eh-n {
+    color: rgb(255 255 255 / 0.5);
+  }
+  .eh-body {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: clamp(32px, 5vw, 80px);
+    align-items: end;
+  }
+  .eh--split .eh-body,
+  .eh--cover .eh-body {
+    grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+  }
+  .eh-title {
+    font-size: clamp(3rem, 1rem + 7vw, 9.5rem);
+  }
+  .eh--t-xl .eh-title {
+    font-size: clamp(5.5rem, 24vw, 26rem);
+    line-height: 0.78;
+    letter-spacing: -0.03em;
+  }
+  .eh--t-md .eh-title {
+    font-size: clamp(2.6rem, 1rem + 5.4vw, 7.25rem);
+  }
+  .eh-sub {
+    margin: clamp(20px, 2.4vw, 32px) 0 0;
+    max-width: 44ch;
+    font-size: clamp(1.0625rem, 1rem + 0.4vw, 1.375rem);
+    line-height: 1.5;
+    color: rgb(255 255 255 / 0.76);
+  }
+  .eh-cta {
+    margin-top: clamp(24px, 3vw, 40px);
+  }
+
+  /* split: foto en tarjeta */
+  /* El ancho se DERIVA de la altura disponible (4:5): si se limitara sólo
+     la altura con width:100%, la tarjeta se ensancha y el recorte de cover
+     le come la cabeza al retrato. */
+  .eh-photo {
+    --ph: clamp(340px, calc(100svh - var(--nav-h, 74px) - 300px), 720px);
+    position: relative;
+    border-radius: var(--ed-r-lg);
+    aspect-ratio: 4 / 5;
+    width: min(100%, calc(var(--ph) * 0.8));
+    justify-self: end;
+  }
+  .eh-photo__in {
+    position: absolute;
+    inset: -5% 0;
+    border-radius: inherit;
+    overflow: hidden;
+  }
+  .eh-photo,
+  .eh-photo__in {
+    overflow: hidden;
+  }
+  .eh-photo :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: var(--focus);
+  }
+
+  /* split apaisado: la foto entera, sin cortar a nadie */
+  .eh--split.eh--landscape {
+    min-height: 0;
+  }
+  .eh--landscape .eh-inner {
+    justify-content: flex-start;
+    gap: clamp(32px, 5vh, 64px);
+  }
+  .eh--landscape .eh-body {
+    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.35fr);
+  }
+  .eh--landscape .eh-photo {
+    aspect-ratio: 3 / 2;
+    width: 100%;
+  }
+  .eh--landscape .eh-photo__in {
+    inset: -3% 0;
+  }
+
+  /* full / cta: foto a sangre */
+  .eh-bg {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+  }
+  .eh-bg__img {
+    position: absolute;
+    inset: -10% 0;
+  }
+  .eh-bg__img :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: var(--focus);
+  }
+  .eh-bg__scrim {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(180deg, rgb(12 10 6 / 0.7) 0%, rgb(12 10 6 / 0.15) 30%, rgb(12 10 6 / 0.4) 60%, rgb(12 10 6 / 0.95) 100%),
+      linear-gradient(90deg, rgb(12 10 6 / 0.55), transparent 65%);
+  }
+
+  /* tapa */
+  .eh-coverwrap {
+    justify-self: center;
+    width: min(340px, 70%);
+    perspective: 1200px;
+  }
+  .eh-cover {
+    position: relative;
+    aspect-ratio: var(--ar);
+    border-radius: 6px 12px 12px 6px;
+  }
+  .eh-cover :global(picture),
+  .eh-cover :global(img) {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: inherit;
+    transform: none;
+  }
+  .eh-cover :global(img) {
+    box-shadow: 0 50px 90px rgb(0 0 0 / 0.6), 0 0 0 1px rgb(255 255 255 / 0.06);
+  }
+  .eh-cover__sheen {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: linear-gradient(105deg, rgb(255 255 255 / 0.25), transparent 16%, transparent 70%, rgb(255 255 255 / 0.08));
+    mix-blend-mode: soft-light;
+    pointer-events: none;
+  }
+  .eh--cover {
+    background:
+      radial-gradient(60% 70% at 75% 50%, rgb(232 200 116 / 0.14), transparent 70%),
+      var(--ed-bg);
+  }
+
+  @media (max-width: 860px) {
+    .eh--split .eh-body,
+    .eh--cover .eh-body {
+      grid-template-columns: 1fr;
+    }
+    .eh--landscape .eh-body {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .eh--split.eh--landscape .eh-photo {
+      aspect-ratio: 3 / 2;
+      width: 100%;
+    }
+    .eh--split .eh-photo {
+      order: -1;
+      aspect-ratio: 4 / 4.4;
+      width: min(100%, calc(48svh * 4 / 4.4));
+      justify-self: start;
+    }
+    .eh--cover .eh-coverwrap {
+      order: -1;
+      width: min(220px, 60%);
+    }
+    .eh-top {
+      flex-wrap: wrap;
+    }
+  }
+</style>
+
+<script>
+  import "./ed";
+</script>

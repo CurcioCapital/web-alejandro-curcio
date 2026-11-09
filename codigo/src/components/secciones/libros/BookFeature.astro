@@ -1,0 +1,186 @@
+---
+/**
+ * BookFeature.astro — un libro en /libros: tapa a la izquierda (con tilt) y,
+ * a la derecha, número + editorial, titular, bajada y resumen. La bajada y el
+ * resumen se «pintan» palabra por palabra con el scroll, con la misma
+ * mecánica que «Quién es» del home (pedido 28/10/2026).
+ */
+import MediaCard from '../../MediaCard.astro';
+
+interface Props {
+  id: string;
+  n: string;
+  kicker: string;
+  title: string;
+  lead: string;
+  cover: string;
+  ratio: string;
+  alt: string;
+  year: string;
+  sheet?: boolean;
+}
+const { id, n, kicker, title, lead, cover, ratio, alt, year, sheet = false } = Astro.props;
+---
+
+<section id={id} class:list={['ed-sec', 'ed-sec--light', sheet && 'ed-sec--sheet', 'ed-grid', 'bf']} data-bf>
+  <div class="ed-wrap">
+    <div class="bf-grid">
+      <div class="bf-cover" data-ed-tilt="12">
+        <div class="bf-obj ed-tilt__obj ed-crop">
+          <MediaCard id={cover} kind="cover" ratio={ratio} alt={alt} />
+          <span class="bf-sheen" aria-hidden="true"></span>
+        </div>
+        <span class="bf-tag ed-mono" aria-hidden="true">{year}</span>
+      </div>
+      <div class="bf-text">
+        <p class="bf-meta ed-mono"><span class="bf-n" aria-hidden="true">[ {n} ]</span>{kicker}</p>
+        <h2 class="ed-display bf-title" data-split="lines">{title}</h2>
+        <p class="bf-lead" data-bf-words>{lead}</p>
+        <div class="bf-body" data-bf-words><slot /></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .bf-grid {
+    display: grid;
+    grid-template-columns: minmax(220px, 0.42fr) minmax(0, 1fr);
+    gap: clamp(40px, 7vw, 128px);
+    align-items: center;
+  }
+  .bf-cover {
+    perspective: 1200px;
+    max-width: 380px;
+    width: 100%;
+  }
+  .bf-obj {
+    position: relative;
+  }
+  .bf-obj :global(.media-card) {
+    box-shadow: 0 40px 80px rgb(12 10 6 / 0.28), 0 10px 20px rgb(12 10 6 / 0.12);
+  }
+  .bf-sheen {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    background: linear-gradient(105deg, rgb(255 255 255 / 0.28), transparent 18%, transparent 70%, rgb(255 255 255 / 0.1));
+    mix-blend-mode: soft-light;
+  }
+  .bf-tag {
+    display: block;
+    margin-top: 22px;
+    color: var(--ed-accent-ink);
+  }
+  .bf-text {
+    min-width: 0;
+  }
+  .bf-meta {
+    display: flex;
+    gap: 14px;
+    margin: 0 0 clamp(18px, 2vw, 28px);
+    color: var(--ed-accent-ink);
+  }
+  .bf-n {
+    color: rgb(12 10 6 / 0.5);
+    white-space: nowrap;
+    flex: none;
+  }
+  .bf-title {
+    margin: 0;
+    font-size: clamp(2.4rem, 1rem + 3.6vw, 5rem);
+    line-height: 0.98;
+    letter-spacing: -0.04em;
+    color: var(--ed-ink, #0c0a06);
+    max-width: 16ch;
+  }
+  .bf-lead {
+    margin: clamp(24px, 3vw, 40px) 0 0;
+    font-size: clamp(1.25rem, 1rem + 0.8vw, 1.75rem);
+    line-height: 1.35;
+    letter-spacing: -0.015em;
+    color: var(--ed-ink, #0c0a06);
+    max-width: 34ch;
+    text-wrap: pretty;
+  }
+  .bf-body {
+    margin-top: clamp(18px, 2vw, 28px);
+    font-size: clamp(1.0625rem, 1rem + 0.25vw, 1.25rem);
+    line-height: 1.6;
+    color: rgb(12 10 6 / 0.78);
+    max-width: 56ch;
+  }
+  .bf-body :global(p) {
+    margin: 0;
+  }
+  /* Palabras apagadas hasta que el scroll las enciende (sólo con JS). */
+  :global(html.bf-on) .bf :global(.bf-w) {
+    opacity: 0.16;
+    transition: opacity 220ms linear;
+  }
+  :global(html.bf-on) .bf :global(.bf-w.is-on) {
+    opacity: 1;
+  }
+  @media (max-width: 900px) {
+    .bf-grid {
+      grid-template-columns: 1fr;
+      gap: 40px;
+    }
+    .bf-cover {
+      max-width: 240px;
+    }
+  }
+</style>
+
+<script>
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const secciones = Array.from(document.querySelectorAll<HTMLElement>('[data-bf]'));
+  if (secciones.length && !reduce) {
+    const grupos = secciones.map((raiz) => {
+      const palabras: HTMLElement[] = [];
+      const envolver = (nodo: Node) => {
+        Array.from(nodo.childNodes).forEach((n) => {
+          if (n.nodeType === 3) {
+            const frag = document.createDocumentFragment();
+            (n.textContent || '').split(/(\s+)/).forEach((t) => {
+              if (!t) return;
+              if (/^\s+$/.test(t)) frag.appendChild(document.createTextNode(t));
+              else {
+                const s = document.createElement('span');
+                s.className = 'bf-w';
+                s.textContent = t;
+                frag.appendChild(s);
+                palabras.push(s);
+              }
+            });
+            n.parentNode!.replaceChild(frag, n);
+          } else if (n.nodeType === 1) envolver(n);
+        });
+      };
+      const bloques = Array.from(raiz.querySelectorAll<HTMLElement>('[data-bf-words]'));
+      bloques.forEach(envolver);
+      return { raiz, palabras, primero: bloques[0], ultimo: bloques[bloques.length - 1] };
+    });
+    document.documentElement.classList.add('bf-on');
+    let raf = 0;
+    const pintar = () => {
+      raf = 0;
+      const vh = innerHeight;
+      for (const g of grupos) {
+        const r = g.raiz.getBoundingClientRect();
+        if (r.bottom < -100 || r.top > vh + 100) continue;
+        const a = g.primero.getBoundingClientRect().top;
+        const b = g.ultimo.getBoundingClientRect().bottom;
+        const ini = vh * 0.85, fin = vh * 0.5;
+        const p = Math.min(1, Math.max(0, (ini - a) / ((b - a + (ini - fin)) || 1)));
+        const n = Math.round(p * g.palabras.length);
+        g.palabras.forEach((w, i) => w.classList.toggle('is-on', i < n));
+      }
+    };
+    const pedir = () => { if (!raf) raf = requestAnimationFrame(pintar); };
+    addEventListener('scroll', pedir, { passive: true });
+    addEventListener('resize', pedir);
+    pintar();
+  }
+</script>

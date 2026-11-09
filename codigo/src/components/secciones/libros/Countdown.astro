@@ -1,0 +1,144 @@
+---
+/**
+ * Countdown.astro — Libros-only. Cuenta regresiva real al lanzamiento de
+ * CEO DE TU VIDA (2026-11-17, hora de Uruguay — UTC-3, sin horario de
+ * verano). Rediseño 21/10/2026: los dígitos giran como un ODÓMETRO (cada
+ * cifra es una rueda 0–9 que se desplaza), etiquetas en mono, celdas con
+ * crop-marks. Mismos valores, mismas cuatro unidades. Sin JS queda el «—»
+ * estático. El número legible vive en un .ed-sr (ver odoSet en ed.ts).
+ */
+interface Props {
+  target?: string; // ISO datetime, defaults to the confirmed launch date
+  class?: string;
+}
+
+const { target = '2026-11-17T00:00:00-03:00', class: className = '' } = Astro.props;
+const units = [
+  { key: 'days', label: 'Días' },
+  { key: 'hours', label: 'Horas' },
+  { key: 'minutes', label: 'Min' },
+  { key: 'seconds', label: 'Seg' },
+];
+---
+
+<div class:list={['libros-countdown', className]} data-target={target}>
+  {
+    units.map((u, i) => (
+      <div class="libros-countdown__unit ed-crop" data-unit={u.key}>
+        <span class="libros-countdown__value" data-ed-odo="live">—</span>
+        <span class="libros-countdown__label ed-mono">
+          {u.label}
+        </span>
+        {i < units.length - 1 && <span class="libros-countdown__colon" aria-hidden="true">:</span>}
+      </div>
+    ))
+  }
+</div>
+
+<style>
+  .libros-countdown {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: clamp(10px, 2vw, 28px);
+    width: 100%;
+    max-width: 760px;
+  }
+  .libros-countdown__unit {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    padding: clamp(16px, 2.4vw, 28px) 6px clamp(12px, 1.6vw, 18px);
+    background: rgb(255 255 255 / 0.03);
+    border: 1px solid rgb(255 255 255 / 0.1);
+    border-radius: 6px;
+  }
+  .libros-countdown__value {
+    font-family: var(--ed-display);
+    font-weight: 500;
+    font-size: clamp(2.75rem, 1.6rem + 5vw, 6.5rem);
+    letter-spacing: -0.04em;
+    font-variant-numeric: tabular-nums;
+    color: #fff;
+    line-height: 1;
+    height: 1em;
+  }
+  /* línea de "flip" a media altura */
+  .libros-countdown__unit::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: calc(clamp(16px, 2.4vw, 28px) + clamp(2.75rem, 1.6rem + 5vw, 6.5rem) / 2);
+    height: 1px;
+    background: rgb(0 0 0 / 0.55);
+    box-shadow: 0 1px 0 rgb(255 255 255 / 0.06);
+    pointer-events: none;
+  }
+  .libros-countdown__label {
+    color: var(--ed-accent);
+  }
+  .libros-countdown__colon {
+    position: absolute;
+    right: calc(clamp(10px, 2vw, 28px) / -2);
+    top: 32%;
+    transform: translateX(50%);
+    font-family: var(--ed-mono);
+    color: rgb(255 255 255 / 0.3);
+    font-size: 18px;
+  }
+  @media (max-width: 480px) {
+    .libros-countdown__colon {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  import { odoSet } from './ed';
+
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function pad(n: number) {
+    return String(Math.max(0, n)).padStart(2, '0');
+  }
+
+  function wire(root: HTMLElement) {
+    const targetAttr = root.dataset.target;
+    if (!targetAttr) return;
+    const target = new Date(targetAttr).getTime();
+    const els = {
+      days: root.querySelector<HTMLElement>('[data-unit="days"] .libros-countdown__value'),
+      hours: root.querySelector<HTMLElement>('[data-unit="hours"] .libros-countdown__value'),
+      minutes: root.querySelector<HTMLElement>('[data-unit="minutes"] .libros-countdown__value'),
+      seconds: root.querySelector<HTMLElement>('[data-unit="seconds"] .libros-countdown__value'),
+    };
+
+    const put = (el: HTMLElement | null, v: string) => {
+      if (!el) return;
+      if (reduce) el.textContent = v;
+      else odoSet(el, v);
+    };
+
+    function tick() {
+      const diff = Math.max(0, target - Date.now());
+      const days = Math.floor(diff / 86400000);
+      const hours = Math.floor((diff % 86400000) / 3600000);
+      const minutes = Math.floor((diff % 3600000) / 60000);
+      const seconds = Math.floor((diff % 60000) / 1000);
+
+      put(els.days, String(days));
+      put(els.hours, pad(hours));
+      put(els.minutes, pad(minutes));
+      put(els.seconds, pad(seconds));
+
+      if (diff <= 0) clearInterval(timer);
+    }
+
+    tick();
+    const timer = setInterval(tick, 1000);
+  }
+
+  document.querySelectorAll<HTMLElement>('.libros-countdown').forEach(wire);
+</script>

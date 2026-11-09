@@ -1,0 +1,111 @@
+---
+/**
+ * PressStats.astro — prensa-only. «Hablan los hechos»: cifras sacadas de
+ * press.json. Rediseño 21/10/2026: celdas de una grilla fina con la cifra
+ * en display enorme que cuenta desde 0 al entrar (data-counter — el número
+ * final es exactamente el del texto) y la etiqueta en mono. Uso:
+ * <PressStats stats={[{ value: "45", label: "Notas relevadas · 2005–2026" }]} />
+ */
+interface Stat {
+  value: string;
+  label: string;
+}
+
+interface Props {
+  stats: Stat[];
+}
+
+const { stats } = Astro.props;
+---
+
+<div class="press-stats">
+  {
+    stats.map((stat, i) => (
+      <div class="press-stat" data-reveal style={`--i:${i}`}>
+        <span class="press-stat-i ed-mono" aria-hidden="true">{`[ 0${i + 1} ]`}</span>
+        <span class="press-stat-value" data-counter>{stat.value}</span>
+        <span class="press-stat-label ed-mono">{stat.label}</span>
+      </div>
+    ))
+  }
+</div>
+
+<style>
+  .press-stats {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    margin-top: clamp(48px, 6vw, 96px);
+    border-top: 1px solid var(--ed-line-strong);
+    border-bottom: 1px solid var(--ed-line-strong);
+  }
+  .press-stat {
+    display: flex;
+    flex-direction: column;
+    padding: 20px clamp(12px, 1.6vw, 24px) 28px;
+    min-height: 320px;
+    transition-delay: calc(var(--i, 0) * 80ms);
+  }
+  .press-stat:first-child {
+    padding-left: 0;
+  }
+  .press-stat + .press-stat {
+    border-left: 1px solid var(--ed-line-strong);
+  }
+  .press-stat-i {
+    color: rgb(255 255 255 / 0.4);
+    margin-bottom: auto;
+  }
+  .press-stat-value {
+    display: block;
+    font-family: var(--ed-display);
+    font-weight: 560;
+    font-size: clamp(4rem, 2rem + 5vw, 8.5rem);
+    letter-spacing: -0.05em;
+    color: #fff;
+    font-variant-numeric: tabular-nums;
+    line-height: 0.95;
+    margin-top: 40px;
+  }
+  .press-stat:first-child .press-stat-value {
+    color: var(--ed-accent);
+  }
+  .press-stat-label {
+    display: block;
+    margin-top: 18px;
+    color: rgb(255 255 255 / 0.6);
+    line-height: 1.5;
+    max-width: 22ch;
+    /* dos líneas reservadas: así las cifras quedan alineadas en la fila */
+    min-height: 3em;
+  }
+  @media (max-width: 1000px) {
+    .press-stats {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .press-stat {
+      min-height: 220px;
+      border-bottom: 1px solid var(--ed-line-strong);
+    }
+    .press-stat:nth-child(odd) {
+      padding-left: 0;
+      border-left: 0;
+    }
+    .press-stat:nth-child(even) {
+      border-left: 1px solid var(--ed-line-strong);
+    }
+    .press-stat:first-child {
+      grid-column: 1 / -1;
+    }
+    .press-stat:first-child ~ .press-stat:nth-child(even) {
+      padding-left: 0;
+      border-left: 0;
+    }
+    .press-stat:first-child ~ .press-stat:nth-child(odd) {
+      padding-left: clamp(12px, 1.6vw, 24px);
+      border-left: 1px solid var(--ed-line-strong);
+    }
+    .press-stats {
+      border-bottom: 0;
+    }
+  }
+</style>

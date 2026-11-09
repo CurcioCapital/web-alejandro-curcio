@@ -1,0 +1,344 @@
+/*
+ * pa-kit.css — piezas compartidas de las «Páginas A» (historia, negocios,
+ * deportista, aventura). Vive acá y no en src/styles/ porque esos archivos
+ * son del agente de Design system: lo que necesitamos de su lado lo
+ * consumimos con var(--token, fallback), así funciona antes y después de que
+ * los tokens nuevos existan.
+ *
+ * Todo cuelga de `.pa` (el contenedor de cada página) y usa prefijo `pa-`
+ * para no chocar con las clases globales de components.css.
+ *
+ * PROGRESIVO: ningún estado oculto vive acá sin una clase puesta por JS.
+ */
+
+.pa {
+  --pa-display: var(--font-display, 'Geist Variable', 'Archivo Variable', Arial, sans-serif);
+  --pa-mono: var(--font-mono, 'JetBrains Mono Variable', 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace);
+  --pa-serif: var(--font-serif, 'Instrument Serif', Georgia, serif);
+  --pa-accent: var(--accent, #e8c874);
+  --pa-accent-ink: var(--accent-ink, #7a5c10);
+  --pa-line: var(--line, rgb(255 255 255 / 0.08));
+  --pa-line-strong: rgb(255 255 255 / 0.16);
+  --pa-line-light: var(--line-light, rgb(11 14 23 / 0.1));
+  --pa-ease: var(--ease-expo, cubic-bezier(0.16, 1, 0.3, 1));
+  --pa-ease-q: var(--ease-quart, cubic-bezier(0.76, 0, 0.24, 1));
+  --pa-r-lg: 28px;
+  --pa-r-xl: 40px;
+  --pa-bg: var(--color-black, #0c0a06);
+  --pa-bg-2: var(--color-black-2, #17130b);
+  --pa-bone: var(--color-off, #f4f1ea);
+  --pa-ink: var(--color-ink, #0b0e17);
+  --pa-pad-x: clamp(16px, 3.2vw, 48px);
+  /* El header es sticky y se esconde al bajar: los escenarios pineados
+     (top:0) igual le dejan lugar por si vuelve al subir. */
+  --pa-head-clear: calc(var(--nav-h, 74px) + clamp(16px, 3vh, 36px));
+  /* Héroes: el header y el ribbon ocupan lugar en el flujo arriba. */
+  --pa-hero-h: calc(100svh - var(--nav-h, 74px) - 40px);
+  --pa-hero-pad: clamp(20px, 4vh, 48px);
+  background: var(--pa-bg);
+  color: var(--ink-hi, rgb(255 255 255 / 0.92));
+  overflow-x: clip;
+}
+
+/* ---------- tipografía ---------- */
+.pa .pa-display {
+  /* Geist (decisión de cliente 21/10): caja normal, 500–600, tracking negativo. */
+  font-family: var(--pa-display);
+  font-weight: var(--display-wght, 560);
+  letter-spacing: var(--display-track, -0.035em);
+  line-height: var(--display-lh, 1);
+  text-wrap: balance;
+  margin: 0;
+}
+.pa .pa-mono {
+  font-family: var(--pa-mono);
+  font-size: 11.5px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+.pa .pa-kick {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--pa-mono);
+  font-size: 11.5px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--pa-accent);
+  margin: 0;
+}
+.pa .pa-kick .pa-idx {
+  color: var(--ink-low, rgb(255 255 255 / 0.45));
+}
+.pa .pa-kick::after {
+  content: '';
+  width: 40px;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.5;
+}
+.pa .pa-lead {
+  font-size: var(--text-lead, 18px);
+  line-height: 1.55;
+  color: var(--ink-mid, rgb(255 255 255 / 0.65));
+  max-width: 54ch;
+  margin: 0;
+  text-wrap: pretty;
+}
+.pa .pa-body {
+  font-size: 16.5px;
+  line-height: 1.66;
+  color: var(--ink-mid, rgb(255 255 255 / 0.65));
+  max-width: 62ch;
+  margin: 0;
+}
+.pa .pa-quote {
+  margin: 0;
+}
+.pa .pa-quote blockquote {
+  font-family: var(--pa-serif);
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(26px, 1.4rem + 1.8vw, 52px);
+  line-height: 1.12;
+  letter-spacing: -0.005em;
+  color: var(--ink-hi, #fff);
+  text-wrap: balance;
+  margin: 0;
+}
+.pa .pa-quote figcaption,
+.pa .pa-quote cite {
+  display: block;
+  margin-top: 18px;
+  font-family: var(--pa-mono);
+  font-style: normal;
+  font-size: 11.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-low, rgb(255 255 255 / 0.45));
+}
+
+/* ---------- capítulo (cabecera técnica) ---------- */
+.pa .pa-cap {
+  position: relative;
+  padding: clamp(88px, 12vw, 168px) 0;
+}
+.pa .pa-cap--bone {
+  background: var(--pa-bone);
+  color: var(--pa-ink);
+  border-radius: var(--pa-r-xl) var(--pa-r-xl) 0 0;
+}
+.pa .pa-cap--bone + .pa-cap--bone,
+.pa .pa-cap--bone + .section-gap + .pa-cap--bone {
+  border-radius: 0;
+}
+.pa .pa-cap--bone .pa-kick {
+  color: var(--pa-accent-ink);
+}
+.pa .pa-cap--bone .pa-kick .pa-idx {
+  /* QA 21/10: 0.5 daba 3.5:1 sobre hueso (<AA); 0.62 = 5.2:1 */
+  color: rgb(11 14 23 / 0.62);
+}
+.pa .pa-cap--bone .pa-lead,
+.pa .pa-cap--bone .pa-body {
+  color: var(--ink-on-light-mid, rgb(11 14 23 / 0.68));
+}
+.pa .pa-cap--bone .pa-quote blockquote {
+  color: var(--pa-ink);
+}
+.pa .pa-cap--bone .pa-quote figcaption {
+  color: rgb(11 14 23 / 0.58);
+}
+.pa .pa-cap-head {
+  display: grid;
+  gap: clamp(18px, 2vw, 28px);
+  margin-bottom: clamp(48px, 6vw, 96px);
+}
+.pa .pa-cap-title {
+  font-size: clamp(40px, 7vw, 132px);
+}
+
+/* ---------- grilla técnica ---------- */
+.pa .pa-grid {
+  position: relative;
+}
+.pa .pa-grid::before {
+  content: '';
+  position: absolute;
+  inset: 0 var(--edge, 20px);
+  pointer-events: none;
+  background-image: linear-gradient(90deg, var(--pa-line) 1px, transparent 1px);
+  background-size: calc((100% - 1px) / 6) 100%;
+  border-right: 1px solid var(--pa-line);
+  z-index: 0;
+}
+.pa .pa-cap--bone.pa-grid::before {
+  background-image: linear-gradient(90deg, var(--pa-line-light) 1px, transparent 1px);
+  border-right-color: var(--pa-line-light);
+}
+.pa .pa-grid > * {
+  position: relative;
+  z-index: 1;
+}
+@media (max-width: 720px) {
+  .pa .pa-grid::before {
+    background-size: calc((100% - 1px) / 2) 100%;
+  }
+}
+
+/* ---------- crop-marks en esquinas ---------- */
+.pa .pa-crop {
+  position: relative;
+  --pa-crop-c: rgb(255 255 255 / 0.4);
+  --pa-crop-s: 14px;
+  --pa-crop-o: -8px;
+}
+.pa .pa-crop::after {
+  content: '';
+  position: absolute;
+  inset: var(--pa-crop-o);
+  pointer-events: none;
+  z-index: 3;
+  background:
+    linear-gradient(var(--pa-crop-c), var(--pa-crop-c)) top left / var(--pa-crop-s) 1px no-repeat,
+    linear-gradient(var(--pa-crop-c), var(--pa-crop-c)) top left / 1px var(--pa-crop-s) no-repeat,
+    linear-gradient(var(--pa-crop-c), var(--pa-crop-c)) top right / var(--pa-crop-s) 1px no-repeat,
+    linear-gradient(var(--pa-crop-c), var(--pa-crop-c)) top right / 1px var(--pa-crop-s) no-repeat,
+    linear-gradient(var(--pa-crop-c), var(--pa-crop-c)) bottom left / var(--pa-crop-s) 1px no-repeat,
+    linear-gradient(var(--pa-crop-c), var(--pa-crop-c)) bottom left / 1px var(--pa-crop-s) no-repeat,
+    linear-gradient(var(--pa-crop-c), var(--pa-crop-c)) bottom right / var(--pa-crop-s) 1px no-repeat,
+    linear-gradient(var(--pa-crop-c), var(--pa-crop-c)) bottom right / 1px var(--pa-crop-s) no-repeat;
+}
+.pa .pa-cap--bone .pa-crop {
+  --pa-crop-c: rgb(11 14 23 / 0.35);
+}
+
+/* ---------- botón (link real) con roll ---------- */
+.pa .pa-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 22px 16px 26px;
+  border-radius: 999px;
+  background: var(--pa-accent);
+  color: var(--pa-ink);
+  font-family: var(--pa-mono);
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition:
+    background 300ms var(--pa-ease),
+    color 300ms var(--pa-ease);
+}
+.pa .pa-btn:hover {
+  background: #fff;
+}
+.pa .pa-btn:focus-visible {
+  outline: 2px solid var(--pa-accent);
+  outline-offset: 4px;
+}
+.pa .pa-btn-ico {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 999px;
+  background: var(--pa-ink);
+  color: var(--pa-accent);
+  transition: transform 400ms var(--pa-ease);
+}
+.pa .pa-btn:hover .pa-btn-ico {
+  transform: rotate(-45deg);
+}
+.pa .pa-btn--ghost {
+  background: transparent;
+  color: currentColor;
+  box-shadow: inset 0 0 0 1px currentColor;
+}
+.pa .pa-btn--ghost:hover {
+  background: var(--pa-accent);
+  color: var(--pa-ink);
+  box-shadow: inset 0 0 0 1px var(--pa-accent);
+}
+.pa .pa-cap--bone .pa-btn {
+  background: var(--pa-ink);
+  color: var(--pa-bone);
+}
+.pa .pa-cap--bone .pa-btn .pa-btn-ico {
+  background: var(--pa-accent);
+  color: var(--pa-ink);
+}
+
+/* ---------- media con radio grande ---------- */
+.pa .pa-media {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--pa-r-lg);
+  background: var(--pa-bg-2);
+  isolation: isolate;
+}
+.pa .pa-media img,
+.pa .pa-media video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ---------- indicador de scroll ---------- */
+.pa .pa-scrollcue {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+.pa .pa-scrollcue i {
+  position: relative;
+  display: block;
+  width: 1px;
+  height: 34px;
+  background: rgb(255 255 255 / 0.2);
+  overflow: hidden;
+}
+.pa .pa-scrollcue i::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--pa-accent);
+  transform: translateY(-100%);
+  animation: pa-cue 1.8s var(--pa-ease-q) infinite;
+}
+@keyframes pa-cue {
+  0% {
+    transform: translateY(-100%);
+  }
+  55% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(100%);
+  }
+}
+
+/* ---------- marquesina decorativa ----------
+   La anima data-marquee (src/scripts/mo/marquee.ts): los hijos directos son
+   el contenido y el script los clona. Sin JS o con reduced-motion queda
+   una fila estática recortada. */
+.pa .pa-marquee {
+  display: flex;
+  overflow: hidden;
+  white-space: nowrap;
+  user-select: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pa .pa-scrollcue i::after {
+    animation: none;
+  }
+  .pa .pa-btn-ico {
+    transition: none;
+  }
+}

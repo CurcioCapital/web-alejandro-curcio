@@ -1,0 +1,423 @@
+/*
+  tokens.css — design tokens for the Alejandro Curcio personal-brand site.
+
+  HOME v2 STATUS: values ported pixel-faithfully from "Especificación —
+  Home v2". The page is a 4-chapter film on a continuous canvas of stacked
+  sheets: ink night #0D1322 → dark stage #08090F → warm bone #F4F1EA →
+  cobalt night #0E1738. One cobalt identity accent (+ bright variant on
+  dark), ember #E25822 reserved EXCLUSIVELY for chapter 3. Typography is
+  Archivo Variable (wght 100-900, wdth 62-125, self-hosted, see
+  Base.astro) + Instrument Serif italic 400 only for quotes/emotive
+  moments.
+
+  Hard rules: max 2 saturated tints on any page; ember only in chapter 3
+  (one card + one CTA); no raw hex in components — everything references
+  these custom properties (directly or via the Tailwind theme.extend
+  mapping in tailwind.config.mjs).
+
+  MOTION DECISION TABLE (mother rule: "scrub to enter, time to inhabit")
+  ┌─────────────────────────────┬──────────────────────────────────────┐
+  │ Situation                   │ Token / behavior                     │
+  ├─────────────────────────────┼──────────────────────────────────────┤
+  │ Chapter entrance            │ scrub via scrollbar (quint shaping,  │
+  │                             │ transition: none while p < 1)        │
+  │ Reveal (fade + rise 24px)   │ --dur-lg 700ms --ease-out            │
+  │ Rotation / carousel glide   │ --dur-xl 900ms --ease-inout          │
+  │ Crossfade / surface hover   │ --dur-md 500ms --ease-out            │
+  │ Control hover (buttons)     │ --dur-sm 250ms --ease-out            │
+  │ Modal / overlay             │ --dur-xs 150ms --ease-out            │
+  │ Sequenced siblings          │ --stagger 80ms between items         │
+  │ Auto-advance heartbeat      │ 5000ms (single beat for the page)    │
+  │ Marquee / video loops       │ linear only                          │
+  │ Autoplay                    │ only after the chapter has settled;  │
+  │                             │ max ONE autonomous mover / viewport; │
+  │                             │ IO threshold 0.2 pauses offscreen    │
+  │ prefers-reduced-motion      │ no transforms, no autoplay,          │
+  │                             │ fades ≤ 200ms (global block below)   │
+  └─────────────────────────────┴──────────────────────────────────────┘
+*/
+
+:root {
+  /* — Color: base ink — */
+  /* Negros CÁLIDOS. Antes eran azulados (#0b0e17 / #131829 / #0d1322 /
+     #08090f): con acento cobalto tenía sentido, con dorado el azul se
+     lee como un tinte sucio y desafina contra el oro. */
+  --color-black: #0c0a06; /* base (antes #0b0e17) */
+  --color-black-2: #17130b; /* superficie secundaria (antes #131829) */
+  --color-ink: #0b0e17; /* text on light sheets (~15:1 on cap-3) */
+  --color-white: #ffffff;
+  --color-off: #f4f1ea; /* warm bone */
+
+  /* — Color: chapter canvases — */
+  --color-cap-1: #15110a; /* apertura — noche cálida (antes #0d1322) */
+  --color-cap-2: #0a0805; /* facetas — escenario oscuro (antes #08090f) */
+  --color-cap-3: #f4f1ea; /* books — warm bone */
+  --color-cap-4: #181206; /* chat — noche dorada (antes cobalt night #0e1738) */
+
+  /* — Color: identity accent — */
+  /* ACENTO DE IDENTIDAD — PRUEBA DORADO (2026-08-27).
+     DEGRADÉ DORADO (28/09/2026). Dolores probó rojo/bordó y volvió al
+     dorado, pero pedido «medio degradé, para que quede más premium»: lo que
+     da sensación metálica es la RAMPA, no el tono plano. De ahí los tres
+     tokens --oro-* de más abajo.
+     Los topes salen de calcular contraste, no de ojo:
+       · Ribbon (texto blanco encima): la parada MÁS CLARA no puede pasar de
+         #8f6a15 (4.95:1). #9a7418 ya cae a 4.30 y no pasa AA.
+       · Sobre oscuro hay margen de sobra: #b8892a da 6.33:1 y #e8c874, 12.33.
+       · Sobre crema la parada más clara no puede pasar de #8a6812 (4.57:1).
+     Para volver al ROJO/BORDÓ: --color-cobalt #8a1c24 · --color-cobalt-dim
+     #6e1b22 · --color-cobalt-bright #ef5b4c · --accent-rgb 239 91 76 ·
+     --accent-deep-rgb 138 28 36 · --color-gold-ribbon #8a1c24 ·
+     --color-black #0c0607 · --color-black-2 #170b0d · --color-cap-1
+     #150a0c · --color-cap-2 #0a0506 · --color-cap-4 #1a0a0c.
+     (Copia del rojo en /tmp/tokens-rojo.css mientras dure la sesión.)
+
+     Para volver al azul: --color-cobalt #2447ff · --color-cobalt-dim #1a34c9
+     · --color-cobalt-bright #5c7cff · --accent-rgb 92 124 255
+     · --accent-deep-rgb 36 71 255 · --color-cap-4 #0e1738.
+     (Los nombres siguen diciendo 'cobalt' a propósito: así el cambio es
+     sólo de valores y revertir no toca 10 archivos.) */
+  --color-cobalt: #7a5c10; /* identity; kickers on light (5.53:1 sobre crema) */
+  --color-cobalt-dim: #5e470c; /* hover/active */
+  --color-cobalt-bright: #d9a93c; /* kickers/accents on dark (9.2:1 sobre cap-2; el
+     dorado oscuro sobre negro daría muy poco). Antes #5c7cff. (#2447FF on
+                                     black is 3.05:1 — insufficient) */
+
+  /* — Color: ember — ONLY chapter 3 (one card + one CTA) — */
+  --color-ember: #e25822;
+  --color-ember-deep: #c9491b; /* CTA pill bg, white text 4.75:1 */
+
+  /* — Ink, 3 steps (replaces the 12 ad-hoc alphas) — */
+  --ink-hi: rgba(255, 255, 255, 0.92); /* primary text on dark */
+  --ink-mid: rgba(255, 255, 255, 0.65); /* secondary text on dark */
+  --ink-low: rgba(255, 255, 255, 0.5); /* tertiary/meta on dark — QA 21/10: 0.45 daba 4.48:1 sobre #0a0805 (<AA); 0.5 = 5.3:1 */
+  --ink-on-light-hi: rgba(11, 14, 23, 0.85); /* primary on light sheets */
+  --ink-on-light-mid: rgba(11, 14, 23, 0.65); /* secondary on light */
+  --ink-on-light-low: rgba(11, 14, 23, 0.4); /* tertiary on light */
+
+  /* — Hairlines — */
+  --color-line: rgba(233, 237, 255, 0.14); /* hairline on dark */
+  --color-line-dark: rgba(11, 14, 23, 0.1); /* hairline on light */
+
+  /* Tailwind theme.extend aliases (see tailwind.config.mjs) — kept in sync
+     with the names above so both the raw tokens and the Tailwind utility
+     classes stay usable side by side. */
+  --color-primary: var(--color-black);
+  --color-secondary: var(--color-black-2);
+  --color-accent: var(--color-cobalt);
+  --color-bg: var(--color-black);
+  --color-surface: var(--color-white);
+  --color-text: var(--color-white);
+  --color-text-muted: rgba(233, 237, 255, 0.66);
+  --color-border: var(--color-line);
+
+  /* — Typography — Archivo Variable for everything + Instrument Serif
+     italic 400 ONLY for quotes and emotive moments. @font-face + metric
+     fallbacks live in Base.astro (self-hosted, /fonts/). Never wght 800+
+     as raw text weight outside the display cuts defined below. */
+  /* 21/10/2026: titulares y texto corrido pasan a Geist Variable (decisión
+     de cliente: más moderna y legible). Archivo queda como fallback, así que
+     si Geist no carga el sitio se ve como antes. */
+  --font-heading: 'Geist Variable', 'Archivo Variable', 'Archivo Fallback', -apple-system,
+    BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+  --font-body: 'Geist Variable', 'Archivo Variable', 'Archivo Fallback', -apple-system,
+    BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+  --font-serif: 'Instrument Serif', 'Instrument Serif Fallback', Georgia,
+    serif;
+
+  --font-size-base: 1.0625rem; /* --text-body: 17px */
+  --line-height-base: 1.5;
+
+  /* Type scale — clamp() with rem+vw term (accessible: scales with user
+     font size). Linear ramp between 375px and 1600px viewports. */
+  --text-hero: clamp(2.875rem, 1.46rem + 6.04vw, 7.5rem); /* 46→120px;
+      Archivo wght 620, stretch 118%, lh 0.95, ls -0.03em, balance */
+  --text-chapter-title: clamp(2.125rem, 1.55rem + 2.45vw, 4rem); /* 34→64px */
+  --text-facet-word: clamp(1.625rem, 1.36rem + 1.14vw, 2.5rem); /* 26→40px;
+      Archivo 700, stretch 110% */
+  --text-quote: clamp(1.625rem, 1.2rem + 1.8vw, 3rem); /* 26→48px, serif
+      italic 400, ls 0, lh 1.25 */
+  --text-facet-quote: clamp(1.0625rem, 0.99rem + 0.33vw, 1.3125rem); /* 17→21px,
+      Instrument Serif italic */
+  --text-book-title: clamp(1.5rem, 1.23rem + 1.14vw, 2.375rem); /* 24→38px máx
+      (CEO DE TU VIDA); the two earlier books sit at ~24-28px */
+  --text-lead: clamp(1.0625rem, 1rem + 0.24vw, 1.25rem); /* 17→20px */
+  --text-body: 1.0625rem; /* 17px */
+  --text-kicker: 0.8125rem; /* 13px / wght 600 / tracking 0.1em / uppercase */
+  --text-ticker: 0.75rem; /* 12px / 500 / tracking 0.08em / uppercase */
+
+  /* Type scale — legacy aliases (consumed by /historia, /negocios, etc.) */
+  --text-section-title: var(--text-chapter-title);
+  --text-photo-title: var(--text-chapter-title);
+  --text-pillar-word: var(--text-chapter-title);
+
+  /* — Radius — exactly three radii exist: sheet, object, 999px pills. */
+  --radius-sheet: clamp(20px, 2.4vw, 24px); /* top corners of stacked
+      chapter sheets (+ inset hero card) */
+  --radius-object: 16px; /* f3d cards, book covers, momento-cards,
+      pillar-photo, media cards */
+
+  /* Radius — legacy aliases.
+     --radius-lg pasó a 28px fijo en el rediseño 21/10/2026 (brief): las
+     superficies grandes ahora son más redondas. --radius-xl (40px) vive en
+     el bloque «Rediseño» de más abajo. */
+  --radius-lg: 28px;
+  --radius-md: var(--radius-object);
+  --radius-sm: var(--radius-object);
+
+  /* — Spacing — */
+  --space-xs: 0.5rem;
+  --space-sm: 1rem;
+  --space-md: 1.5rem;
+  --space-lg: 2.5rem;
+  --space-xl: 4rem;
+  --space-section: 6rem; /* legacy vertical rhythm (inner pages) */
+  --edge: 20px; /* outer page margin around inset cards (.wrap) */
+  --chapter-pad: clamp(72px, 10vh, 128px); /* padding-top of every sheet */
+
+  /* — Shadows — */
+  --shadow-object: 0 24px 60px rgba(0, 0, 0, 0.3); /* objects on dark */
+  --shadow-object-on-light: 0 24px 60px rgba(17, 24, 56, 0.14); /* book
+      covers on cap-3; hover: 0 30px 70px rgba(36,71,255,0.16) */
+  /* Canales RGB del acento — existen porque 30 usos hardcodeaban rgba()
+     con el azul literal y no seguían al token. Ahora sí. */
+  --accent-rgb: 217 169 60; /* acento sobre fondos oscuros */
+  --accent-deep-rgb: 122 92 16; /* acento sobre la hoja clara */
+  /* Dorado del ribbon. Es más profundo que --color-cobalt-bright a propósito:
+     el ribbon lleva texto BLANCO, y el blanco sobre #d9a93c da 2.17:1
+     (ilegible). Sobre #8f6a15 da 4.95:1 — AA. */
+  --color-gold-ribbon: #8f6a15;
+
+  /* ---- Rampas doradas ----
+     Un dorado plano se lee amarillo; lo que se lee como metal es el
+     recorrido oscuro → champán → oscuro. Todas las paradas están dentro de
+     los topes de contraste anotados arriba. */
+  --oro-degrade: linear-gradient(135deg, #b8892a 0%, #e8c874 46%, #c9992f 100%);
+  --oro-degrade-ribbon: linear-gradient(90deg, #6d4f0c 0%, #8f6a15 50%, #6d4f0c 100%);
+  --oro-degrade-suave: linear-gradient(180deg, rgb(232 200 116 / 0.16) 0%, transparent 62%);
+  --shadow-accent: 0 10px 30px rgb(var(--accent-rgb) / 0.35); /* gold glow */
+
+  /* — Scrims — always ink rgba(8,9,15,x), never pure black. */
+  --scrim-media: linear-gradient(
+    180deg,
+    rgba(8, 9, 15, 0.05) 0%,
+    rgba(8, 9, 15, 0) 30%,
+    rgba(8, 9, 15, 0.15) 55%,
+    rgba(8, 9, 15, 0.72) 100%
+  ); /* hero / full-bleed media with text at the bottom */
+  --scrim-frame: linear-gradient(
+    180deg,
+    rgba(8, 9, 15, 0.35) 0%,
+    rgba(8, 9, 15, 0.15) 40%,
+    rgba(8, 9, 15, 0.6) 100%
+  ); /* framed photo/quote sections with text top+bottom */
+  --scrim-cita: linear-gradient(
+      180deg,
+      rgba(8, 9, 15, 0.35) 0%,
+      rgba(8, 9, 15, 0.15) 40%,
+      rgba(8, 9, 15, 0.6) 100%
+    ),
+    linear-gradient(0deg, rgba(8, 9, 15, 0.42), rgba(8, 9, 15, 0.42));
+  /* El frame deja el centro casi limpio (0.15), y ahí es justo donde cae el
+     texto de QuoteOverlay. Medido sobre guinness-06 (agua celeste, carpas
+     blancas): blanco sobre ese fondo daba 2.69:1 de mediana y 1.00:1 en el
+     10% más claro — texto invisible. Con el lavado plano de 0.42 debajo, el
+     centro queda en α efectivo 0.51: mediana ~8.9:1 y p90 ~4.0:1.
+     Para volver atrás: .quote-section .scrim → var(--scrim-frame). */
+
+  /* — Motion — signature curve: cubic-bezier(0.22,1,0.36,1); its exact JS
+     scrub mirror is easeOutQuint 1-(1-t)**5 (see src/scripts/motion.ts). */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1); /* entrances, hovers */
+  --ease-inout: cubic-bezier(0.65, 0, 0.35, 1); /* glides (carousel) */
+  --dur-xs: 150ms; /* modal */
+  --dur-sm: 250ms; /* control hover */
+  --dur-md: 500ms; /* crossfades, surface hover */
+  --dur-lg: 700ms; /* reveals */
+  --dur-xl: 900ms; /* carousel turn, book slide */
+  --stagger: 80ms;
+  /* Auto-advance heartbeat: 5000ms — single beat shared by QuoteRotator,
+     placeholder rotation, carousel autoplay. Reveal distance: 24px. */
+
+  /* Motion — legacy aliases */
+  --ease: var(--ease-out);
+  --ease-standard: var(--ease-out);
+  --dur: 500ms;
+  --duration-fast: var(--dur-xs);
+  --duration-base: var(--dur-md);
+}
+
+/* ===================================================================
+   REDISEÑO «SIGUIENTE NIVEL» (21/10/2026) — tokens nuevos.
+   Referencia: landonorris.com. Se SUMAN a los de arriba; ningún token
+   existente se borró ni se renombró (las páginas interiores dependen de
+   ellos). Documentación completa: /docs-design-system.md.
+   =================================================================== */
+:root {
+  /* — Familias — */
+  /* Display = Geist Variable (decisión de cliente 21/10/2026, reemplaza a la
+     Archivo condensada en MAYÚSCULAS): minimal, legible, moderna. Caja
+     normal, peso 500–600, tracking negativo. Archivo queda de fallback. */
+  --font-display: 'Geist Variable', 'Archivo Variable', 'Archivo Fallback', -apple-system, BlinkMacSystemFont,
+    'Segoe UI', Arial, sans-serif;
+  /* Mono «tech» para kickers, metadatos, contadores, índices. */
+  --font-mono: 'JetBrains Mono Variable', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  /* — Escala display (Geist, caja normal, lh ~1.0) — rem + vw para que siga
+     respetando el tamaño de letra del usuario. 375px → 1600px. ~18% más
+     chica que la escala condensada anterior: Geist es ancha y a ese tamaño
+     gritaba; así se lee elegante. */
+  --fs-hero: clamp(3rem, 0.55rem + 12.4vw, 14.25rem); /* 48px → ~13vw */
+  --fs-display-1: clamp(2.5rem, 0.8rem + 7vw, 9rem); /* 40 → 144px */
+  --fs-display-2: clamp(2.125rem, 1.1rem + 4.1vw, 5.75rem); /* 34 → 92px */
+  --fs-display-3: clamp(1.75rem, 1.15rem + 2.4vw, 3.75rem); /* 28 → 60px */
+  --fs-mono: 0.75rem; /* 12px */
+  --fs-mono-sm: 0.6875rem; /* 11px */
+
+  /* Corte display. Geist no tiene eje de ancho: --display-wdth queda en
+     100% (normal) sólo para no romper a quien lo referencie. */
+  --display-wdth: 100%;
+  --display-wght: 560;
+  --display-track: -0.035em;
+  --display-lh: 1;
+
+  /* — Grilla técnica — líneas de 1px. */
+  --line: rgb(255 255 255 / 0.08); /* sobre oscuro */
+  --line-strong: rgb(255 255 255 / 0.16);
+  --line-light: rgb(12 10 6 / 0.1); /* sobre claro (hueso / blanco) */
+  --grid-cols: 12;
+  --grid-cols-mobile: 4;
+
+  /* — Radios grandes — (--radius-lg está arriba, en los alias) */
+  --radius-xl: 40px;
+
+  /* — Acento — el dorado de marca (decisión de cliente, ver arriba).
+     --accent es el dorado BRILLANTE: el «neón» sobre negro (12.33:1 sobre
+     #0a0805). NUNCA lleva texto blanco encima: sobre él va tinta.
+     --accent-ink es el dorado para TEXTO sobre claro: #7a5c10 da 5.53:1
+     sobre #f4f1ea (AA); no subir de #8a6812 (4.57:1). */
+  --accent: #e8c874;
+  --accent-ink: #7a5c10;
+  --accent-soft: rgb(232 200 116 / 0.14);
+
+  /* — Curvas — */
+  --ease-expo: cubic-bezier(0.16, 1, 0.3, 1); /* entradas largas, overlays */
+  --ease-quart: cubic-bezier(0.76, 0, 0.24, 1); /* cortinas, in-out marcado */
+
+  /* Alto de la barra (el header es sticky y ocupa lugar en el flujo). */
+  --nav-h: 74px;
+}
+@media (max-width: 720px) {
+  :root {
+    --nav-h: 64px;
+  }
+}
+
+/* Minimal reset + base element styling driven entirely by tokens above. */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: auto;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--color-black);
+  color: var(--color-white);
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-base);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-heading);
+  color: inherit;
+  margin: 0;
+  font-weight: 600;
+}
+
+/* Serif moments (Instrument Serif) always run at natural spacing — no
+   negative tracking, no synthetic weight. */
+.font-serif,
+blockquote {
+  letter-spacing: 0;
+}
+
+img,
+video {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+ul {
+  list-style: none;
+}
+
+/* Shared page-width wrapper, matches direccion-d's .wrap */
+.wrap {
+  max-width: 1360px;
+  margin: 0 auto;
+  padding: 0 var(--edge);
+}
+
+/* Scroll-reveal primitive used by <Reveal>: translateY(24px) + opacity,
+   toggled to .in-view by an IntersectionObserver (threshold 0.2). */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity var(--dur-lg) var(--ease-out),
+    transform var(--dur-lg) var(--ease-out);
+}
+.reveal.in-view {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Blur-up image/video primitive used by <BlurImage> and hero media. */
+.blur-up {
+  filter: blur(18px);
+  transform: scale(1.05);
+  transition: filter var(--dur-lg) var(--ease-out);
+}
+.blur-up.is-loaded {
+  filter: blur(0);
+}
+
+/* — Reduced motion, systemic: no transforms, no autoplay (scripts gate on
+   the same media query), fades capped at 200ms. — */
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: opacity 200ms linear;
+  }
+  .blur-up {
+    filter: none;
+    transform: none;
+    transition: none;
+  }
+}

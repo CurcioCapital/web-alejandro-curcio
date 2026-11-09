@@ -1,0 +1,202 @@
+---
+/**
+ * TresFuegos.astro — Capital de Vida-only. Las tres crisis que forjaron el
+ * libro: 1982 (la económica), 2001 (la personal) y el cuerpo (la corporal —
+ * kitesurf, el calabozo de Nueva York, el barril del Guinness).
+ *
+ * Rediseño 21/10/2026: tarjetas grandes que se APILAN con el scroll
+ * (position: sticky escalonado), numeración mono, año en display enorme.
+ * Sin imágenes inventadas: 1982 y 2001 no tienen foto de época, así que su
+ * lado visual es tipográfico; el cuerpo usa un fotograma real del Ice
+ * Challenge. Con reduced-motion las tarjetas no se apilan: van en columna.
+ */
+import BlurImage from '../../BlurImage.astro';
+
+interface Quote {
+  text: string;
+  attribution: string;
+}
+
+interface Fuego {
+  year: string;
+  label: string;
+  title: string;
+  body: string;
+  quotes?: Quote[];
+  imgId?: string;
+  imgSrc?: string;
+  imgAlt?: string;
+}
+
+interface Props {
+  fuegos: Fuego[];
+}
+
+const { fuegos } = Astro.props;
+---
+
+<div class="fuegos" style={`--n:${fuegos.length}`}>
+  {
+    fuegos.map((f, i) => (
+      <article class="fuego-card" style={`--i:${i}`}>
+        <div class="fuego-media" data-reveal="mask">
+          {f.imgId || f.imgSrc ? (
+            <BlurImage id={f.imgId} src={f.imgSrc} alt={f.imgAlt ?? ''} sizes="(max-width: 860px) 100vw, 40vw" />
+          ) : (
+            <div class="fuego-media-typo" aria-hidden="true">
+              <span>{f.year}</span>
+            </div>
+          )}
+          <span class="fuego-n ed-mono" aria-hidden="true">{`0${i + 1} / 0${fuegos.length}`}</span>
+        </div>
+        <div class="fuego-text">
+          <span class="fuego-label ed-mono">{f.label}</span>
+          <span class="fuego-year">{f.year}</span>
+          <h3 class="fuego-title">{f.title}</h3>
+          <p class="fuego-body">{f.body}</p>
+          {f.quotes?.map((q) => (
+            <blockquote class="fuego-quote">
+              <p>&ldquo;{q.text}&rdquo;</p>
+              <footer class="ed-mono">{q.attribution}</footer>
+            </blockquote>
+          ))}
+        </div>
+      </article>
+    ))
+  }
+</div>
+
+<style>
+  .fuegos {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(20px, 3vw, 40px);
+    margin-top: clamp(48px, 6vw, 96px);
+  }
+  .fuego-card {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    gap: clamp(24px, 4vw, 64px);
+    padding: clamp(20px, 2.6vw, 36px);
+    min-height: min(78svh, 720px);
+    border-radius: var(--ed-r-xl);
+    background: var(--ed-bg-2);
+    border: 1px solid var(--ed-line-strong);
+    box-shadow: 0 -30px 60px rgb(0 0 0 / 0.35);
+  }
+  .fuego-media {
+    position: relative;
+    border-radius: calc(var(--ed-r-xl) - 14px);
+    overflow: hidden;
+    background: var(--ed-bg);
+    min-height: 280px;
+  }
+  .fuego-media :global(img) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .fuego-media-typo {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: flex-end;
+    padding: 20px;
+    background:
+      radial-gradient(90% 70% at 20% 110%, rgb(232 200 116 / 0.22), transparent 60%),
+      repeating-linear-gradient(90deg, rgb(255 255 255 / 0.04) 0 1px, transparent 1px 25%);
+  }
+  .fuego-media-typo span {
+    font-family: var(--ed-display);
+    font-weight: 500;
+    font-size: clamp(4.5rem, 11vw, 11rem);
+    line-height: 0.9;
+    letter-spacing: -0.06em;
+    color: transparent;
+    -webkit-text-stroke: 1.5px var(--ed-accent);
+  }
+  .fuego-n {
+    position: absolute;
+    top: 16px;
+    left: 18px;
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: rgb(12 10 6 / 0.6);
+    backdrop-filter: blur(6px);
+    color: var(--ed-accent);
+  }
+  .fuego-text {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: clamp(4px, 1vw, 16px) 0;
+  }
+  .fuego-label {
+    color: var(--ed-accent);
+    margin-bottom: 14px;
+  }
+  .fuego-year {
+    font-family: var(--ed-mono);
+    font-size: 13px;
+    letter-spacing: 0.08em;
+    color: rgb(255 255 255 / 0.5);
+    margin-bottom: 18px;
+  }
+  .fuego-title {
+    font-family: var(--ed-display);
+    font-weight: 560;
+    font-size: var(--fs-display-3, clamp(1.75rem, 1.15rem + 2.4vw, 3.75rem));
+    line-height: 1.02;
+    letter-spacing: -0.04em;
+    margin: 0 0 20px;
+    text-wrap: balance;
+  }
+  .fuego-body {
+    font-size: 16px;
+    line-height: 1.62;
+    color: rgb(255 255 255 / 0.72);
+    margin: 0 0 10px;
+    max-width: 56ch;
+  }
+  .fuego-quote {
+    margin: 18px 0 0;
+    padding-top: 16px;
+    border-top: 1px solid var(--ed-line-strong);
+  }
+  .fuego-quote p {
+    margin: 0;
+    font-family: var(--ed-serif);
+    font-style: italic;
+    font-size: clamp(1.25rem, 1rem + 0.8vw, 1.75rem);
+    line-height: 1.2;
+    color: #fff;
+  }
+  .fuego-quote footer {
+    margin-top: 10px;
+    color: rgb(255 255 255 / 0.5);
+  }
+
+  @media (max-width: 860px) {
+    .fuego-card {
+      grid-template-columns: 1fr;
+      min-height: 0;
+      border-radius: var(--ed-r-lg);
+    }
+    .fuego-media {
+      min-height: 200px;
+      aspect-ratio: 16 / 10;
+    }
+  }
+  /* apilado sólo en escritorio con altura suficiente (una tarjeta más alta
+     que la pantalla quedaría tapada por la siguiente) y con motion */
+  @media (min-width: 861px) and (min-height: 760px) and (prefers-reduced-motion: no-preference) {
+    .fuego-card {
+      position: sticky;
+      top: calc(96px + var(--i) * 26px);
+      max-height: calc(100svh - 120px);
+    }
+  }
+</style>

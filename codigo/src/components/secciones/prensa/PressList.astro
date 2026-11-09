@@ -1,0 +1,479 @@
+---
+/**
+ * Rediseño 21/10/2026 (dirección landonorris): filas grandes separadas por
+ * una línea fina; en hover el título hace "roll" (sube y entra una copia
+ * desde abajo), la línea se enciende en dorado y una tarjeta TIPOGRÁFICA con
+ * el medio y el año sigue al cursor (press.json no trae imágenes, así que
+ * la vista previa es sólo tipografía). El año de cada grupo va en display
+ * enorme y queda pegado mientras se recorre su grupo. Con touch o
+ * reduced-motion: sin tarjeta flotante ni roll, todo legible igual.
+ *
+ * PressList.astro — prensa-only component. Renders the 23 "Alta"-priority
+ * press.json entries as a year-grouped list (medium + title + external
+ * link arrow); the remaining "Media" entries sit behind a <details> "Ver
+ * todo" toggle, grouped the same way. Usage:
+ * <PressList items={pressJson} />
+ */
+interface PressItem {
+  date: string;
+  medium: string;
+  title: string;
+  url: string;
+  priority: string;
+  type?: string;
+  topic?: string;
+  speaksAC?: string;
+}
+
+interface YearGroup {
+  year: string;
+  items: PressItem[];
+}
+
+interface Props {
+  items: PressItem[];
+}
+
+const { items } = Astro.props;
+
+// Dates in press.json are either "DD/MM/YYYY" or, for a handful of
+// entries, a bare "YYYY". Both forms end in the four-digit year.
+function getYear(date: string): string {
+  const match = date.match(/(\d{4})$/);
+  return match ? match[1] : date;
+}
+
+function sortKey(date: string): number {
+  const full = date.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+  if (full) {
+    const [, day, month, year] = full;
+    return Number(year) * 10000 + Number(month) * 100 + Number(day);
+  }
+  const yearOnly = date.match(/^(\d{4})$/);
+  if (yearOnly) return Number(yearOnly[1]) * 10000;
+  return 0;
+}
+
+function groupByYear(list: PressItem[]): YearGroup[] {
+  const sorted = [...list].sort((a, b) => sortKey(b.date) - sortKey(a.date));
+  const groups: YearGroup[] = [];
+  for (const item of sorted) {
+    const year = getYear(item.date);
+    const lastGroup = groups[groups.length - 1];
+    if (lastGroup && lastGroup.year === year) {
+      lastGroup.items.push(item);
+    } else {
+      groups.push({ year, items: [item] });
+    }
+  }
+  return groups;
+}
+
+const priorityItems = items.filter((item) => item.priority === 'Alta');
+const restItems = items.filter((item) => item.priority !== 'Alta');
+
+const priorityGroups = groupByYear(priorityItems);
+const restGroups = groupByYear(restItems);
+---
+
+<div class="press-wrap" data-press>
+<div class="press-list">
+  {
+    priorityGroups.map((group) => (
+      <div class="press-year-group">
+        <span class="press-year"><span>{group.year}</span></span>
+        <ul class="press-items">
+          {group.items.map((item) => (
+            <li>
+              <a class="press-row" href={item.url} target="_blank" rel="noopener noreferrer" data-medium={item.medium} data-year={group.year}>
+                <span class="press-medium ed-mono">{item.medium}</span>
+                <span class="press-title">
+                  <span class="press-title-a">{item.title}</span>
+                  <span class="press-title-b" aria-hidden="true">{item.title}</span>
+                </span>
+                <span class="press-arrow" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="7" y1="17" x2="17" y2="7" />
+                    <polyline points="7 7 17 7 17 17" />
+                  </svg>
+                </span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    ))
+  }
+</div>
+
+{
+  restGroups.length > 0 && (
+    <details class="press-more">
+      <summary class="press-more-toggle">
+        <span class="press-more-label ed-mono">Ver todo</span>
+        <span class="press-more-count">+{restItems.length} notas más</span>
+        <span class="press-more-icon" aria-hidden="true">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <polyline points="6 9 12 15 18 9" />
+          </svg>
+        </span>
+      </summary>
+      <div class="press-list press-list--more">
+        {restGroups.map((group) => (
+          <div class="press-year-group">
+            <span class="press-year"><span>{group.year}</span></span>
+            <ul class="press-items">
+              {group.items.map((item) => (
+                <li>
+              <a class="press-row" href={item.url} target="_blank" rel="noopener noreferrer" data-medium={item.medium} data-year={group.year}>
+                <span class="press-medium ed-mono">{item.medium}</span>
+                <span class="press-title">
+                  <span class="press-title-a">{item.title}</span>
+                  <span class="press-title-b" aria-hidden="true">{item.title}</span>
+                </span>
+                <span class="press-arrow" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="7" y1="17" x2="17" y2="7" />
+                    <polyline points="7 7 17 7 17 17" />
+                  </svg>
+                </span>
+              </a>
+            </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+    </details>
+  )
+}
+
+<div class="press-float" aria-hidden="true">
+  <span class="press-float-y ed-mono"></span>
+  <span class="press-float-m"></span>
+  <span class="press-float-go ed-mono">Ver<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="7" y1="17" x2="17" y2="7" /><polyline points="7 7 17 7 17 17" /></svg></span>
+</div>
+</div>
+
+<style>
+  .press-wrap {
+    position: relative;
+  }
+  .press-list {
+    margin-top: clamp(40px, 5vw, 80px);
+    border-top: 1px solid rgb(12 10 6 / 0.25);
+  }
+  .press-year-group {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 3fr);
+    gap: var(--ed-gutter);
+    border-bottom: 1px solid rgb(12 10 6 / 0.25);
+  }
+  .press-year {
+    position: relative;
+  }
+  .press-year > span {
+    position: sticky;
+    top: 96px;
+    display: block;
+    padding: 18px 0;
+    font-family: var(--ed-display);
+    font-weight: 560;
+    font-size: clamp(3.5rem, 2rem + 4vw, 7.5rem);
+    line-height: 0.95;
+    letter-spacing: -0.035em;
+    color: transparent;
+    -webkit-text-stroke: 1.2px var(--ed-ink);
+    font-variant-numeric: tabular-nums;
+  }
+  .press-items {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  .press-items li + li {
+    border-top: 1px solid rgb(12 10 6 / 0.12);
+  }
+  .press-row {
+    position: relative;
+    display: grid;
+    grid-template-columns: 150px minmax(0, 1fr) 36px;
+    align-items: baseline;
+    gap: 24px;
+    padding: clamp(18px, 2vw, 28px) 0;
+    color: var(--ed-ink);
+    text-decoration: none;
+    outline: none;
+  }
+  .press-row::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -1px;
+    height: 1px;
+    background: var(--ed-accent-ink);
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.7s var(--ed-expo);
+  }
+  .press-row:hover::after,
+  .press-row:focus-visible::after {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+  .press-row:focus-visible {
+    box-shadow: 0 0 0 2px var(--ed-accent-ink);
+    border-radius: 6px;
+  }
+  .press-medium {
+    color: var(--ed-accent-ink);
+  }
+  .press-title {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    font-family: var(--ed-display);
+    font-weight: 540;
+    font-size: clamp(1.25rem, 1rem + 1vw, 2.1rem);
+    line-height: 1.12;
+    letter-spacing: -0.035em;
+  }
+  .press-title-a,
+  .press-title-b {
+    display: block;
+    transition: transform 0.7s var(--ed-expo);
+  }
+  .press-title-b {
+    position: absolute;
+    inset: 0;
+    transform: translateY(105%);
+    color: var(--ed-accent-ink);
+  }
+  .press-arrow {
+    justify-self: end;
+    display: inline-grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1px solid rgb(12 10 6 / 0.2);
+    color: var(--ed-ink);
+    transition: background 0.4s var(--ed-expo), color 0.4s var(--ed-expo), transform 0.6s var(--ed-expo), border-color 0.4s;
+    align-self: center;
+  }
+  @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+    .press-row:hover .press-title-a,
+    .press-row:focus-visible .press-title-a {
+      transform: translateY(-105%);
+    }
+    .press-row:hover .press-title-b,
+    .press-row:focus-visible .press-title-b {
+      transform: translateY(0);
+    }
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .press-row:hover .press-arrow,
+    .press-row:focus-visible .press-arrow {
+      background: var(--ed-ink);
+      border-color: var(--ed-ink);
+      color: var(--ed-accent);
+      transform: rotate(45deg);
+    }
+  }
+
+  /* ---------- tarjeta que sigue al cursor (sólo tipografía) ---------- */
+  .press-float {
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 40;
+    width: 240px;
+    padding: 16px 18px 14px;
+    border-radius: 16px;
+    background: var(--ed-ink);
+    color: #fff;
+    box-shadow: 0 30px 60px rgb(12 10 6 / 0.35);
+    pointer-events: none;
+    opacity: 0;
+    transform: translate3d(var(--fx, -999px), var(--fy, -999px), 0) scale(0.6) rotate(var(--fr, 0deg));
+    transition: opacity 0.35s var(--ed-expo), scale 0.5s var(--ed-expo);
+    display: none;
+  }
+  :global(html.ed-on) .press-float {
+    display: block;
+  }
+  .press-float.is-on {
+    opacity: 1;
+    transform: translate3d(var(--fx, -999px), var(--fy, -999px), 0) scale(1) rotate(var(--fr, 0deg));
+  }
+  .press-float-y {
+    display: block;
+    color: var(--ed-accent);
+  }
+  .press-float-m {
+    display: block;
+    margin: 18px 0 16px;
+    font-family: var(--ed-display);
+    font-weight: 560;
+    font-size: 40px;
+    line-height: 0.95;
+    letter-spacing: -0.035em;
+  }
+  .press-float-go {
+    display: inline-flex;
+    gap: 6px;
+    align-items: center;
+    color: rgb(255 255 255 / 0.6);
+  }
+  @media (hover: none), (pointer: coarse), (prefers-reduced-motion: reduce) {
+    :global(html.ed-on) .press-float {
+      display: none;
+    }
+  }
+
+  /* ---------- "Ver todo" ---------- */
+  .press-more {
+    margin-top: 0;
+  }
+  .press-more-toggle {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 28px 0;
+    border-bottom: 1px solid rgb(12 10 6 / 0.25);
+    cursor: pointer;
+    list-style: none;
+    color: var(--ed-ink);
+  }
+  .press-more-toggle::-webkit-details-marker {
+    display: none;
+  }
+  .press-more-label {
+    padding: 10px 16px;
+    border-radius: 999px;
+    background: var(--ed-ink);
+    color: var(--ed-bone);
+  }
+  .press-more-count {
+    margin-right: auto;
+    font-family: var(--ed-display);
+    letter-spacing: -0.035em;
+    font-weight: 540;
+    font-size: clamp(1.1rem, 1rem + 0.6vw, 1.5rem);
+    color: rgb(12 10 6 / 0.6);
+  }
+  .press-more-icon {
+    display: inline-grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 1px solid rgb(12 10 6 / 0.25);
+    transition: transform 0.6s var(--ed-expo), background 0.4s;
+  }
+  .press-more-toggle:hover .press-more-icon {
+    background: var(--ed-ink);
+    color: var(--ed-accent);
+  }
+  .press-more[open] > .press-more-toggle .press-more-icon {
+    transform: rotate(180deg);
+  }
+  .press-more-toggle:focus-visible {
+    outline: 2px solid var(--ed-accent-ink);
+    outline-offset: 4px;
+  }
+  .press-list--more {
+    margin-top: 0;
+    border-top: 0;
+  }
+
+  @media (max-width: 860px) {
+    .press-year-group {
+      grid-template-columns: 1fr;
+      gap: 0;
+    }
+    .press-year > span {
+      position: static;
+      padding: 22px 0 6px;
+      font-size: 3.5rem;
+    }
+    .press-row {
+      grid-template-columns: minmax(0, 1fr) 32px;
+      grid-template-areas:
+        'm a'
+        't t';
+      gap: 8px 12px;
+      padding: 18px 0;
+    }
+    .press-medium {
+      grid-area: m;
+    }
+    .press-title {
+      grid-area: t;
+      font-size: 1.25rem;
+    }
+    .press-arrow {
+      grid-area: a;
+      width: 32px;
+      height: 32px;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .press-title-a,
+    .press-title-b,
+    .press-row::after,
+    .press-arrow {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  // Tarjeta tipográfica que sigue al cursor sobre las filas de prensa.
+  // Sólo punteros finos y con motion; lerp en rAF, se apaga fuera de la lista.
+  const fine = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  document.querySelectorAll<HTMLElement>('[data-press]').forEach((root) => {
+    const card = root.querySelector<HTMLElement>('.press-float');
+    if (!card || !fine || reduce) return;
+    // fuera de cualquier ancestro con transform (si no, position:fixed se ancla mal)
+    document.body.appendChild(card);
+    const y = card.querySelector<HTMLElement>('.press-float-y')!;
+    const m = card.querySelector<HTMLElement>('.press-float-m')!;
+    let tx = 0, ty = 0, cx = 0, cy = 0, vx = 0, raf = 0, on = false;
+    const loop = () => {
+      const nx = cx + (tx - cx) * 0.16;
+      vx = nx - cx;
+      cx = nx;
+      cy += (ty - cy) * 0.16;
+      card.style.setProperty('--fx', `${cx.toFixed(1)}px`);
+      card.style.setProperty('--fy', `${cy.toFixed(1)}px`);
+      card.style.setProperty('--fr', `${Math.max(-8, Math.min(8, vx * 0.5)).toFixed(2)}deg`);
+      if (on || Math.abs(tx - cx) > 0.5 || Math.abs(ty - cy) > 0.5) raf = requestAnimationFrame(loop);
+      else raf = 0;
+    };
+    const kick = () => { if (!raf) raf = requestAnimationFrame(loop); };
+    root.addEventListener('pointermove', (e) => {
+      tx = e.clientX + 24;
+      ty = e.clientY - 70;
+      if (!on && !card.classList.contains('is-on')) { cx = tx; cy = ty; }
+      kick();
+    });
+    root.querySelectorAll<HTMLElement>('.press-row').forEach((row) => {
+      row.addEventListener('pointerenter', () => {
+        y.textContent = row.dataset.year ?? '';
+        m.textContent = row.dataset.medium ?? '';
+        on = true;
+        card.classList.add('is-on');
+        kick();
+      });
+      row.addEventListener('pointerleave', () => {
+        on = false;
+        card.classList.remove('is-on');
+      });
+    });
+  });
+</script>

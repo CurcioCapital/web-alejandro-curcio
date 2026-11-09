@@ -1,0 +1,68 @@
+---
+/**
+ * EdSection.astro — cáscara de sección del sistema "editorial tech" de las
+ * Páginas B (reemplaza a SectionWhite en libros, capital-de-vida, prensa y
+ * seguime sin tocar el componente compartido). Mismos datos que
+ * SectionWhite —kicker, title, lead— con la cabecera nueva:
+ *   [ 01 ]  KICKER        TÍTULO DISPLAY (split por líneas)
+ *                         lead
+ * `n` es numeración decorativa derivada del orden de la página.
+ * Estilos en ./ed.css (global, prefijo .ed-).
+ */
+interface Props {
+  id?: string;
+  n?: string;
+  kicker: string;
+  title: string;
+  lead?: string;
+  tone?: 'dark' | 'dark2' | 'light';
+  sheet?: boolean;
+  grid?: boolean;
+  class?: string;
+  titleTag?: 'h1' | 'h2';
+  /** Sin cabecera (cuando el héroe ya dice lo mismo). */
+  hideHead?: boolean;
+}
+
+const {
+  id,
+  n,
+  kicker,
+  title,
+  lead,
+  tone = 'dark',
+  sheet = false,
+  grid = true,
+  class: className = '',
+  titleTag: T = 'h2',
+  hideHead = false,
+} = Astro.props;
+---
+
+<section
+  id={id}
+  class:list={[
+    'ed-sec',
+    tone === 'light' && 'ed-sec--light',
+    tone === 'dark2' && 'ed-sec--2',
+    sheet && 'ed-sec--sheet',
+    grid && 'ed-grid',
+    className,
+  ]}
+>
+  <div class="ed-wrap">
+    {!hideHead && <header class="ed-head">
+      <div class="ed-head__meta ed-mono">
+        {n && <span class="ed-head__n" aria-hidden="true">[ {n} ]</span>}
+        <span class="ed-head__kicker">{kicker}</span>
+      </div>
+      <T class="ed-display ed-head__title" data-split="lines">{title}</T>
+      {lead && <p class="ed-head__lead" data-reveal>{lead}</p>}
+    </header>}
+    <slot />
+  </div>
+</section>
+
+<script>
+  import "./ed";
+</script>

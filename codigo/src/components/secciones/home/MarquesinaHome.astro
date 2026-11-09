@@ -1,0 +1,138 @@
+---
+/**
+ * MarquesinaHome.astro — cinta infinita decorativa (aria-hidden). Repite
+ * palabras que YA están en la página (las facetas, las preguntas del chat):
+ * no agrega información. La velocidad reacciona al scroll (más rápido y en
+ * el sentido del scroll), y se pausa fuera de pantalla y con reduced motion.
+ */
+interface Props {
+  items: string[];
+  /** 'solid' = display rellena; 'outline' = contorno. */
+  variant?: 'solid' | 'outline';
+  tone?: 'dark' | 'light';
+  speed?: number; // px por frame a 60fps
+  class?: string;
+}
+
+const { items, variant = 'solid', tone = 'dark', speed = 0.6, class: cls = '' } = Astro.props;
+---
+
+<div
+  class:list={['hm', `hm--${variant}`, `hm--${tone}`, cls]}
+  aria-hidden="true"
+  data-hm
+  data-hm-speed={speed}
+>
+  <div class="hm-track" data-hm-track>
+    {
+      [0, 1].map(() => (
+        <div class="hm-group">
+          {items.map((t) => (
+            <span class="hm-item">
+              <span class="hm-text">{t}</span>
+              <span class="hm-sep">
+                <svg viewBox="0 0 24 24" width="0.5em" height="0.5em" fill="currentColor" aria-hidden="true">
+                  <path d="M12 0l2.6 9.4L24 12l-9.4 2.6L12 24l-2.6-9.4L0 12l9.4-2.6z" />
+                </svg>
+              </span>
+            </span>
+          ))}
+        </div>
+      ))
+    }
+  </div>
+</div>
+
+<style>
+  .hm {
+    --hm-display: var(--font-display, 'Geist Variable', system-ui, sans-serif);
+    position: relative;
+    overflow: hidden;
+    user-select: none;
+    pointer-events: none;
+    padding: clamp(14px, 2vw, 26px) 0;
+    border-block: 1px solid var(--line, rgb(255 255 255 / 0.08));
+  }
+  .hm--light {
+    border-color: var(--line-light, rgb(11 14 23 / 0.1));
+  }
+  .hm-track {
+    display: flex;
+    width: max-content;
+    will-change: transform;
+  }
+  .hm-group {
+    display: flex;
+    flex: 0 0 auto;
+  }
+  .hm-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35em;
+    padding-right: 0.35em;
+    font-family: var(--hm-display);
+    font-weight: 600;
+    letter-spacing: -0.045em;
+    line-height: 0.9;
+    font-size: clamp(3rem, 1.6rem + 6vw, 8.5rem);
+    white-space: nowrap;
+  }
+  .hm--dark .hm-item {
+    color: var(--color-off, #f4f1ea);
+  }
+  .hm--light .hm-item {
+    color: var(--color-ink, #0b0e17);
+  }
+  .hm--outline .hm-text {
+    color: transparent;
+    -webkit-text-stroke: 1.2px rgb(244 241 234 / 0.35);
+  }
+  .hm--outline.hm--light .hm-text {
+    -webkit-text-stroke-color: rgb(11 14 23 / 0.3);
+  }
+  .hm-sep {
+    display: inline-flex;
+    color: var(--accent, #e8c874);
+  }
+  .hm--light .hm-sep {
+    color: var(--accent-ink, #7a5c10);
+  }
+</style>
+
+<script>
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const cintas = Array.from(document.querySelectorAll<HTMLElement>('[data-hm]'));
+  if (!reduce && cintas.length) {
+    const estado = cintas.map((el) => ({
+      el,
+      track: el.querySelector<HTMLElement>('[data-hm-track]')!,
+      speed: parseFloat(el.dataset.hmSpeed || '0.6'),
+      x: 0,
+    }));
+    let ultimoY = scrollY;
+    let vel = 0;
+    let dir = 1;
+    let t0 = performance.now();
+
+    const tick = (t: number) => {
+      const dt = Math.min(3, (t - t0) / 16.67);
+      t0 = t;
+      const dy = scrollY - ultimoY;
+      ultimoY = scrollY;
+      if (Math.abs(dy) > 0.5) dir = dy > 0 ? 1 : -1;
+      vel += (Math.min(40, Math.abs(dy)) - vel) * 0.12;
+      for (const s of estado) {
+        const r = s.el.getBoundingClientRect();
+        if (r.bottom < -50 || r.top > innerHeight + 50) continue;
+        const ancho = s.track.scrollWidth / 2;
+        if (!ancho) continue;
+        s.x -= (s.speed + vel * 0.35) * dir * dt;
+        if (s.x <= -ancho) s.x += ancho;
+        if (s.x > 0) s.x -= ancho;
+        s.track.style.transform = `translate3d(${s.x.toFixed(2)}px,0,0)`;
+      }
+      requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  }
+</script>

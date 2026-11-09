@@ -1,0 +1,452 @@
+[
+  {
+    "date": "09/08/2026",
+    "medium": "El País",
+    "title": "La tecnología ayuda; la diferencia la hace una decisión humana",
+    "url": "https://www.elpais.com.uy/negocios/noticias/la-tecnologia-ayuda-la-diferencia-la-hace-una-decision-humana-alejandro-curcio-analiza-el-cambio-de-paradigma-en-la-industria-automotriz",
+    "priority": "Alta",
+    "type": "Entrevista",
+    "topic": "Industria automotriz / IA / cliente",
+    "speaksAC": "Sí"
+  },
+  {
+    "date": "26/05/2026",
+    "medium": "Forbes Uruguay",
+    "title": "En el Día del Libro: libros de cabecera de líderes",
+    "url": "https://www.forbesuruguay.com/lifestyle/en-dia-libro-estos-son-algunos-libros-cabecera-lideres-marcan-agenda-n91391",
+    "priority": "Media",
+    "type": "Mención con declaración",
+    "topic": "Liderazgo / bienestar",
+    "speaksAC": "Sí"
+  },
+  {
+    "date": "30/04/2026",
+    "medium": "El País",
+    "title": "Ayax lanza en Uruguay el Toyota bZ4X, su primer SUV eléctrico japonés",
+    "url": "https://www.elpais.com.uy/negocios/empresas/ayax-lanza-en-uruguay-el-toyota-bz4x-su-primer-suv-electrico-japones-con-la-mayor-garantia-del-segmento",
+    "priority": "Alta",
+    "type": "Declaraciones",
+    "topic": "Toyota / electrificación / multipath",
+    "speaksAC": "Sí"
+  },
+  {
+    "date": "30/04/2026",
+    "medium": "El Observador",
+    "title": "Llegó a Uruguay el primer eléctrico japonés de Toyota: el bZ4X",
+    "url": "https://www.elobservador.com.uy/brand-studio/llego-uruguay-el-primer-electrico-japones-toyota-el-bz4x-debuta-respaldo-10-anos-y-autonomia-525-km-n6042147",
+    "priority": "Alta",
+    "type": "Declaraciones",
+    "topic": "Toyota / electrificación / respaldo",
+    "speaksAC": "Sí"
+  },
+  {
+    "date": "24/04/2026",
+    "medium": "Forbes Uruguay",
+    "title": "Llegó a Uruguay el primer auto eléctrico japonés: Toyota presentó el bZ4X",
+    "url": "https://www.forbesuruguay.com/brandvoice/llego-uruguay-primer-auto-electrico-japones-toyota-presento-bz4x-n89781",
+    "priority": "Alta",
+    "type": "Declaraciones",
+    "topic": "Toyota / electrificación",
+    "speaksAC": "Sí"
+  },
+  {
+    "date": "24/04/2026",
+    "medium": "Autoblog Uruguay",
+    "title": "Lanzamiento Toyota bZ4X: los apuntes del evento en Uruguay",
+    "url": "https://www.autoblog.com.uy/2026/04/lanzamiento-toyota-bz4x-los-apuntes-del.html",
+    "priority": "Alta",
+    "type": "Declaraciones",
+    "topic": "Toyota / producto / garantía",
+    "speaksAC": "Sí"
+  },
+  {
+    "date": "18/01/2026",
+    "medium": "Forbes Uruguay",
+    "title": "Más allá del drift: Fernando Monti Montero",
+    "url": "https://www.forbesuruguay.com/liderazgo/mas-alla-drift-como-fernando-monti-montero-une-su-pasion-ayudar-su-amor-autos-n84947",
+    "priority": "Media",
+    "type": "Mención",
+    "topic": "TGR / solidaridad / drift",
+    "speaksAC": "No"
+  },
+  {
+    "date": "29/10/2025",
+    "medium": "Caras Uruguay",
+    "title": "Ayax celebró 80 años con una gala histórica en el Sodre",
+    "url": "https://www.caras.uy/noticias/actualidad/ayax-celebro-80-anos-con-una-gala-historica-en-el-sodre.phtml",
+    "priority": "Media",
+    "type": "Cobertura de evento",
+    "topic": "Ayax / legado / aniversario",
+    "speaksAC": "Sí"
+  },
+  {
+    "date": "15/10/2025",
+    "medium": "Búsqueda / Galería",
+    "title": "Ayax celebró sus 80 años fiel a su estilo innovador",
+    "url": "https://www.busqueda.com.uy/sociales/ayax-celebro-sus-80-anos-fiel-su-estilo-innovador-n5405479",
+    "priority": "Media",
+    "type": "Cobertura de evento",
+    "topic": "Ayax / legado / innovación",
+    "speaksAC": "Sí"
+  },
+  {
+    "date": "13/10/2025",
+    "medium": "Forbes Uruguay",
+    "title": "Innovación, resiliencia y legado: los 80 años de Ayax",
+    "url": "https://www.forbesuruguay.com/brandvoice/innovacion-resiliencia-legado-80-anos-ayax-n79743",
+    "priority": "Alta",
+    "type": "Declaraciones",
+    "topic": "Ayax / legado / kaizen",
+    "speaksAC": "Sí"
+  },
+  {
+    "date": "08/10/2025",
+    "medium": "El País",
+    "title": "Una gala histórica para celebrar los 80 años de Ayax con la presencia del presidente Yamandú Orsi",
+    "url": "https://www.elpais.com.uy/negocios/empresas/una-gala-historica-para-celebrar-los-80-anos-de-ayax-con-la-presencia-del-presidente-yamandu-orsi",
+    "priority": "Media",
+    "type": "Cobertura de evento",
+    "topic": "Ayax / aniversario",
+    "speaksAC": "Sí"
+  },
+  {
+    "date": "08/10/2025",
+    "medium": "El Observador",
+    "title": "Los 80 años de Ayax: cómo fue la celebración",
+    "url": "https://www.elobservador.com.uy/los-80-anos-ayax-como-fue-la-celebracion-destacadas-autoridades-artistas-y-homenajes-especiales-n6019884",
+    "priority": "Media",
+    "type": "Cobertura de evento",
+    "topic": "Ayax / aniversario",
+    "speaksAC": "Sí"
+  },
+  {
+    "date": "08/10/2025",
+    "medium": "InfoNegocios",
+    "title": "AYAX celebró 80 años con una gala histórica en el Sodre",
+    "url": "https://infonegocios.biz/plus/ayax-celebro-80-anos-con-una-gala-historica-en-el-sodre",
+    "priority": "Media",
+    "type": "Cobertura de evento",
+    "topic": "Ayax / aniversario",
+    "speaksAC": "Sí"
+  },
+  {
+    "date": "17/09/2025",
+    "medium": "El País",
+    "title": "Un puente entre el pasado que nos honra y un futuro que nos desafía: 80 años de Ayax",
+    "url": "https://www.elpais.com.uy/negocios/empresas/un-puente-entre-el-pasado-que-nos-honra-y-un-futuro-que-nos-desafia-80-anos-de-ayax",
+    "priority": "Alta",
+    "type": "Entrevista",
+    "topic": "Ayax / legado / innovación / futuro",
+    "speaksAC": "Sí"
+  },
+  {
+    "date": "2025",
+    "medium": "El Observador",
+    "title": "Ayax: 80 años de historia viva, valores firmes y mirada al futuro",
+    "url": "https://www.elobservador.com.uy/ediciones-especiales/ayax-80-anos-historia-viva-valores-firmes-y-mirada-al-futuro-n6012393",
+    "priority": "Alta",
+    "type": "Entrevista",
+    "topic": "Ayax / legado / filosofía japonesa / IA",
+    "speaksAC": "Sí"
+  },
+  {
+    "date": "2025",
+    "medium": "El Observador",
+    "title": "Toyota y Suzuki: crecimiento sostenido, innovación y servicio",
+    "url": "https://www.elobservador.com.uy/ediciones-especiales/toyota-y-suzuki-crecimiento-sostenido-innovacion-y-servicio-como-pilares-comerciales-n6012254",
+    "priority": "Media",
+    "type": "Mención / visión corporativa",
+    "topic": "Toyota / Suzuki / negocio",
+    "speaksAC": "No"
+  },
+  {
+    "date": "2025",
+    "medium": "El Observador",
+    "title": "Un camino posible hacia la sostenibilidad: Ayax y la apuesta por los híbridos",
+    "url": "https://www.elobservador.com.uy/ediciones-especiales/un-camino-posible-la-sostenibilidad-ayax-y-la-apuesta-los-hibridos-n6012253",
+    "priority": "Media",
+    "type": "Mención / visión corporativa",
+    "topic": "Sostenibilidad / híbridos",
+    "speaksAC": "No"
+  },
+  {
+    "date": "23/01/2025",
+    "medium": "Forbes Uruguay",
+    "title": "Alejandro Curcio: En el fondo lo que me encanta es la aventura, el descubrimiento y la curiosidad por generar valor",
+    "url": "https://www.forbesuruguay.com/brandvoice/alejandro-curcio-en-fondo-lo-me-encanta-aventura-descubrimiento-curiosidad-generar-valor-n66452",
+    "priority": "Alta",
+    "type": "Entrevista",
+    "topic": "Emprendimiento / IA / innovación / liderazgo",
+    "speaksAC": "Sí"
+  },
+  {
+    "date": "10/12/2024",
+    "medium": "Forbes Uruguay",
+    "title": "El Nido: el proyecto inmobiliario uruguayo",
+    "url": "https://www.forbesuruguay.com/brandvoice/el-nido-como-proyecto-inmobiliario-uruguayo-promete-ser-mas-importante-latinoamerica-n64105",
+    "priority": "Media",
+    "type": "Declaraciones",
+    "topic": "Emprendimiento / real estate",
+    "speaksAC": "Sí"
+  },
+  {
+    "date": "20/11/2024",
+    "medium": "InfoNegocios",
+    "title": "Alejandro Curcio lideró la charla de los MeetUps de la FIUM",
+    "url": "https://infonegocios.biz/y-ademas/alejandro-curcio-lidero-la-charla-de-los-meetups-de-la-fium",
+    "priority": "Alta",
+    "type": "Cobertura / declaraciones",
+    "topic": "Movilidad / tecnología / futuro",
+    "speaksAC": "Sí"
+  },
+  {
+    "date": "19/11/2024",
+    "medium": "El País",
+    "title": "Alejandro Curcio en la Facultad de Ingeniería de la Universidad de Montevideo",
+    "url": "https://www.elpais.com.uy/negocios/empresas/alejandro-curcio-en-la-facultad-de-ingenieria-de-la-universidad-de-montevideo",
+    "priority": "Media",
+    "type": "Cobertura / declaraciones",
+    "topic": "Movilidad / sostenibilidad",
+    "speaksAC": "Sí"
+  },
+  {
+    "date": "18/11/2024",
+    "medium": "El Observador",
+    "title": "Alejandro Curcio participó como orador en la FIUM",
+    "url": "https://www.elobservador.com.uy/cafe-y-negocios/alejandro-curcio-participo-como-orador-la-facultad-ingenieria-la-universidad-montevideo-n5970705",
+    "priority": "Media",
+    "type": "Cobertura / declaraciones",
+    "topic": "Movilidad / sostenibilidad",
+    "speaksAC": "Sí"
+  },
+  {
+    "date": "2024",
+    "medium": "Montevideo Portal",
+    "title": "Inspirando al futuro: meetup sobre movilidad en la FIUM",
+    "url": "https://www.montevideo.com.uy/Negocios-y-Tendencias/La-Facultad-de-Ingenieria-de-la-Universidad-de-Montevideo-realizo-meetup-sobre-movilidad-uc906974?plantilla=1385",
+    "priority": "Media",
+    "type": "Cobertura / declaraciones",
+    "topic": "Movilidad / hidrógeno",
+    "speaksAC": "Sí"
+  },
+  {
+    "date": "09/09/2024",
+    "medium": "El Observador",
+    "title": "La felicidad es un camino, no un destino final; la felicidad también es sufrimiento",
+    "url": "https://www.elobservador.com.uy/nacional/alejandro-curcio-la-felicidad-es-un-camino-no-un-destino-final-la-felicidad-tambien-es-sufrimiento-n5957372",
+    "priority": "Alta",
+    "type": "Entrevista",
+    "topic": "Liderazgo / propósito",
+    "speaksAC": "Sí"
+  },
+  {
+    "date": "07/06/2024",
+    "medium": "El País",
+    "title": "El empresario uruguayo que augura buen año para el sector automotriz y propone gravar la IA",
+    "url": "https://www.elpais.com.uy/el-empresario/el-empresario-uruguayo-que-augura-buen-ano-para-el-sector-automotriz-y-propone-gravar-la-inteligencia-artificial",
+    "priority": "Alta",
+    "type": "Entrevista / perfil",
+    "topic": "Industria automotriz / IA / negocios",
+    "speaksAC": "Sí"
+  },
+  {
+    "date": "2024",
+    "medium": "Montevideo Portal",
+    "title": "MiAuto de Santander invitó a especialistas a analizar el mercado automotor",
+    "url": "https://www.montevideo.com.uy/Negocios-y-Tendencias/MiAuto-de-Santander-invito-a-especialistas-a-analizar-el-mercado-automotor-actual-uc882541?plantilla=1385",
+    "priority": "Media",
+    "type": "Participación en panel",
+    "topic": "Mercado automotor",
+    "speaksAC": "Sí"
+  },
+  {
+    "date": "19/05/2023",
+    "medium": "El País",
+    "title": "Toolbook, un nuevo libro del empresario Alejandro Curcio ante la cuarta revolución industrial",
+    "url": "https://www.elpais.com.uy/el-empresario/toolbook-un-nuevo-libro-del-empresario-alejandro-curcio-ante-la-cuarta-revolucion-industrial",
+    "priority": "Alta",
+    "type": "Perfil / libro",
+    "topic": "IA / libro",
+    "speaksAC": "Sí"
+  },
+  {
+    "date": "15/05/2023",
+    "medium": "El País",
+    "title": "Un nuevo emprendimiento literario de Alejandro Curcio",
+    "url": "https://www.elpais.com.uy/negocios/empresas/un-nuevo-emprendimiento-literario-de-alejandro-curcio",
+    "priority": "Media",
+    "type": "Cobertura / libro",
+    "topic": "IA / tecnología / libro",
+    "speaksAC": "Sí"
+  },
+  {
+    "date": "2023",
+    "medium": "InfoNegocios",
+    "title": "Herramientas para comprender el mundo que viene: Toolbook",
+    "url": "https://infonegocios.biz/default/herramientas-para-comprender-el-mundo-que-viene-toolbook-de-alejandro-curcio",
+    "priority": "Media",
+    "type": "Perfil / libro",
+    "topic": "IA / libro",
+    "speaksAC": "Sí"
+  },
+  {
+    "date": "2022",
+    "medium": "InfoNegocios",
+    "title": "Alejandro Curcio fue elegido como Empresario del Año 2022",
+    "url": "https://infonegocios.biz/la-gala/alejandro-curcio-fue-elegido-como-empresario-del-ano-2022-llevandose-el-galardon-de-oro-tambien-hay-ganadores-en-plata-y-bronce",
+    "priority": "Alta",
+    "type": "Reconocimiento",
+    "topic": "Liderazgo / reconocimiento",
+    "speaksAC": "No"
+  },
+  {
+    "date": "19/11/2021",
+    "medium": "El País",
+    "title": "Se vienen tiempos muy buenos para los uruguayos",
+    "url": "https://www.elpais.com.uy/negocios/noticias/alejandro-curcio-se-vienen-tiempos-muy-buenos-para-los-uruguayos",
+    "priority": "Alta",
+    "type": "Entrevista",
+    "topic": "Negocios / Uruguay / innovación",
+    "speaksAC": "Sí"
+  },
+  {
+    "date": "24/06/2021",
+    "medium": "Uruguay XXI",
+    "title": "The Electric Factory junto a Ayax Toyota ganan en Cannes Lions 2021",
+    "url": "https://www.uruguayxxi.gub.uy/es/noticias/articulo/La-uruguaya-The-Electric-Factory-junto-a-Ayax-Toyota-ganan-en-Cannes-Lions-2021/",
+    "priority": "Media",
+    "type": "Mención institucional",
+    "topic": "Innovación / HY Project",
+    "speaksAC": "No"
+  },
+  {
+    "date": "22/10/2020",
+    "medium": "El País",
+    "title": "La estrategia de Toyota y Suzuki para acelerar hacia la movilidad del futuro",
+    "url": "https://www.elpais.com.uy/negocios/la-estrategia-de-toyota-y-suzuki-para-acelerar-hacia-la-movilidad-del-futuro",
+    "priority": "Alta",
+    "type": "Entrevista",
+    "topic": "Movilidad / tecnología / híbridos",
+    "speaksAC": "Sí"
+  },
+  {
+    "date": "15/07/2020",
+    "medium": "El Observador",
+    "title": "Curcio Capital apuesta a la innovación e incorpora procesos para mejorar el medioambiente",
+    "url": "https://www.elobservador.com.uy/nota/curcio-capital-apuesta-a-la-innovacion-e-incorpora-procesos-para-mejorar-el-medioambiente-2020724211343",
+    "priority": "Media",
+    "type": "Mención",
+    "topic": "Innovación / sostenibilidad",
+    "speaksAC": "No"
+  },
+  {
+    "date": "13/05/2020",
+    "medium": "Uruguay XXI",
+    "title": "Tecnología uruguaya de vanguardia y sostenible es reconocida en el mundo",
+    "url": "https://www.uruguayxxi.gub.uy/es/noticias/articulo/tecnologia-uruguaya-de-vanguardia-y-sostenible-es-reconocida-en-el-mundo/",
+    "priority": "Media",
+    "type": "Mención institucional",
+    "topic": "Innovación / HY Project",
+    "speaksAC": "No"
+  },
+  {
+    "date": "20/04/2020",
+    "medium": "El País",
+    "title": "Curcio Capital donó 5000 máscaras hi-tech de protección sanitaria a la Policía",
+    "url": "https://www.elpais.com.uy/negocios/empresas/curcio-capital-dono-5000-mascaras-hi-tech-de-proteccion-sanitaria-a-la-policia",
+    "priority": "Media",
+    "type": "Mención / acción institucional",
+    "topic": "RSE / pandemia",
+    "speaksAC": "No"
+  },
+  {
+    "date": "24/03/2020",
+    "medium": "El País",
+    "title": "No hay que ser rehenes del pánico",
+    "url": "https://www.elpais.com.uy/informacion/alejandro-curcio-no-hay-que-ser-rehenes-del-panico",
+    "priority": "Alta",
+    "type": "Entrevista",
+    "topic": "Liderazgo / crisis",
+    "speaksAC": "Sí"
+  },
+  {
+    "date": "26/11/2019",
+    "medium": "InfoNegocios",
+    "title": "Uruguay sonando bajito es pionero en el mundo (Ayax lo hizo)",
+    "url": "https://infonegocios.biz/nota-principal/uruguay-sonando-bajito-es-pionero-en-el-mundo-ayax-lo-hizo",
+    "priority": "Alta",
+    "type": "Declaraciones / mención",
+    "topic": "Innovación / HY Project",
+    "speaksAC": "Sí"
+  },
+  {
+    "date": "26/09/2019",
+    "medium": "El País",
+    "title": "Ayax: más autos híbridos, carsharing y un sistema de sonido que regenera plantas",
+    "url": "https://www.elpais.com.uy/vida-actual/ayax-mas-autos-hibridos-carsharing-y-un-sistema-de-sonido-que-regenera-plantas",
+    "priority": "Alta",
+    "type": "Declaraciones",
+    "topic": "Innovación / híbridos / HY Project",
+    "speaksAC": "Sí"
+  },
+  {
+    "date": "23/11/2018",
+    "medium": "El Observador",
+    "title": "Una historia de medio siglo uniendo orientales",
+    "url": "https://www.elobservador.com.uy/nota/una-historia-de-medio-siglo-uniendo-orientales--20181123114825",
+    "priority": "Alta",
+    "type": "Declaraciones / evento",
+    "topic": "Toyota / 50 años / legado",
+    "speaksAC": "Sí"
+  },
+  {
+    "date": "20/11/2018",
+    "medium": "El País",
+    "title": "50 años de Toyota en Uruguay de la mano de AYAX",
+    "url": "https://www.elpais.com.uy/negocios/empresas/50-anos-de-toyota-en-uruguay-de-la-mano-de-ayax",
+    "priority": "Alta",
+    "type": "Declaraciones",
+    "topic": "Toyota / historia / Hilux",
+    "speaksAC": "Sí"
+  },
+  {
+    "date": "12/11/2018",
+    "medium": "El País",
+    "title": "Toyota cumple 50 años en Uruguay",
+    "url": "https://www.elpais.com.uy/negocios/empresas/toyota-cumple-50-anos-en-uruguay",
+    "priority": "Media",
+    "type": "Mención / evento",
+    "topic": "Toyota / aniversario",
+    "speaksAC": "No"
+  },
+  {
+    "date": "23/08/2018",
+    "medium": "Búsqueda / Galería",
+    "title": "Legado empresarial y familiar",
+    "url": "https://www.busqueda.com.uy/Archivo/Legado-empresarial-y-familiar-uc37407",
+    "priority": "Alta",
+    "type": "Perfil / libro",
+    "topic": "Capital de vida / valores",
+    "speaksAC": "Sí"
+  },
+  {
+    "date": "08/08/2018",
+    "medium": "Montevideo Portal",
+    "title": "Capital de vida. Legado de valores en la cultura empresarial y familiar",
+    "url": "https://www.montevideo.com.uy/Tiempo-libre/-Capital-de-vida-Legado-de-valores-en-la-cultura-empresarial-y-familiar-de-Alejandro-Curcio-uc691380",
+    "priority": "Media",
+    "type": "Perfil / libro",
+    "topic": "Capital de vida / legado",
+    "speaksAC": "No"
+  },
+  {
+    "date": "19/03/2005",
+    "medium": "El País",
+    "title": "La evolución de la especie (Hilux)",
+    "url": "https://www.elpais.com.uy/negocios/empresas/la-evolucion-de-la-especie",
+    "priority": "Alta",
+    "type": "Declaraciones",
+    "topic": "Hilux / confiabilidad / reventa",
+    "speaksAC": "Sí"
+  }
+]

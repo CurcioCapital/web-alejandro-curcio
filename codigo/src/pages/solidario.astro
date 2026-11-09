@@ -1,0 +1,644 @@
+---
+/**
+ * solidario.astro — Récord Guinness Ice Challenge 2024, migrado tal cual
+ * desde /aventura (hero con video, carrusel, sello Guinness, mismas
+ * clases y animaciones). La cita de cierre es la de la faceta Solidario
+ * de la home (Pilar «La Figura»).
+ */
+import Base from '../layouts/Base.astro';
+import QuoteOverlay from '../components/QuoteOverlay.astro';
+import BlurImage from '../components/BlurImage.astro';
+
+import MediaTextBlock from '../components/secciones/aventura/MediaTextBlock.astro';
+import Carousel from '../components/kit/Carousel.astro';
+
+import GuinnessSeal from '../components/secciones/aventura/GuinnessSeal.astro';
+import '../components/secciones/historia/pa-kit.css';
+
+const guinnessSlides = [
+  {
+    id: 'guinness-01',
+    caption: 'Con la campera Toyota Gazoo Racing, junto a autoridades',
+  },
+  {
+    id: 'guinness-02',
+    caption: 'La entrada al barril de hielo',
+  },
+  {
+    id: 'guinness-03',
+    caption: 'Adentro del barril, cronómetro en mano — el estoicismo físico',
+  },
+  {
+    id: 'guinness-04',
+    caption: 'La piscina, entre los demás — no auspiciando, participando',
+  },
+  {
+    id: 'guinness-05',
+    caption: 'La cuenta regresiva: 01:48',
+  },
+  {
+    id: 'guinness-06',
+    caption: 'La formación en estrella, vista aérea de todo el predio',
+  },
+  {
+    id: 'guinness-07',
+    caption: '00:00 — el clímax de la celebración',
+  },
+];
+---
+
+<Base
+	title="Solidario — Alejandro Curcio"
+	description="Récord Guinness Ice Challenge 2024: meterse al hielo con los demás. Esa es la diferencia entre auspiciar y participar."
+>
+<div class="pa pa--av pa--sol">
+	<!-- HERO con VIDEO a sangre (corte 16:9 del máster propio del Ice
+	     Challenge 2024). Display gigante + ficha en mono. -->
+	<section class="av-hero-wrap">
+		<figure class="av-plate" data-scrub>
+			<div class="av-plate-media" data-parallax="0.2">
+				<video
+					class="av-plate-video"
+					src="/media/video/aventura-plate-loop.mp4"
+					poster="/media/video/aventura-plate-poster.jpg"
+					muted
+					loop
+					autoplay
+					playsinline
+					preload="metadata"
+					aria-label="Alejandro Curcio dentro del barril de hielo en el récord Guinness Ice Challenge 2024"
+				></video>
+			</div>
+			<span class="av-plate-scrim" aria-hidden="true"></span>
+
+			<figcaption class="wrap av-plate-copy">
+				<p class="pa-kick"><span class="pa-idx">[ 01 ]</span>Solidario</p>
+				<h1 class="av-plate-title pa-display" data-split="lines">La disciplina también<br />se entrena en frío.</h1>
+				<p class="av-plate-ficha pa-mono">
+					Ice Challenge 2024 <span aria-hidden="true">·</span> Récord Guinness
+					<span aria-hidden="true">·</span> Centro Horizonte
+				</p>
+			</figcaption>
+			<span class="pa-mono pa-scrollcue av-cue" aria-hidden="true"><i></i>Scroll</span>
+		</figure>
+	</section>
+
+	<div class="section-gap"></div>
+
+
+	<div class="section-gap"></div>
+
+	<!-- RÉCORD GUINNESS -->
+	<section id="guinness" class="pa-cap pa-grid av-cap">
+		<div class="wrap">
+			<header class="pa-cap-head">
+				<p class="pa-kick"><span class="pa-idx">[ 02 ]</span>Récord Guinness · 13 abril 2024</p>
+				<h2 class="pa-display pa-cap-title" data-split="lines">Meterse al hielo con los demás.</h2>
+				<p class="pa-lead" data-reveal>El 13 de abril de 2024, Montevideo fue sede del Ice Challenge 2024: el récord Guinness al mayor número de personas tomando un baño de hielo de forma simultánea. Lo organizó Curcio Capital como empresa — y Alejandro no lo miró desde afuera.</p>
+			</header>
+		</div>
+
+		<div class="guinness-gal" data-cursor="drag" data-cursor-label="Arrastrá">
+			<div class="wrap">
+				<Carousel dots ariaLabel="Momentos del récord Guinness Ice Challenge 2024" gap={16}>
+					{
+						guinnessSlides.map((s, i) => (
+							<div class="guinness-slide" data-reveal="mask">
+								<BlurImage id={s.id} alt={s.caption} width={640} sizes="(max-width: 560px) 76vw, 360px" />
+								<div class="guinness-slide__scrim" />
+								<span class="guinness-slide__idx pa-mono" aria-hidden="true">{String(i + 1).padStart(2, '0')} / {String(guinnessSlides.length).padStart(2, '0')}</span>
+								<span class="guinness-slide__caption">{s.caption}</span>
+							</div>
+						))
+					}
+				</Carousel>
+			</div>
+		</div>
+
+		<div class="wrap">
+			<div class="guinness-pie">
+				<p class="aventura-para guinness-pie__texto" data-reveal>
+					Se metió al barril de hielo junto a todos los demás. Hay evidencia fotográfica oficial con
+					sello Guinness. <strong>Esa es la diferencia entre auspiciar y participar</strong>: entre
+					mirar desde el palco y estar adentro del agua helada, sintiendo lo mismo que sienten los
+					demás.
+				</p>
+
+				<!-- Cifras de la nota oficial de Guinness World Records y de El
+				     Observador («05 — Hechos verificados.md»). Se publica 929 (la
+				     cifra homologada), nunca el «más de 1.000» de la prensa. -->
+				<GuinnessSeal
+					participantes={929}
+					minutos={3}
+					grados={13}
+					piscinas={90}
+					recordAnterior={509}
+					recordAnteriorNota="Perth, Australia — enero 2024"
+					beneficiario="Centro Horizonte"
+					beneficiarioNota="Educación de niños con parálisis cerebral. El evento recaudó unos $975.000."
+				/>
+			</div>
+		</div>
+	</section>
+
+	<div class="section-gap"></div>
+
+	<!-- DRIFT ARENA SOLIDARIO · TELETÓN. Material: el reel propio del evento
+	     (manifest «drift-solidario», noviembre 2024). La copia se limita a lo
+	     verificado: nombre, fecha, Teletón y lo que se ve en el video. -->
+	<section id="drift-solidario" class="pa-cap pa-cap--bone pa-grid">
+		<div class="wrap">
+			<header class="pa-cap-head">
+				<p class="pa-kick"><span class="pa-idx">[ 03 ]</span>Drift Arena Solidario · noviembre 2024</p>
+				<h2 class="pa-display pa-cap-title" data-split="lines">Drift Arena Solidario.<br />Teletón.</h2>
+			</header>
+			<MediaTextBlock>
+				<Fragment slot="media">
+					<div class="drift-media pa-crop" data-reveal="mask">
+						<video
+							class="drift-video"
+							src="/media/video/drift-solidario-card.mp4"
+							poster="/media/video/drift-solidario-card-poster.jpg"
+							muted
+							loop
+							autoplay
+							playsinline
+							preload="metadata"
+							aria-label="Auto de Toyota Gazoo Racing derrapando ante el público en el Drift Arena Solidario, noviembre de 2024"
+						></video>
+					</div>
+					<span class="drift-caption pa-mono">Drift Arena Solidario — noviembre 2024</span>
+				</Fragment>
+
+				<p class="aventura-para aventura-para--big" data-reveal>
+					El 9 de noviembre de 2024, el Antel Arena se convirtió en pista: los autos de Toyota Gazoo
+					Racing derrapando frente a las tribunas llenas, con entrada libre, para contribuir a la
+					movilidad de los niños de la Fundación Teletón.
+				</p>
+
+				<dl class="drift-datos" data-reveal>
+					<div><dt class="pa-mono">Fecha</dt><dd>9 de noviembre de 2024</dd></div>
+					<div><dt class="pa-mono">Lugar</dt><dd>Antel Arena, Montevideo</dd></div>
+					<div><dt class="pa-mono">Entrada</dt><dd>Libre</dd></div>
+					<div><dt class="pa-mono">A beneficio de</dt><dd>Fundación Teletón — movilidad de los niños</dd></div>
+				</dl>
+			</MediaTextBlock>
+		</div>
+	</section>
+
+	<div class="section-gap"></div>
+
+	<!-- PELOTA AL MEDIO · Ministerio del Interior (contenido entregado el
+	     27/10/2026: texto, foto de la Copa Toyota y video del torneo). -->
+	<section id="pelota-al-medio" class="pa-cap pa-grid av-cap pm">
+		<div class="wrap">
+			<!-- Dos columnas alineadas arriba: texto (titular, bajada, cuerpo y
+			     ficha) a la izquierda y el video vertical a la derecha. -->
+			<div class="pm-grid">
+				<div class="pm-text">
+					<header class="pa-cap-head pm-head">
+						<p class="pa-kick"><span class="pa-idx">[ 04 ]</span>Pelota al Medio · Ministerio del Interior</p>
+						<h2 class="pa-display pa-cap-title" data-split="lines">Pelota al medio.</h2>
+						<p class="pa-lead" data-reveal>Apoyo y acompañamiento constante al programa «Pelota al Medio», del Ministerio del Interior: una iniciativa que promueve la inclusión social y la permanencia educativa de jóvenes a través del deporte.</p>
+					</header>
+
+					<p class="guinness-pie__texto pm-body" data-reveal>
+						Durante el año se impulsaron distintas acciones junto al programa, incluyendo la
+						organización de actividades y torneos —como la <strong>Copa Toyota</strong>—,
+						fortaleciendo el vínculo con la comunidad.
+					</p>
+
+					<dl class="drift-datos pm-datos" data-reveal>
+						<div><dt class="pa-mono">Programa</dt><dd>Pelota al Medio</dd></div>
+						<div><dt class="pa-mono">Impulsa</dt><dd>Ministerio del Interior</dd></div>
+						<div><dt class="pa-mono">Objetivo</dt><dd>Inclusión social y permanencia educativa a través del deporte</dd></div>
+						<div><dt class="pa-mono">Acciones</dt><dd>Actividades y torneos durante todo el año</dd></div>
+					</dl>
+				</div>
+
+				<div class="pm-media">
+					<div class="pm-video pa-crop" data-reveal="mask">
+						<video
+							src="/media/video/pelota-al-medio.mp4"
+							poster="/media/video/pelota-al-medio-poster.jpg"
+							muted
+							loop
+							playsinline
+							preload="none"
+							data-pm-video
+							aria-label="Torneo del programa Pelota al Medio: jóvenes jugando al fútbol y celebrando"
+						></video>
+						<button class="pm-sound pa-mono" type="button" data-pm-sound aria-pressed="false">
+							<span class="pm-sound__ico" aria-hidden="true"></span><span data-pm-sound-label>Activar sonido</span>
+						</button>
+					</div>
+					<span class="pm-caption pa-mono">Pelota al Medio — torneo del programa</span>
+				</div>
+			</div>
+
+			<figure class="pm-foto" data-reveal="mask">
+				<BlurImage id="pelota-al-medio" alt="El equipo campeón de la Copa Toyota posa con los trofeos junto al cartel de Toyota, en la cancha, con la tribuna detrás" width={2048} sizes="(max-width: 760px) 100vw, 1280px" style="object-position:50% 60%" />
+			</figure>
+			<span class="pm-caption pa-mono">Copa Toyota — entrega de premios</span>
+		</div>
+	</section>
+
+	<div class="section-gap"></div>
+
+	<!-- CIERRE: la cita sobre la foto, en formato chico (sin avatares ni botón). -->
+	<QuoteOverlay
+		id="quote"
+		compact
+		bgId="guinness-06"
+		bgAlt="Formación en estrella de los participantes del récord Guinness Ice Challenge 2024, vista aérea del predio"
+		quote="El éxito corporativo está vacío si no logramos democratizar las oportunidades y mejorar el ecosistema a nuestro alrededor."
+		attribution="Alejandro Curcio — Pilar «La Figura»"
+	/>
+</div>
+</Base>
+
+<style>
+	/* ---- hero ---- */
+	.av-plate {
+		--p: 0;
+		position: relative;
+		margin: 0;
+		min-height: var(--pa-hero-h);
+		display: flex;
+		align-items: flex-end;
+		overflow: hidden;
+		background: var(--pa-bg-2);
+		isolation: isolate;
+	}
+	.av-plate-media {
+		position: absolute;
+		inset: -8% 0;
+		z-index: -2;
+	}
+	.av-plate-video {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		object-position: 50% 42%;
+	}
+	.av-plate-scrim {
+		position: absolute;
+		inset: 0;
+		z-index: -1;
+		background:
+			linear-gradient(0deg, rgba(8, 7, 5, 0.95) 0%, rgba(8, 7, 5, 0.5) 38%, rgba(8, 7, 5, 0.05) 70%, rgba(8, 7, 5, 0.35) 100%),
+			linear-gradient(90deg, rgba(8, 7, 5, 0.6) 0%, transparent 58%);
+	}
+	.av-plate-copy {
+		width: 100%;
+		padding-bottom: clamp(48px, 7vh, 88px);
+		display: grid;
+		gap: clamp(18px, 2.4vw, 30px);
+	}
+	.av-plate-title {
+		font-size: clamp(42px, min(7.8vw, 14vh), 156px);
+		line-height: 0.98;
+		letter-spacing: -0.045em;
+		color: #fff;
+	}
+	.av-plate-ficha {
+		margin: 0;
+		color: rgba(255, 255, 255, 0.78);
+	}
+	.av-plate-ficha span {
+		color: var(--pa-accent);
+		margin: 0 10px;
+	}
+	.av-cue {
+		position: absolute;
+		right: var(--pa-pad-x);
+		bottom: clamp(48px, 7vh, 88px);
+		color: rgb(255 255 255 / 0.6);
+	}
+
+	/* ---- Drift Arena Solidario ---- */
+	.drift-media {
+		aspect-ratio: 9 / 16;
+		max-height: 78svh;
+		border-radius: var(--pa-r-lg);
+		overflow: hidden;
+		background: #000;
+	}
+	.drift-video {
+		display: block;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+	.drift-caption {
+		display: block;
+		margin-top: 18px;
+		color: rgba(11, 14, 23, 0.6);
+	}
+	.drift-datos {
+		margin: 36px 0 0;
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		border-top: 1px solid rgba(11, 14, 23, 0.14);
+	}
+	.drift-datos > div {
+		padding: 18px 16px 18px 0;
+		border-bottom: 1px solid rgba(11, 14, 23, 0.14);
+	}
+	.drift-datos dt {
+		font-size: 11px;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: #8a6a1f;
+		margin-bottom: 6px;
+	}
+	.drift-datos dd {
+		margin: 0;
+		font-size: 17px;
+		line-height: 1.35;
+		color: var(--pa-ink, #0b0e17);
+	}
+	@media (max-width: 560px) {
+		.drift-datos {
+			grid-template-columns: 1fr;
+		}
+	}
+	@media (max-width: 760px) {
+		.drift-media {
+			max-height: 70svh;
+			margin: 0 auto;
+		}
+	}
+
+	/* ---- Pelota al Medio (sección oscura) ---- */
+	.pm-grid {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) minmax(240px, 320px);
+		gap: clamp(40px, 6vw, 110px);
+		align-items: center;
+	}
+	.pm-head {
+		margin-bottom: clamp(28px, 3vw, 44px);
+	}
+	.pm-body {
+		max-width: 46ch;
+	}
+	.pm-datos {
+		max-width: 640px;
+	}
+	.pm-media {
+		/* compensa el pie de foto para que el VIDEO quede centrado con el texto */
+		margin-bottom: -38px;
+	}
+	@media (max-width: 860px) {
+		.pm-grid {
+			grid-template-columns: 1fr;
+		}
+		.pm-media {
+			width: min(100%, 400px);
+			margin-bottom: 0;
+		}
+	}
+	.pm-video {
+		position: relative;
+		aspect-ratio: 9 / 16;
+		max-height: 78svh;
+		border-radius: var(--pa-r-lg);
+		overflow: hidden;
+		background: #000;
+	}
+	.pm-video video {
+		display: block;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+	.pm-sound {
+		position: absolute;
+		left: 14px;
+		bottom: 14px;
+		z-index: 2;
+		display: inline-flex;
+		align-items: center;
+		gap: 8px;
+		padding: 8px 14px 8px 10px;
+		border: 0;
+		border-radius: 999px;
+		background: rgb(12 10 6 / 0.6);
+		backdrop-filter: blur(8px);
+		color: #fff;
+		font-size: 11px;
+		cursor: pointer;
+	}
+	.pm-sound::after {
+		content: '';
+		position: absolute;
+		inset: -7px -4px;
+	}
+	.pm-sound:hover {
+		background: var(--pa-accent);
+		color: var(--pa-ink, #0b0e17);
+	}
+	.pm-sound__ico {
+		width: 8px;
+		height: 8px;
+		border-radius: 50%;
+		background: currentColor;
+		opacity: 0.5;
+	}
+	.pm-sound[aria-pressed='true'] .pm-sound__ico {
+		opacity: 1;
+		background: var(--pa-accent);
+	}
+	.pm-caption {
+		display: block;
+		margin-top: 18px;
+		color: rgb(244 241 234 / 0.55);
+	}
+	.pm .drift-datos {
+		border-top-color: rgb(244 241 234 / 0.16);
+	}
+	.pm .drift-datos > div {
+		border-bottom-color: rgb(244 241 234 / 0.16);
+	}
+	.pm .drift-datos dt {
+		color: var(--pa-accent);
+	}
+	.pm .drift-datos dd {
+		color: rgb(244 241 234 / 0.9);
+	}
+	.pm-foto {
+		margin: clamp(40px, 5vw, 72px) 0 0;
+		aspect-ratio: 3 / 2;
+		border-radius: var(--pa-r-lg);
+		overflow: hidden;
+	}
+	.pm-foto :global(picture),
+	.pm-foto :global(img) {
+		display: block;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+
+	/* ---- capítulos ---- */
+	.av-cap {
+		background: var(--pa-bg);
+	}
+	.aventura-para {
+		max-width: 62ch;
+		font-size: 17px;
+		line-height: 1.7;
+		color: rgba(11, 14, 23, 0.72);
+		margin: 0;
+	}
+	.aventura-para--big {
+		font-size: clamp(19px, 1rem + 0.6vw, 24px);
+		line-height: 1.5;
+		color: var(--pa-ink);
+	}
+	.kite-body {
+		display: grid;
+		gap: 22px;
+		max-width: 900px;
+		margin-left: auto;
+	}
+	.aventura-para--closing {
+		max-width: none;
+		margin-top: 48px;
+		padding-top: 40px;
+		border-top: 1px solid var(--pa-line-light);
+		font-size: clamp(30px, 3vw, 54px);
+		line-height: 1.04;
+		color: var(--pa-ink);
+	}
+
+	/* ---- galería Guinness ---- */
+	.guinness-gal {
+		overflow: hidden;
+	}
+	.guinness-slide {
+		position: relative;
+		width: clamp(260px, 26vw, 380px);
+		aspect-ratio: 3 / 4;
+		border-radius: var(--pa-r-lg);
+		overflow: hidden;
+		background: #111;
+		flex: 0 0 auto;
+	}
+	.guinness-slide :global(img) {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		transition: transform 900ms var(--pa-ease);
+	}
+	.guinness-slide:hover :global(img) {
+		transform: scale(1.05);
+	}
+	.guinness-slide__scrim {
+		position: absolute;
+		inset: 0;
+		background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent 55%);
+	}
+	.guinness-slide__idx {
+		position: absolute;
+		top: 18px;
+		left: 20px;
+		color: rgb(255 255 255 / 0.85);
+	}
+	.guinness-slide__caption {
+		position: absolute;
+		left: 20px;
+		right: 20px;
+		bottom: 20px;
+		color: #fff;
+		font-size: 14px;
+		font-weight: 600;
+		line-height: 1.3;
+	}
+
+	.guinness-pie {
+		margin-top: clamp(56px, 7vw, 110px);
+		display: grid;
+		gap: clamp(48px, 6vw, 88px);
+	}
+	.guinness-pie__texto {
+		font-size: clamp(19px, 1rem + 0.6vw, 24px);
+		line-height: 1.5;
+		max-width: 40ch;
+		color: var(--ink-mid);
+	}
+	.guinness-pie__texto strong {
+		font-weight: 600;
+		color: var(--pa-accent);
+	}
+
+	/* ---- Fuji ---- */
+	.fuji-media {
+		--pa-crop-o: -10px;
+	}
+	.fuji-media :global(img),
+	.fuji-media :global(.media-card) {
+		border-radius: var(--pa-r-lg);
+	}
+	.fuji-caption {
+		display: block;
+		margin-top: 18px;
+		color: rgba(11, 14, 23, 0.6);
+		max-width: 320px;
+	}
+
+	@media (max-width: 760px) {
+		.av-cue {
+			display: none;
+		}
+	}
+	@media (max-width: 560px) {
+		.guinness-slide {
+			width: 76vw;
+		}
+	}
+	/* Áreas táctiles ≥44px en la galería (el carrusel es del kit: se agranda
+	   sólo el área de toque, no el dibujo). */
+	.pa :global(.kit-carousel__dot),
+	.pa :global(.kit-carousel__arrow) {
+		position: relative;
+	}
+	.pa :global(.kit-carousel__dot)::after {
+		content: '';
+		position: absolute;
+		inset: -18px -4px;
+	}
+	.pa :global(.kit-carousel__arrow)::after {
+		content: '';
+		position: absolute;
+		inset: -2px;
+		border-radius: 999px;
+	}
+</style>
+
+<script>
+	// Pelota al Medio: video en loop sólo en pantalla; sonido a pedido.
+	const pmv = document.querySelector<HTMLVideoElement>('[data-pm-video]');
+	const pmb = document.querySelector<HTMLButtonElement>('[data-pm-sound]');
+	if (pmv) {
+		const prm = matchMedia('(prefers-reduced-motion: reduce)');
+		let raf = 0;
+		const check = () => {
+			raf = 0;
+			const r = pmv.getBoundingClientRect();
+			const ver = r.bottom > 0 && r.top < innerHeight;
+			if (ver && pmv.paused && (!prm.matches || !pmv.muted)) pmv.play().catch(() => {});
+			else if (!ver && !pmv.paused) pmv.pause();
+		};
+		addEventListener('scroll', () => { if (!raf) raf = requestAnimationFrame(check); }, { passive: true });
+		check();
+		pmb?.addEventListener('click', () => {
+			pmv.muted = !pmv.muted;
+			if (!pmv.muted) { pmv.currentTime = pmv.currentTime; pmv.play().catch(() => {}); }
+			pmb.setAttribute('aria-pressed', String(!pmv.muted));
+			const l = pmb.querySelector('[data-pm-sound-label]');
+			if (l) l.textContent = pmv.muted ? 'Activar sonido' : 'Silenciar';
+		});
+	}
+</script>

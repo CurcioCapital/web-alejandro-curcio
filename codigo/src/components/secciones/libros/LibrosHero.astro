@@ -1,0 +1,242 @@
+---
+/**
+ * LibrosHero.astro — sólo para /libros. Hero tipográfico: no existe un
+ * asset propio de la sección, así que el titular ES la pieza.
+ *
+ * Rediseño 21/10/2026 (dirección landonorris): display condensado enorme,
+ * una palabra por línea, etiquetas mono, grilla técnica y los tres pasos
+ * como tabla de datos al pie. Mismo texto, mismo orden que antes:
+ * kicker → título → bajada → CTA → los tres pasos.
+ *
+ * Historia de la versión anterior (31/08/2026): el contenido va en FLUJO
+ * normal, no absoluto —así nada se corta—, el fondo sale de los tokens
+ * cálidos y no hay palabras fantasma de fondo.
+ */
+interface Props {
+  ctaHref?: string;
+  ctaLabel?: string;
+}
+
+const { ctaHref = '#arco', ctaLabel = 'Ver el arco' } = Astro.props;
+
+const pasos = [
+  { n: '2018', paso: 'Adentro', libro: 'Capital de Vida' },
+  { n: '2023', paso: 'Afuera', libro: 'Toolbook' },
+  { n: '2026', paso: 'Método', libro: 'CEO DE TU VIDA' },
+];
+---
+
+<section class="lh ed-grid">
+  <div class="lh-glow" aria-hidden="true"></div>
+  <div class="ed-wrap lh-inner">
+    <div class="lh-top ed-mono">
+      <span class="lh-kicker">{'— '}Tres libros, un solo arco</span>
+      <span class="lh-idx" aria-hidden="true">[ 00 ]</span>
+    </div>
+
+    <div class="lh-main">
+    <h1 class="ed-display lh-title" data-split="lines">Adentro, afuera, método.</h1>
+
+    <div class="lh-foot">
+      <div class="lh-copy">
+        <p class="lh-lead" data-reveal>
+          Primero mirás hacia adentro. Después entendés el mundo. Después te hacés cargo.
+        </p>
+        <a class="ed-btn" href={ctaHref} data-magnetic data-roll>
+          <span>{ctaLabel}</span>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+            <line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline>
+          </svg>
+        </a>
+      </div>
+
+      <ol class="lh-pasos">
+        {
+          pasos.map((p, i) => (
+            <li data-reveal style={`--i:${i}`}>
+              <span class="lh-n ed-mono">{p.n}</span>
+              <span class="lh-paso">{p.paso}</span>
+              <span class="lh-libro ed-mono">{p.libro}</span>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+    </div>
+
+    <span class="lh-scroll ed-mono" aria-hidden="true">Scroll <i></i></span>
+  </div>
+</section>
+
+<style>
+  .lh {
+    position: relative;
+    isolation: isolate;
+    overflow: clip;
+    background: var(--ed-bg);
+    color: rgb(255 255 255 / 0.94);
+    min-height: min(100svh, 1000px);
+    display: flex;
+  }
+  .lh-glow {
+    position: absolute;
+    inset: -20% -10% auto auto;
+    width: 70vw;
+    height: 70vw;
+    z-index: -1;
+    background: radial-gradient(closest-side, rgb(232 200 116 / 0.14), transparent 70%);
+    pointer-events: none;
+  }
+  .lh-inner {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: clamp(28px, 4vw, 56px);
+    padding-top: clamp(120px, 16vh, 180px);
+    padding-bottom: clamp(40px, 6vh, 72px);
+  }
+  .lh-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--ed-line-strong);
+    padding-bottom: 14px;
+  }
+  .lh-kicker {
+    color: var(--ed-accent);
+    font: inherit;
+    letter-spacing: inherit;
+    margin: 0;
+  }
+  .lh-idx {
+    color: rgb(255 255 255 / 0.4);
+  }
+  .lh-main {
+    display: grid;
+    grid-template-columns: auto minmax(300px, 1fr);
+    gap: clamp(28px, 4vw, 72px);
+    align-items: end;
+  }
+  .lh-title {
+    font-size: clamp(3.5rem, min(11.5vw, 19svh), 13rem);
+    line-height: 0.94;
+    letter-spacing: -0.05em;
+    font-weight: 540;
+    max-width: 9ch;
+  }
+  .lh-foot {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(28px, 4vw, 48px);
+    padding-bottom: 0.4em;
+  }
+  .lh-lead {
+    font-size: clamp(1.125rem, 1rem + 0.55vw, 1.5rem);
+    line-height: 1.45;
+    color: rgb(255 255 255 / 0.72);
+    margin: 0 0 28px;
+    max-width: 30ch;
+  }
+  .lh-pasos {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid var(--ed-line-strong);
+  }
+  .lh-pasos li {
+    position: relative;
+    display: grid;
+    grid-template-columns: 64px minmax(0, 1fr) auto;
+    align-items: baseline;
+    gap: 6px 18px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--ed-line-strong);
+    transition-delay: calc(var(--i, 0) * 90ms);
+  }
+  .lh-pasos li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -1px;
+    height: 1px;
+    background: var(--ed-accent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.8s var(--ed-expo);
+  }
+  .lh-pasos li:hover::before {
+    transform: scaleX(1);
+  }
+  .lh-n {
+    color: var(--ed-accent);
+  }
+  .lh-paso {
+    font-family: var(--ed-display);
+    font-weight: 560;
+    font-size: clamp(1.375rem, 1.1rem + 0.9vw, 2rem);
+    line-height: 1;
+    letter-spacing: -0.03em;
+  }
+  .lh-libro {
+    color: rgb(255 255 255 / 0.55);
+    text-align: right;
+  }
+  .lh-scroll {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    color: rgb(255 255 255 / 0.45);
+  }
+  .lh-scroll i {
+    display: block;
+    width: 1px;
+    height: 28px;
+    background: linear-gradient(var(--ed-accent), transparent);
+    animation: lh-drip 2.2s var(--ed-quart) infinite;
+    transform-origin: top;
+  }
+  @keyframes lh-drip {
+    0% { transform: scaleY(0); }
+    50% { transform: scaleY(1); }
+    100% { transform: scaleY(1); opacity: 0; }
+  }
+  @media (min-width: 1101px) and (max-width: 1500px) {
+    .lh-pasos li {
+      grid-template-columns: 52px minmax(0, 1fr);
+    }
+    .lh-libro {
+      grid-column: 2;
+      text-align: left;
+    }
+  }
+  @media (max-width: 1100px) {
+    .lh-main {
+      grid-template-columns: 1fr;
+    }
+    .lh-title {
+      font-size: clamp(3.25rem, 15vw, 13rem);
+    }
+  }
+  @media (max-width: 860px) {
+    .lh-pasos li {
+      grid-template-columns: 56px minmax(0, 1fr);
+    }
+    .lh-libro {
+      grid-column: 2;
+      text-align: left;
+    }
+    .lh-scroll {
+      display: none;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .lh-scroll i {
+      animation: none;
+    }
+    .lh-pasos li::before {
+      transition: none;
+    }
+  }
+</style>

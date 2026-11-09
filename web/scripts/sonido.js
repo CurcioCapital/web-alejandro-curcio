@@ -176,8 +176,9 @@
 	document.addEventListener('pause', () => { schedule(); setTimeout(schedule, 1000); }, true);
 	document.addEventListener('ended', schedule, true);
 
-	const unlock = () => {
-		if (unlocked) return;
+	const unlock = (e) => {
+		// El botón flotante maneja su propio clic (si no, lo apagaría al instante).
+		if (unlocked || (btn && e && btn.contains(e.target))) return;
 		unlocked = true;
 		schedule();
 	};
@@ -241,7 +242,7 @@ color:var(--ed-bone,#f4f1ea);background:rgb(12 10 6 / .62);border:1px solid rgb(
 		const state = !enabled ? 'off' : playing ? 'on' : 'ready';
 		btn.dataset.state = state;
 		btn.setAttribute('aria-pressed', String(enabled));
-		btn.setAttribute('aria-label', enabled ? 'Sonido activado. Silenciar videos' : 'Sonido desactivado. Activar sonido de los videos');
+		btn.setAttribute('aria-label', !enabled ? 'Sonido desactivado. Activar sonido de los videos' : !unlocked ? 'Activar sonido de los videos' : 'Sonido activado. Silenciar videos');
 		btn.querySelector('.snd-label').textContent =
 			!enabled ? 'Sin sonido' : !unlocked ? 'Activar sonido' : playing ? 'Sonando' : 'Sonido';
 	}

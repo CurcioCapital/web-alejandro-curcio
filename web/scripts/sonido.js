@@ -40,6 +40,7 @@
 	let focus = null; // video que suena ahora
 	const expected = new WeakMap(); // estado de muted que fijó el director
 	const fades = new WeakMap();
+	const gens = new WeakMap(); // cada fundido nuevo invalida al anterior
 
 	const videos = () => [...document.querySelectorAll('video')];
 	const hasAudioMark = () => document.querySelector('video[data-audio]');
@@ -60,6 +61,8 @@
 
 	function fadeTo(v, target, done) {
 		cancelAnimationFrame(fades.get(v));
+		const g = (gens.get(v) || 0) + 1;
+		gens.set(v, g);
 		if (target > 0) setMuted(v, false);
 		const from = v.muted ? 0 : v.volume;
 		const t0 = performance.now();
@@ -68,11 +71,20 @@
 			try { v.volume = from + (target - from) * k; } catch {}
 			if (k < 1) fades.set(v, requestAnimationFrame(step));
 			else {
+				gens.set(v, g + 0.5); // ya terminó: el respaldo no repite
 				if (target === 0) { setMuted(v, true); try { v.volume = 1; } catch {} }
 				done && done();
 			}
 		};
 		fades.set(v, requestAnimationFrame(step));
+		// Respaldo: si la pestaña está en segundo plano, rAF no corre.
+		setTimeout(() => {
+			if (gens.get(v) !== g) return; // hubo otro fundido después
+			cancelAnimationFrame(fades.get(v));
+			if (target === 0) {
+				if (!v.muted) { setMuted(v, true); try { v.volume = 1; } catch {} done && done(); }
+			} else { try { v.volume = target; } catch {} }
+		}, FADE_MS + 80);
 	}
 
 	function silence(v) {

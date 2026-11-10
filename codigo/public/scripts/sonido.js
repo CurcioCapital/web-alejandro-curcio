@@ -378,6 +378,30 @@ color:var(--ed-bone,#f4f1ea);background:rgb(12 10 6 / .62);border:1px solid rgb(
 	addEventListener('scroll', scheduleDodge, { passive: true });
 	addEventListener('resize', scheduleDodge);
 
+	// API mínima para scripts de página (10/11/2026): un botón propio que
+	// cambia la fuente del video avisa con claim() que el usuario lo puso a
+	// sonar, y con release() que vuelve al modo automático.
+	window.acSonido = {
+		enabled: () => enabled,
+		claim(v) {
+			expected.set(v, false);
+			toPause.delete(v);
+			delete v.dataset.userMuted;
+			if (!enabled) { enabled = true; save('on'); }
+			unlocked = true;
+			if (focus && focus !== v) silence(focus);
+			manual = v; manualAt = performance.now(); focus = v;
+			paint();
+		},
+		release(v) {
+			expected.set(v, true);
+			if (manual === v) manual = null;
+			if (focus === v) focus = null;
+			delete v.dataset.userMuted;
+			setTimeout(schedule, 60);
+		},
+	};
+
 	const start = () => { initAmbients(); mountButton(); schedule(); dodge(); setTimeout(dodge, 1500); addEventListener("motion:intro", () => setTimeout(dodge, 50)); };
 	if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start);
 	else start();

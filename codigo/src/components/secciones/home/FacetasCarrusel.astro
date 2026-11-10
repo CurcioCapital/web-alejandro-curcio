@@ -30,6 +30,8 @@ interface Faceta {
   href?: string;
   exploreHref?: string;
   videoSrc?: string;
+  /** El video tiene audio y suena mientras está activo (10/11/2026). */
+  sound?: boolean;
   poster?: string;
   photoSrc?: string;
   focus?: string;
@@ -110,6 +112,7 @@ const lineasTitulo = titulo.split(/(?<=\.)\s+/);
                   preload="none"
                   style={f.focus ? `object-position:${f.focus}` : undefined}
                   data-fc-video
+                  data-thumb-sound={f.sound ? '' : undefined}
                 />
               </>
             ) : (
@@ -476,11 +479,17 @@ const lineasTitulo = titulo.split(/(?<=\.)\s+/);
       const v = el.querySelector<HTMLVideoElement>('[data-fc-video]');
       if (!v || reduce) return;
       if (si) {
+        // Con sonido solo si el sitio lo tiene activo y ya hubo interacción.
+        if (v.hasAttribute('data-thumb-sound') && (window as any).acSonido?.enabled() && (navigator as any).userActivation?.hasBeenActive) v.muted = false;
         v.play()
           .then(() => v.classList.add('is-playing'))
-          .catch(() => {});
+          .catch(() => {
+            v.muted = true;
+            v.play().then(() => v.classList.add('is-playing')).catch(() => {});
+          });
       } else {
         v.pause();
+        v.muted = true;
         v.classList.remove('is-playing');
       }
     };

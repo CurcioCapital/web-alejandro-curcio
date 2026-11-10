@@ -65,7 +65,7 @@ const libros = [
           <span class="lb-rule" aria-hidden="true"></span>
           <span class="lb-num" aria-hidden="true">[ 03 ]</span>
         </div>
-        <h2 class="lb-h2" data-split="lines">Una serie, no tres títulos sueltos.</h2>
+        <h2 class="lb-h2" data-split="lines">Una serie,<br /> no tres títulos sueltos.</h2>
       </div>
 
       <div class="wrap lb-stage" data-lb-stage>
@@ -108,14 +108,11 @@ const libros = [
           }
 
           <article class="lb-ficha lb-ficha--proximo" data-lb-ficha="2">
-            <span class="lb-anio">2026</span>
             <span class="lb-tag">Noviembre 2026</span>
             <h3 class="lb-titulo"><a href="/ceo-de-tu-vida">CEO DE TU VIDA</a></h3>
             <p class="lb-sub">
               51 reglas para decidir mejor, liderar con claridad y construir una vida con intención.
             </p>
-            {/* Sin día, ISBN, precio ni páginas: la tapa no los confirma. */}
-            <p class="lb-meta">Grijalbo · Lanzamiento 17 de noviembre</p>
             <a class="pill pill--accent" href="/ceo-de-tu-vida" data-magnetic data-roll>
               Enterate del lanzamiento
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
@@ -247,7 +244,7 @@ const libros = [
     letter-spacing: -0.045em;
     line-height: 0.95;
     margin: 18px 0 0;
-    max-width: 16ch;
+    max-width: none;
     color: var(--color-off, #f4f1ea);
   }
 
@@ -303,6 +300,13 @@ const libros = [
   .lb-fichas {
     position: relative;
     min-height: 19rem;
+  }
+  /* 10/11/2026: el texto sube y arranca a la altura del borde superior del
+     escenario (antes iba centrado con las tapas). Solo en escritorio. */
+  @media (min-width: 901px) {
+    .lb-fichas {
+      align-self: start;
+    }
   }
   .lb-ficha {
     position: absolute;

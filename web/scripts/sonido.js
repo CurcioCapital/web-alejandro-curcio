@@ -378,7 +378,7 @@ color:var(--ed-bone,#f4f1ea);background:rgb(12 10 6 / .62);border:1px solid rgb(
 	addEventListener('scroll', scheduleDodge, { passive: true });
 	addEventListener('resize', scheduleDodge);
 
-	const start = () => { initAmbients(); mountButton(); schedule(); scheduleDodge(); setTimeout(scheduleDodge, 1500); };
+	const start = () => { initAmbients(); mountButton(); schedule(); dodge(); setTimeout(dodge, 1500); addEventListener("motion:intro", () => setTimeout(dodge, 50)); };
 	if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start);
 	else start();
 	// Transiciones de página de Astro (si están activas).

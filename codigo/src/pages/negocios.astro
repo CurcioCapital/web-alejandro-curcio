@@ -82,9 +82,9 @@ const ayaxBeats = [
 			<div class="plate-media" data-parallax="0.18">
 				<video
 					class="plate-video"
-					src="/media/video/sucesion-plate-loop.mp4"
+					src="/media/video/sucesion-plate-loop-audio.mp4"
 					data-full="/media/video/sucesion.mp4"
-					data-audio="manual"
+					data-audio="auto"
 					poster="/media/video/sucesion-poster.jpg"
 					muted
 					loop
@@ -432,7 +432,7 @@ const ayaxBeats = [
 						<span class="row-tag pa-mono">Cannes Lions 2021</span>
 						<span class="row-thumb" aria-hidden="true" data-thumb-video>
 							<img src="/media/video/hyproject-moma-poster.jpg" alt="" loading="lazy" />
-							<video data-src="/media/video/hyproject-moma-page.mp4" muted loop playsinline preload="none"></video>
+							<video data-src="/media/video/hyproject-moma-page.mp4" data-thumb-sound muted loop playsinline preload="none"></video>
 							<span class="row-thumb-play"><svg viewBox="0 0 24 24" width="12" height="12"><path d="M7 5v14l12-7z" fill="currentColor"></path></svg></span>
 						</span>
 						<span class="row-sign" aria-hidden="true"><i></i><i></i></span>
@@ -1466,8 +1466,13 @@ const ayaxBeats = [
 		const loopSrc = video.getAttribute('src')!;
 		const fullSrc = video.dataset.full || loopSrc;
 
+		// El loop ambiente también tiene audio (10/11/2026): suena en modo
+		// automático y el director lo maneja; el clip completo entra como manual.
+		const sonido = (window as any).acSonido;
 		const aAmbiente = () => {
 			card.classList.remove('is-loud');
+			sonido?.release(video);
+			video.dataset.audio = 'auto';
 			video.controls = false;
 			video.muted = true;
 			video.loop = true;
@@ -1481,15 +1486,16 @@ const ayaxBeats = [
 		};
 
 		btn.addEventListener('click', () => {
-			const vaConSonido = video.muted;
-			if (!vaConSonido) {
+			if (card.classList.contains('is-loud')) {
 				aAmbiente();
 				return;
 			}
 			card.classList.add('is-loud');
+			video.dataset.audio = 'manual';
 			video.setAttribute('src', fullSrc);
 			video.load();
 			video.muted = false;
+			sonido?.claim(video);
 			video.controls = true;
 			video.loop = false;
 			label.textContent = 'Volver';
@@ -1594,10 +1600,17 @@ const ayaxBeats = [
 		const on = () => {
 			if (prmThumb.matches) return;
 			if (!v.getAttribute('src') && v.dataset.src) v.setAttribute('src', v.dataset.src);
-			v.play().then(() => thumb.classList.add('is-playing')).catch(() => {});
+			// Miniatura con sonido (HY Project): solo si el sonido está activo y
+			// el usuario ya interactuó con la página (regla de los navegadores).
+			if (v.hasAttribute('data-thumb-sound') && (window as any).acSonido?.enabled() && (navigator as any).userActivation?.hasBeenActive) v.muted = false;
+			v.play().then(() => thumb.classList.add('is-playing')).catch(() => {
+				v.muted = true;
+				v.play().then(() => thumb.classList.add('is-playing')).catch(() => {});
+			});
 		};
 		const off = () => {
 			v.pause();
+			v.muted = true;
 			thumb.classList.remove('is-playing');
 		};
 		head.addEventListener('pointerenter', on);

@@ -183,6 +183,66 @@ const guinnessSlides = [
 					<div><dt class="pa-mono">A beneficio de</dt><dd>Fundación Teletón — movilidad de los niños</dd></div>
 				</dl>
 			</MediaTextBlock>
+
+			<!-- Récords de recaudación (10/11/2026): fotos y montos de los cheques
+			     entregados a Teletón en 2022, 2023 y 2024 (material de Emi). -->
+			<div class="teleton-records">
+			<div class="tr-head">
+			<p class="pa-mono tr-kick">2022 · 2023 · 2024</p>
+			<h3 class="pa-display tr-title" data-split="lines">Tres años consecutivos,<br> récord de recaudación.</h3>
+			<p class="aventura-para tr-lead" data-reveal>Tres ediciones seguidas del drift solidario, y en cada una se rompió el récord de recaudación para la Fundación Teletón. Montos en pesos uruguayos, tal como figuran en los cheques entregados.</p>
+			</div>
+			<div class="tr-grid">
+			<figure class="tr-fig" data-reveal>
+			<div class="tr-img">
+			<picture>
+			<source type="image/webp" srcset="/media/img/teleton/teleton-2022-800.webp 800w, /media/img/teleton/teleton-2022-1400.webp 1400w" sizes="(min-width: 1100px) 25vw, (min-width: 600px) 50vw, 100vw">
+			<img src="/media/img/teleton/teleton-2022-800.jpg" srcset="/media/img/teleton/teleton-2022-800.jpg 800w, /media/img/teleton/teleton-2022-1400.jpg 1400w" sizes="(min-width: 1100px) 25vw, (min-width: 600px) 50vw, 100vw" width="1400" height="933" loading="lazy" decoding="async" alt="Pilotos y equipo de Toyota Gazoo Racing celebran con los cheques gigantes de la donación a la Fundación Teletón, Drift Park Solidario, 5 de noviembre de 2022">
+			</picture>
+			</div>
+			<figcaption>
+			<span class="pa-mono tr-year">2022 · Drift Park Solidario</span>
+			<span class="tr-amount">Dos cheques: $ 859.400 y $ 2.177.000.</span>
+			</figcaption>
+			</figure>
+			<figure class="tr-fig" data-reveal>
+			<div class="tr-img">
+			<picture>
+			<source type="image/webp" srcset="/media/img/teleton/teleton-2023-800.webp 800w" sizes="(min-width: 1100px) 25vw, (min-width: 600px) 50vw, 100vw">
+			<img src="/media/img/teleton/teleton-2023-800.jpg" srcset="/media/img/teleton/teleton-2023-800.jpg 800w" sizes="(min-width: 1100px) 25vw, (min-width: 600px) 50vw, 100vw" width="800" height="533" loading="lazy" decoding="async" alt="Equipo de Toyota Gazoo Racing y voluntarias de Teletón en la pista con los cheques de la donación, Drift Park Solidario 2023">
+			</picture>
+			</div>
+			<figcaption>
+			<span class="pa-mono tr-year">2023 · Drift Park Solidario 2K23</span>
+			<span class="tr-amount">Dos cheques: $ 2.351.160 y $ 1.314.990.</span>
+			</figcaption>
+			</figure>
+			<figure class="tr-fig" data-reveal>
+			<div class="tr-img">
+			<picture>
+			<source type="image/webp" srcset="/media/img/teleton/teleton-2024-a-800.webp 800w" sizes="(min-width: 1100px) 25vw, (min-width: 600px) 50vw, 100vw">
+			<img src="/media/img/teleton/teleton-2024-a-800.jpg" srcset="/media/img/teleton/teleton-2024-a-800.jpg 800w" sizes="(min-width: 1100px) 25vw, (min-width: 600px) 50vw, 100vw" width="800" height="533" loading="lazy" decoding="async" alt="Un niño de la Fundación Teletón sostiene el cheque de la donación del Drift Arena Solidario, 9 de noviembre de 2024">
+			</picture>
+			</div>
+			<figcaption>
+			<span class="pa-mono tr-year">2024 · Drift Arena Solidario</span>
+			<span class="tr-amount">Un cheque: $ 5.000.584.</span>
+			</figcaption>
+			</figure>
+			<figure class="tr-fig" data-reveal>
+			<div class="tr-img">
+			<picture>
+			<source type="image/webp" srcset="/media/img/teleton/teleton-2024-b-800.webp 800w" sizes="(min-width: 1100px) 25vw, (min-width: 600px) 50vw, 100vw">
+			<img src="/media/img/teleton/teleton-2024-b-800.jpg" srcset="/media/img/teleton/teleton-2024-b-800.jpg 800w" sizes="(min-width: 1100px) 25vw, (min-width: 600px) 50vw, 100vw" width="800" height="533" loading="lazy" decoding="async" alt="Entrega del cheque a la Fundación Teletón frente al público del Drift Arena Solidario 2024">
+			</picture>
+			</div>
+			<figcaption>
+			<span class="pa-mono tr-year">2024 · La entrega</span>
+			<span class="tr-amount">Antel Arena, 9 de noviembre de 2024.</span>
+			</figcaption>
+			</figure>
+			</div>
+			</div>
 		</div>
 	</section>
 
@@ -370,6 +430,22 @@ const guinnessSlides = [
 			margin: 0 auto;
 		}
 	}
+
+	/* ---- Récords Teletón (10/11/2026) ---- */
+	.teleton-records { margin-top: clamp(64px, 9vw, 140px); }
+	.tr-head { max-width: 760px; margin-bottom: clamp(28px, 3.5vw, 52px); }
+	.tr-kick { display: block; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: #8a6a1f; margin: 0 0 14px; }
+	.tr-title { font-size: clamp(30px, 1rem + 2.6vw, 58px); line-height: 1; letter-spacing: -0.035em; margin: 0 0 22px; color: var(--pa-ink, #0b0e17); }
+	.tr-lead { margin: 0; }
+	.tr-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(14px, 1.6vw, 24px); }
+	.tr-fig { margin: 0; }
+	.tr-img { aspect-ratio: 3 / 2; border-radius: var(--pa-r-lg, 18px); overflow: hidden; background: #d9d4c7; }
+	.tr-img img { display: block; width: 100%; height: 100%; object-fit: cover; }
+	.tr-fig figcaption { display: grid; gap: 6px; padding-top: 14px; }
+	.tr-year { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: #8a6a1f; }
+	.tr-amount { font-size: 16px; line-height: 1.35; color: var(--pa-ink, #0b0e17); }
+	@media (max-width: 1100px) { .tr-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+	@media (max-width: 600px) { .tr-grid { grid-template-columns: 1fr; } }
 
 	/* ---- Pelota al Medio (sección oscura) ---- */
 	.pm-grid {

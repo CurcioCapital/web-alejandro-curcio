@@ -1,0 +1,155 @@
+/*
+ * CEO DE TU VIDA — marca del libro (tapa Grijalbo, 2026).
+ * Solo se carga en /ceo-de-tu-vida. Redefine los tokens del sitio (dorado)
+ * con la paleta de la tapa:
+ *   principal  → negro y rojo
+ *   secundaria → blanco y plateado (el kanji 幸 en hot stamping)
+ *
+ * Contraste (WCAG, calculado):
+ *   --ceo-rojo      #D21F1A  fondos, botones, tipografía grande · blanco encima 5,3:1
+ *   --ceo-rojo-txt  #F04A3E  texto rojo chico sobre negro 5,3:1
+ *   --ceo-rojo-ink  #B3150F  texto rojo sobre fondo claro 6,2:1
+ *   --ceo-plata     #BDBDBD  texto plateado sobre negro 10,2:1
+ */
+:root {
+	--ceo-negro: #0f0f0f;
+	--ceo-negro-2: #171717;
+	--ceo-rojo: #d21f1a;
+	--ceo-rojo-txt: #f04a3e;
+	--ceo-rojo-ink: #b3150f;
+	--ceo-blanco: #f3f3f1;
+	--ceo-plata: #bdbdbd;
+	--ceo-plata-degrade: linear-gradient(180deg, #ffffff 0%, #e4e4e4 38%, #9d9d9d 100%);
+
+	/* tokens base del sitio */
+	--color-black: var(--ceo-negro);
+	--color-black-2: var(--ceo-negro-2);
+	--color-cap-1: #141414;
+	--color-cap-2: #0a0a0a;
+	--color-cap-3: var(--ceo-blanco);
+	--color-cap-4: #181818;
+	--color-off: var(--ceo-blanco);
+	--color-cobalt: var(--ceo-rojo-ink);
+	--color-cobalt-dim: #8e110c;
+	--color-cobalt-bright: var(--ceo-rojo);
+	--color-gold-ribbon: #a8140f;
+	--accent: var(--ceo-rojo-txt);
+	--accent-ink: var(--ceo-rojo-ink);
+	--accent-rgb: 210 31 26;
+	--accent-deep-rgb: 179 21 15;
+	--accent-soft: rgb(210 31 26 / 0.14);
+	--line-light: rgb(15 15 15 / 0.1);
+	--oro-degrade: linear-gradient(135deg, #b3150f 0%, #d21f1a 50%, #b3150f 100%);
+	--oro-degrade-ribbon: linear-gradient(90deg, #7d0e0a 0%, #b3150f 50%, #7d0e0a 100%);
+	--oro-degrade-suave: linear-gradient(180deg, rgb(210 31 26 / 0.14) 0%, transparent 62%);
+	--mo-accent: var(--ceo-rojo);
+	--crop-color: var(--ceo-rojo);
+
+	/* tokens editoriales */
+	--ed-bg: var(--ceo-negro);
+	--ed-bg-2: var(--ceo-negro-2);
+	--ed-bone: var(--ceo-blanco);
+	--ed-ink: var(--ceo-negro);
+	--ed-accent: var(--ceo-rojo-txt);
+	--ed-accent-ink: var(--ceo-rojo-ink);
+	--ed-line-strong: rgb(205 205 205 / 0.2);
+}
+
+
+/* Los selectores llevan «:root:root » delante: los estilos de los componentes Astro
+   traen un atributo [data-astro-cid-…] que les sube la especificidad, y los
+   estilos de la página van en el <body>, después de esta hoja. */
+/* ── Botones: rojo de la tapa, texto blanco ───────────────────────── */
+:root:root .pill.pill--accent,
+:root:root .pill.pill--accent:hover,
+:root:root .pill.pill--accent[aria-disabled='true']:hover {
+	--_fg: #fff;
+	--_fg-hover: var(--ceo-negro);
+	--_fill: #fff;
+	background: var(--ceo-rojo);
+	color: #fff;
+}
+:root:root .ed-btn {
+	background: var(--ceo-rojo);
+	color: #fff;
+}
+:root:root .ed-btn:hover {
+	background: #fff;
+	color: var(--ceo-negro);
+}
+:root:root .ed-btn--ghost:hover {
+	background: var(--ceo-rojo);
+	color: #fff;
+	box-shadow: inset 0 0 0 1px var(--ceo-rojo);
+}
+:root:root .ribbon {
+	color: #fff;
+}
+
+/* ── Apertura ─────────────────────────────────────────────────────── */
+:root:root .ceo-hero-glow {
+	background: radial-gradient(closest-side, rgb(210 31 26 / 0.2), transparent 70%);
+}
+:root:root .ceo-sub {
+	color: var(--ceo-blanco);
+}
+/* como en la tapa: «51 REGLAS» en rojo, el resto en blanco */
+:root:root .ceo-sub .ceo-51 {
+	color: var(--ceo-rojo);
+}
+:root:root .ceo-idx,
+:root:root .ceo-head-n {
+	color: var(--ceo-plata);
+}
+:root:root .ceo-faltan:before {
+	background: var(--ceo-rojo);
+	box-shadow: 0 0 0 4px rgb(210 31 26 / 0.22);
+}
+:root:root .ceo-faltan .ed-odo {
+	color: var(--ceo-rojo-txt);
+}
+:root:root .ceo-lead a:hover {
+	border-bottom-color: var(--ceo-rojo-txt);
+	color: #fff;
+}
+/* la tapa nueva es plana: sombra profunda y canto rojo, como el libro impreso */
+:root:root .ceo-cover .media-card {
+	box-shadow: 0 50px 90px rgb(0 0 0 / 0.55), 6px 0 0 -1px #7d0e0a, 0 0 0 1px rgb(255 255 255 / 0.06);
+	border-radius: 6px 10px 10px 6px;
+}
+
+/* ── El origen (sección clara): blanco con acentos rojos ─────────── */
+:root:root .ed-sec--light .ceo-k {
+	color: var(--ceo-rojo-ink);
+}
+:root:root .ed-sec--light .ceo-head-n {
+	color: rgb(15 15 15 / 0.5);
+}
+:root:root .origen-cuerpo strong {
+	background: linear-gradient(transparent 62%, rgb(210 31 26 / 0.22) 62%);
+}
+
+/* ── Clímax y cuenta regresiva: plata como el kanji ──────────────── */
+:root:root .ceo-climax__glow {
+	background: radial-gradient(600px circle at var(--mx, 70%) var(--my, 20%), rgb(210 31 26 / 0.24), transparent 60%),
+		radial-gradient(80% 60% at 50% 0%, rgb(210 31 26 / 0.12), transparent 60%);
+}
+:root:root .ceo-climax__title,
+:root:root .ceo-climax__title .mo-wi {
+	background: var(--ceo-plata-degrade);
+	-webkit-background-clip: text;
+	background-clip: text;
+	color: transparent;
+}
+:root:root .ceo-climax__kicker {
+	color: var(--ceo-rojo-txt);
+}
+:root:root .libros-countdown__value {
+	color: #e9e9e9;
+}
+:root:root .libros-countdown__label {
+	color: var(--ceo-plata);
+}
+:root:root .libros-countdown__colon {
+	color: var(--ceo-rojo);
+}

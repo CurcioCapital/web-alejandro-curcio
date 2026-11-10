@@ -28,15 +28,6 @@ import '../components/secciones/libros/ed.css';
 import MediaCard from '../components/MediaCard.astro';
 import CeoClimax from '../components/secciones/libros/CeoClimax.astro';
 
-// Las seis secciones del libro, con las preguntas que abren cada una.
-const secciones = [
-	{ n: 'I', titulo: 'Identidad y fundamentos', preguntas: '¿Quién sos? ¿Qué te define? ¿Desde dónde construís?' },
-	{ n: 'II', titulo: 'Mente, emociones y decisión', preguntas: '¿Cómo pensás? ¿Cómo reaccionás? ¿Cómo decidís?' },
-	{ n: 'III', titulo: 'Energía, tiempo y vida', preguntas: '¿Cómo vivís? ¿Cómo sostenés? ¿Cómo rendís?' },
-	{ n: 'IV', titulo: 'Acción y ejecución', preguntas: '¿Cómo avanzás? ¿Cómo hacés que pase?' },
-	{ n: 'V', titulo: 'Negocio, dinero y liderazgo', preguntas: '¿Cómo construís? ¿Cómo escalás? ¿Cómo liderás?' },
-	{ n: 'VI', titulo: 'Entorno, relaciones y sistema', preguntas: '¿Con quién vivís? ¿Qué sistema te sostiene?' },
-];
 
 // Los once interludios. El kanji es el ancla visual; el romaji, el nombre.
 const palabras = [
@@ -71,6 +62,9 @@ const reglas = [
 	title="CEO DE TU VIDA — Alejandro Curcio"
 	description="51 reglas para decidir mejor, liderar con claridad y construir una vida con intención. El tercer libro de Alejandro Curcio, por Grijalbo. Noviembre de 2026."
 >
+	<!-- Marca del libro (negro y rojo; blanco y plateado): public/estilos/ceo-marca.css -->
+	<link rel="stylesheet" href="/estilos/ceo-marca.css" />
+
 	<!-- ============ 1 · APERTURA ============ -->
 	<section class="ed-sec ed-grid ceo-hero">
 		<div class="ceo-hero-glow" aria-hidden="true"></div>
@@ -83,7 +77,7 @@ const reglas = [
 				<div class="ceo-hero-copy">
 					<h1 class="ceo-title ed-display" data-split="lines">CEO DE TU VIDA</h1>
 					<p class="ceo-sub ed-serif" data-split="lines">
-						51 reglas para decidir mejor, liderar con claridad y construir una vida con intención.
+						<span class="ceo-51">51 reglas</span> para decidir mejor, liderar con claridad y construir una vida con intención.
 					</p>
 					<p class="ceo-lead" data-reveal>
 						El tercer libro de Alejandro Curcio. Después de mirar hacia adentro
@@ -120,9 +114,11 @@ const reglas = [
 				<figure class="ceo-cover" data-ed-tilt="10">
 					<div class="ceo-cover-obj ed-tilt__obj" data-reveal="mask">
 						<MediaCard
-							src="/media/covers/ceo-de-tu-vida-mockup.jpg"
-							class="media-card--natural"
-							alt="El libro CEO DE TU VIDA, de Alejandro Curcio (Grijalbo, noviembre 2026)"
+							id="ceo-de-tu-vida-front"
+							kind="cover"
+							ratio="2048 / 3178"
+							eager
+							alt="Tapa del libro CEO DE TU VIDA, de Alejandro Curcio (Grijalbo, noviembre 2026)"
 						/>
 					</div>
 				</figure>
@@ -159,36 +155,8 @@ const reglas = [
 		</div>
 	</section>
 
-	<!-- ============ 3 · LAS SEIS PREGUNTAS ============ -->
-	<section id="secciones" class="ed-sec ed-sec--sheet ed-grid ceo-secciones">
-		<div class="ed-wrap">
-			<div class="ceo-head ceo-head--row">
-				<span class="ed-mono ceo-head-n" aria-hidden="true">[ 02 ]</span>
-				<span class="kicker ed-mono ceo-k">Seis secciones</span>
-				<h2 class="section-title ed-display ceo-h2" data-split="lines">El libro está ordenado como preguntas.</h2>
-				<p class="section-lead ceo-lead2" data-reveal>
-					Cada sección abre con las suyas. Las <span data-counter>51</span> reglas son las respuestas.
-				</p>
-			</div>
-
-			<ol class="secciones">
-				{
-					secciones.map((s) => (
-						<li class="seccion" data-scrub="enter">
-							<span class="seccion-n">{s.n}</span>
-							<div class="seccion-txt">
-								<h3 class="seccion-titulo">{s.titulo}</h3>
-								<p class="seccion-preguntas">{s.preguntas}</p>
-							</div>
-						</li>
-					))
-				}
-			</ol>
-		</div>
-	</section>
-
 	<!-- ============ 3 · CUENTA REGRESIVA (la misma de /libros) ============ -->
-	<CeoClimax id="lanzamiento" kicker="Lanzamiento · 17 de noviembre de 2026" n="03" />
+	<CeoClimax id="lanzamiento" kicker="Lanzamiento · 17 de noviembre de 2026" n="02" />
 </Base>
 
 <style>
@@ -469,64 +437,6 @@ const reglas = [
 		background: linear-gradient(transparent 62%, rgb(232 200 116 / 0.5) 62%);
 	}
 
-	/* ================= seis secciones ================= */
-	.secciones {
-		list-style: none;
-		margin: clamp(48px, 6vw, 96px) 0 0;
-		padding: 0;
-		border-top: 1px solid var(--ed-line-strong);
-	}
-	.seccion {
-		position: relative;
-		display: grid;
-		grid-template-columns: minmax(0, 1fr) minmax(0, 3fr);
-		gap: var(--ed-gutter);
-		align-items: baseline;
-		padding: clamp(24px, 3vw, 40px) 0;
-		border-bottom: 1px solid var(--ed-line-strong);
-	}
-	.seccion::after {
-		content: '';
-		position: absolute;
-		left: 0;
-		right: 0;
-		bottom: -1px;
-		height: 1px;
-		background: var(--ed-accent);
-		transform-origin: left;
-		transform: scaleX(min(1, calc(var(--p, 1) * 1.6)));
-	}
-	.seccion-n {
-		font-family: var(--ed-display);
-		font-weight: 500;
-		font-size: clamp(3rem, 2rem + 4vw, 6.5rem);
-		letter-spacing: -0.06em;
-		line-height: 0.95;
-		color: transparent;
-		-webkit-text-stroke: 1px var(--ed-accent);
-	}
-	.seccion-titulo {
-		font-family: var(--ed-display);
-		font-weight: 560;
-		font-size: clamp(1.75rem, 1rem + 2.2vw, 3.25rem);
-		letter-spacing: -0.04em;
-		line-height: 1.02;
-		color: #fff;
-		margin: 0;
-		transition: color 0.4s var(--ed-expo);
-	}
-	.seccion:hover .seccion-titulo {
-		color: var(--ed-accent);
-	}
-	.seccion-preguntas {
-		margin: 14px 0 0;
-		font-family: var(--ed-serif);
-		font-style: italic;
-		font-size: clamp(1.25rem, 1rem + 0.9vw, 2rem);
-		line-height: 1.2;
-		color: rgb(255 255 255 / 0.68);
-	}
-
 	/* ================= once palabras ================= */
 	.palabras {
 		list-style: none;
@@ -804,7 +714,6 @@ const reglas = [
 			max-width: 420px;
 		}
 		.ceo-head,
-		.seccion,
 		.regla {
 			grid-template-columns: 1fr;
 		}

@@ -316,6 +316,7 @@ color:var(--ed-bone,#f4f1ea);background:rgb(12 10 6 / .62);border:1px solid rgb(
 .snd-toggle:hover{border-color:var(--ed-accent,#e8c874)}
 .snd-toggle:focus-visible{outline:2px solid var(--ed-accent,#e8c874);outline-offset:3px}
 .snd-toggle[hidden]{display:none}
+.snd-toggle.is-dodge{opacity:0;pointer-events:none;transform:translateY(8px)}
 .snd-bars{display:inline-flex;align-items:flex-end;gap:2px;height:12px}
 .snd-bars i{width:2px;height:3px;background:currentColor;border-radius:1px;transition:height .3s}
 .snd-toggle[data-state="on"] .snd-bars i{animation:snd 1s ease-in-out infinite}
@@ -358,7 +359,26 @@ color:var(--ed-bone,#f4f1ea);background:rgb(12 10 6 / .62);border:1px solid rgb(
 			!enabled ? 'Sin sonido' : !unlocked ? 'Activar sonido' : playing ? 'Sonando' : 'Sonido';
 	}
 
-	const start = () => { initAmbients(); mountButton(); schedule(); };
+	// Si la página tiene su propio control de sonido (p. ej. «Escuchar el
+	// discurso» en Negocios) y queda debajo del botón flotante, el flotante
+	// se corre para no taparlo (10/11/2026).
+	let dodgeRaf = 0;
+	function dodge() {
+		dodgeRaf = 0;
+		if (!btn) return;
+		const b = btn.getBoundingClientRect();
+		let hit = false;
+		for (const el of document.querySelectorAll('[data-sound-toggle]')) {
+			const r = el.getBoundingClientRect();
+			if (r.width && r.left < b.right + 12 && r.right > b.left - 12 && r.top < b.bottom + 12 && r.bottom > b.top - 12) { hit = true; break; }
+		}
+		btn.classList.toggle('is-dodge', hit);
+	}
+	const scheduleDodge = () => { if (!dodgeRaf) dodgeRaf = requestAnimationFrame(dodge); };
+	addEventListener('scroll', scheduleDodge, { passive: true });
+	addEventListener('resize', scheduleDodge);
+
+	const start = () => { initAmbients(); mountButton(); schedule(); dodge(); setTimeout(dodge, 1500); addEventListener("motion:intro", () => setTimeout(dodge, 50)); };
 	if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start);
 	else start();
 	// Transiciones de página de Astro (si están activas).

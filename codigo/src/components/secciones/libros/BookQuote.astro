@@ -16,7 +16,7 @@ const { quote, attribution, size = 'default' } = Astro.props;
 
 <figure class:list={['ed-quote', 'book-quote', size === 'sm' ? 'ed-quote--sm' : 'ed-quote--wide']}>
   <span class="book-quote-mark" aria-hidden="true">&ldquo;</span>
-  <blockquote data-split="lines">{quote}</blockquote>
+  <blockquote data-split="lines">{quote}&rdquo;</blockquote>
   <figcaption class="ed-mono">{attribution}</figcaption>
 </figure>
 

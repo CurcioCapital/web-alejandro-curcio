@@ -179,6 +179,9 @@ const lcp =
 		<!-- Preloader (primera visita de la sesión) y cortina de transición:
 		     decorativos, sólo visibles con html.mo-preload / html.mo-enter|leave. -->
 		<div class="mo-preloader" aria-hidden="true">
+			<!-- Trébol que se dibuja (10/11/2026): video corto (1,8 s), trazo claro
+			     sobre negro puro; con mix-blend-mode: screen el negro desaparece. -->
+			<video class="mo-preloader__trebol" src="/media/loader/trebol-intro.mp4" muted autoplay playsinline preload="auto" tabindex="-1"></video>
 			<div class="mo-preloader__row">
 				<span class="mo-preloader__meta">Alejandro Curcio</span>
 				<span class="mo-preloader__meta">Cargando</span>

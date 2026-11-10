@@ -38,6 +38,8 @@ interface Props {
   hideTitle?: boolean;
   /** split con foto apaisada (3:2) entera, en vez del recorte 4:5. */
   landscape?: boolean;
+  /** split: tarjeta de foto más alta (Capital de Vida, 10/11/2026). */
+  tall?: boolean;
 }
 
 const {
@@ -53,6 +55,7 @@ const {
   title,
   hideTitle = false,
   landscape = false,
+  tall = false,
   sub,
   ctaHref,
   ctaLabel,
@@ -71,7 +74,7 @@ const focus = focusProp ?? (variant === 'split' ? '50% 4%' : '50% 30%');
 
 <section
   id={id}
-  class:list={['eh', `eh--${variant}`, `eh--t-${titleSize}`, isCover && 'eh--cover', hideTitle && 'eh--notitle', landscape && 'eh--landscape', 'ed-grid']}
+  class:list={['eh', `eh--${variant}`, `eh--t-${titleSize}`, isCover && 'eh--cover', hideTitle && 'eh--notitle', landscape && 'eh--landscape', tall && 'eh--tall', 'ed-grid']}
   style={`--focus:${focus}`}
 >
   {
@@ -236,6 +239,9 @@ const focus = focusProp ?? (variant === 'split' ? '50% 4%' : '50% 30%');
     width: min(100%, calc(var(--ph) * 0.8));
     justify-self: end;
   }
+  .eh--tall .eh-photo {
+    --ph: clamp(420px, calc(100svh - var(--nav-h, 74px) - 215px), 900px);
+  }
   .eh-photo__in {
     position: absolute;
     inset: -5% 0;
@@ -351,6 +357,10 @@ const focus = focusProp ?? (variant === 'split' ? '50% 4%' : '50% 30%');
       aspect-ratio: 4 / 4.4;
       width: min(100%, calc(48svh * 4 / 4.4));
       justify-self: start;
+    }
+    .eh--tall.eh--split .eh-photo {
+      aspect-ratio: 4 / 5;
+      width: min(100%, calc(60svh * 0.8));
     }
     .eh--cover .eh-coverwrap {
       order: -1;

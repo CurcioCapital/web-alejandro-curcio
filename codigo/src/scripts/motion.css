@@ -311,11 +311,21 @@ html.mo-preload .mo-preloader {
   font-family: var(--font-display, 'Archivo Variable', sans-serif);
   font-stretch: 62%;
   font-weight: 800;
-  font-size: clamp(96px, 22vw, 320px);
+  font-size: clamp(56px, 11vw, 168px);
   line-height: 0.8;
   letter-spacing: -0.02em;
   font-variant-numeric: tabular-nums;
   color: var(--mo-accent);
+}
+.mo-preloader__trebol {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: min(40vh, 62vw);
+  height: auto;
+  translate: -50% -55%;
+  mix-blend-mode: screen;
+  pointer-events: none;
 }
 .mo-preloader__bar {
   position: absolute;

@@ -46,7 +46,7 @@ const hasBg = items.some((i) => i.bgSrc);
       {
         items.map((item, i) => (
           <blockquote class:list={['kit-quote-rotator__quote', i === 0 && 'is-active']} data-index={i}>
-            <p class="kit-quote-rotator__text">{item.quote}</p>
+            <p class="kit-quote-rotator__text">&ldquo;{item.quote}&rdquo;</p>
             <footer class="kit-quote-rotator__meta">
               <span class="kit-quote-rotator__author">{item.author}</span>
               {item.detail && <span class="kit-quote-rotator__detail">{item.detail}</span>}

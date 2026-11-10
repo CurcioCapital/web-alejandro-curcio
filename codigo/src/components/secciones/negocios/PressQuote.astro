@@ -16,7 +16,7 @@ const { quote, attribution, size = 'default' } = Astro.props;
 
 <figure class:list={['press-quote', size === 'sm' && 'press-quote--sm']}>
   <span class="press-quote-mark" aria-hidden="true">&ldquo;</span>
-  <blockquote>{quote}</blockquote>
+  <blockquote>{quote}&rdquo;</blockquote>
   <figcaption>{attribution}</figcaption>
 </figure>
 

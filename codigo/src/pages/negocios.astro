@@ -36,14 +36,16 @@ const ayaxBeats = [
 		body: 'Ayax nació trayendo al país insumos de laboratorio y telares de última generación que revolucionaron la industria textil. El movimiento estaba en el ADN desde el primer día: anticiparse, adaptarse, reinventarse.',
 	},
 	{
-		year: 'Opel',
-		title: 'La primera apuesta sobre ruedas.',
-		body: 'Poco después empezó a importar automóviles Opel, apostando por modelos como el Kadett y su carrocería monocasco: más liviano, más resistente, más preparado para lo que venía.',
-	},
-	{
 		year: '1968',
 		title: 'La decisión que marcó el rumbo.',
 		body: 'Representar a Toyota en Uruguay. Una marca que, como Ayax, no se define solo por lo que vende, sino por cómo piensa. Suzuki llegaría a fines de los 70.',
+	},
+	// 10/11/2026: reemplaza al capítulo «Opel» (pedido de Emi). Fuente: brain,
+	// 01_Empresa/Historia AYAX (Brief agencias 2026 · toyota.com.uy/nuestra-historia).
+	{
+		year: '1971',
+		title: 'La primera Hilux fuera de Japón.',
+		body: 'Tres años después de elegir Toyota, en Uruguay se ensambló la primera Hilux fabricada fuera de Japón. El estándar japonés, hecho acá.',
 	},
 	{
 		year: 'Pioneros',
@@ -100,17 +102,6 @@ const ayaxBeats = [
 			<div class="wrap plate-copy">
 				<p class="pa-kick"><span class="pa-idx">[ 01 ]</span>AYAX · 1945 — 2026</p>
 				<h1 class="plate-title pa-display" data-split="lines">Ochenta años no se heredan.<br />Se sobreviven.</h1>
-				<div class="plate-row">
-					<p class="plate-sub pa-lead">
-						La empresa que hoy cumple 80 años de presencia ininterrumpida casi murió dos veces.
-					</p>
-					<a class="pa-btn" href="#ayax" data-magnetic data-roll>
-						<span>Entrá a la historia de AYAX</span>
-						<span class="pa-btn-ico" aria-hidden="true">
-							<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M6 13l6 6 6-6"></path></svg>
-						</span>
-					</a>
-				</div>
 			</div>
 
 			<!-- Pie técnico: control de sonido + crédito sobre una hairline. -->
@@ -126,9 +117,12 @@ const ayaxBeats = [
 						<span data-sound-label>Escuchar el discurso</span>
 					</button>
 					<span class="plate-eq" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
-					<figcaption class="plate-credit pa-mono">
-						Gala de los 80 años · Sodre, octubre de 2025
-					</figcaption>
+					<a class="pa-btn" href="#ayax" data-magnetic data-roll>
+						<span>Conocé la historia</span>
+						<span class="pa-btn-ico" aria-hidden="true">
+							<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M6 13l6 6 6-6"></path></svg>
+						</span>
+					</a>
 				</div>
 			</div>
 		</figure>
@@ -159,17 +153,17 @@ const ayaxBeats = [
 				<div class="ayax-col">
 					<figure class="q pa-quote" data-reveal>
 						<blockquote>
-							No creemos en introducir un producto, aprovechar una oportunidad coyuntural y
+							&ldquo;No creemos en introducir un producto, aprovechar una oportunidad coyuntural y
 							desaparecer cuando cambian las condiciones. Quien compra un automóvil necesita saber
-							que detrás habrá una organización presente durante muchos años.
+							que detrás habrá una organización presente durante muchos años.&rdquo;
 						</blockquote>
 						<figcaption>Alejandro Curcio — El País, 09/08/2026</figcaption>
 					</figure>
 
 					<figure class="q q--sm pa-quote" data-reveal>
 						<blockquote>
-							Nos templaron, nos forjaron, nos afilaron, nos hicieron más duros, pero también mucho
-							más humanos.
+							&ldquo;Nos templaron, nos forjaron, nos afilaron, nos hicieron más duros, pero también mucho
+							más humanos.&rdquo;
 						</blockquote>
 						<figcaption>Alejandro Curcio — Forbes Uruguay, 13/10/2025</figcaption>
 					</figure>
@@ -213,8 +207,8 @@ const ayaxBeats = [
 					</p>
 					<figure class="q q--sm pa-quote">
 						<blockquote>
-							Hace 18 años que introdujimos los primeros autos electrificados en Uruguay… en 18 años
-							no cambiamos una batería.
+							&ldquo;Hace 18 años que introdujimos los primeros autos electrificados en Uruguay… en 18 años
+							no cambiamos una batería.&rdquo;
 						</blockquote>
 						<figcaption>Forbes Uruguay, 24/04/2026</figcaption>
 					</figure>
@@ -241,10 +235,7 @@ const ayaxBeats = [
 		<div class="wrap">
 			<header class="pa-cap-head">
 				<p class="pa-kick"><span class="pa-idx">[ 03 ]</span>Más allá de AYAX</p>
-				<h2 class="pa-display pa-cap-title" data-split="lines">Tres frentes que la extienden.</h2>
-				<p class="pa-lead" data-reveal>
-					No reemplazan a la empresa: le estiran la lógica a otros terrenos. Abrí el que te interese.
-				</p>
+				<h2 class="pa-display pa-cap-title" data-split="lines">Proyectos innovadores.</h2>
 			</header>
 
 			<div class="rows">
@@ -271,8 +262,8 @@ const ayaxBeats = [
 
 						<figure class="q pa-quote">
 							<blockquote>
-								Curcio Capital simboliza un conjunto de valores, normas, creencias y experiencias de
-								referencia que se traducen en este sello específico de continuidad.
+								&ldquo;Curcio Capital simboliza un conjunto de valores, normas, creencias y experiencias de
+								referencia que se traducen en este sello específico de continuidad.&rdquo;
 							</blockquote>
 							<figcaption>curciocapital.com</figcaption>
 						</figure>
@@ -321,9 +312,9 @@ const ayaxBeats = [
 
 						<figure class="q q--sm pa-quote">
 							<blockquote>
-								La disrupción no es una amenaza, es la mayor oportunidad para quienes están dispuestos
+								&ldquo;La disrupción no es una amenaza, es la mayor oportunidad para quienes están dispuestos
 								a aprender y adaptarse. En Curcio Capital, no invertimos solo en tecnología,
-								invertimos en mentalidades ágiles.
+								invertimos en mentalidades ágiles.&rdquo;
 							</blockquote>
 							<figcaption>Alejandro Curcio — Pilar «El Negocio»</figcaption>
 						</figure>
@@ -407,8 +398,8 @@ const ayaxBeats = [
 
 							<figure class="q q--sm pa-quote">
 								<blockquote>
-									No solo es una excelente inversión en bienes raíces, sino que es una nueva forma de
-									entender el bienestar y la conexión con la naturaleza.
+									&ldquo;No solo es una excelente inversión en bienes raíces, sino que es una nueva forma de
+									entender el bienestar y la conexión con la naturaleza.&rdquo;
 								</blockquote>
 								<figcaption>Alejandro Curcio — Forbes Uruguay, 10/12/2024</figcaption>
 							</figure>
@@ -480,9 +471,9 @@ const ayaxBeats = [
 
 						<figure class="q q--sm pa-quote">
 							<blockquote>
-								Ganamos el oro en Nueva York. Ganamos plata en Londres. Ganamos plata en Cannes… y
+								&ldquo;Ganamos el oro en Nueva York. Ganamos plata en Londres. Ganamos plata en Cannes… y
 								también el museo MoMA de Nueva York nos reconoce como inventores de este sonido —el HY
-								Project— y está la obra ahí.
+								Project— y está la obra ahí.&rdquo;
 							</blockquote>
 							<figcaption>Alejandro Curcio, contando la historia del HY Project</figcaption>
 						</figure>

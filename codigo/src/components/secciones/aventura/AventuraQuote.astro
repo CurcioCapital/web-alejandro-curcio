@@ -18,7 +18,7 @@ const { quote, attribution, size = 'default' } = Astro.props;
 
 <figure class:list={['aventura-quote', size === 'sm' && 'aventura-quote--sm']} data-reveal>
   <span class="aventura-quote-mark" aria-hidden="true">&ldquo;</span>
-  <blockquote data-split="lines">{quote}</blockquote>
+  <blockquote data-split="lines">{quote}&rdquo;</blockquote>
   <figcaption>{attribution}</figcaption>
 </figure>
 

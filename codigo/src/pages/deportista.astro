@@ -129,12 +129,7 @@ const mosaico = [
         <span class="pa-mono dep-gauge-read"><b data-dep-pct>000</b>%</span>
       </div>
 
-    <!-- Marquesina decorativa: repite la ficha de arriba (aria-hidden). -->
-    <div class="dep-marquee pa-marquee" data-marquee data-marquee-speed="90" aria-hidden="true">
-      {[...ficha, ...ficha].map((t, k) => (
-        <span class:list={['dep-mq-item', 'pa-display', k % 2 === 1 && 'is-outline']}>{t}<i>✦</i></span>
-      ))}
-    </div>
+    {/* 11/11/2026: se quitó la marquesina «Toyota Gazoo Racing Drift · Drift Park · ProDrift» (pedido de Emi). */}
 
     <div class="wrap">
       <!-- Una sola retícula para todo el material. La pieza certificada

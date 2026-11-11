@@ -250,7 +250,7 @@ const pressNames = ['El País', 'Forbes Uruguay', 'El Observador', 'Búsqueda', 
 			<Ticker speed={24}>
 				{
 					pressNames.map((name) => (
-						<span class="press-ticker-name pa-display">{name}<i aria-hidden="true">✦</i></span>
+						<span class="press-ticker-name pa-display">{name}<i aria-hidden="true"><span class="trebol-sep" aria-hidden="true"></span></i></span>
 					))
 				}
 			</Ticker>
@@ -487,3 +487,5 @@ const pressNames = ['El País', 'Forbes Uruguay', 'El Observador', 'Búsqueda', 
 		}
 	}
 </style>
+
+<style is:inline>.trebol-sep{display:inline-block;width:.62em;height:.62em;vertical-align:middle;background:currentColor;-webkit-mask:url(/media/marca/trebol.png) no-repeat center/contain;mask:url(/media/marca/trebol.png) no-repeat center/contain}</style>

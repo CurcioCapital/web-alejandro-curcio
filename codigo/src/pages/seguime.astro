@@ -50,7 +50,7 @@ const handles = ['@alecurcio_capitaldevida', 'Alejandro Curcio - Capital de Vida
 				handles.map((h) => (
 					<span class="handles-item">
 						<span class="handles-h">{h}</span>
-						<span class="handles-dot">✦</span>
+						<span class="handles-dot"><span class="trebol-sep" aria-hidden="true"></span></span>
 					</span>
 				))
 			}
@@ -207,3 +207,5 @@ const handles = ['@alecurcio_capitaldevida', 'Alejandro Curcio - Capital de Vida
 		color: var(--ed-accent);
 	}
 </style>
+
+<style is:inline>.trebol-sep{display:inline-block;width:.62em;height:.62em;vertical-align:middle;background:currentColor;-webkit-mask:url(/media/marca/trebol.png) no-repeat center/contain;mask:url(/media/marca/trebol.png) no-repeat center/contain}</style>

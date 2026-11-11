@@ -64,11 +64,12 @@ const mosaico = [
     // El corte de tarjeta de `brindis` mostraba el hall del evento, sin un
     // solo traje de carrera: el pie que decía «celebrando en pista» era
     // falso. Este tramo del video completo sí muestra al equipo.
-    src: '/media/video/gr-equipo.mp4',
-    poster: '/media/video/gr-equipo-poster.jpg',
-    alt: 'El equipo de Toyota Gazoo Racing Uruguay en la celebración de los 80 años de Ayax',
+    // 11/11/2026: reemplazado por IMG_4800.MP4 (Dropbox TOYOTA 2025/ProDrift/Fecha 1).
+    src: '/media/video/prodrift-fecha1.mp4',
+    poster: '/media/video/prodrift-fecha1-poster.jpg',
+    alt: 'El equipo de Toyota Gazoo Racing Uruguay en la primera fecha de ProDrift 2025',
     titulo: 'El equipo',
-    pie: 'Toyota Gazoo Racing Uruguay, en la celebración por los 80 años de Ayax.',
+    pie: 'Toyota Gazoo Racing Uruguay en la primera fecha de ProDrift — 10 de mayo de 2025.',
   },
   {
     src: '/media/video/drift-humo.mp4',
@@ -162,6 +163,13 @@ const mosaico = [
         }
       </div>
 
+<!-- 11/11/2026: equipo Toyota Gazoo Racing (fotos del lanzamiento de temporada 2023; nombres confirmados por Emi). -->
+<section class="tgr" aria-labelledby="tgr-t">
+<header class="tgr-head"><div><p class="pa-kick"><span class="pa-idx">[ GR ]</span>El equipo</p><h2 id="tgr-t" class="pa-display tgr-title">Equipo Toyota Gazoo Racing</h2></div>
+<div class="tgr-nav"><button type="button" class="tgr-btn" data-tgr-prev aria-label="Anterior">&larr;</button><button type="button" class="tgr-btn" data-tgr-next aria-label="Siguiente">&rarr;</button></div></header>
+<ul class="tgr-track" data-tgr-track><li class="tgr-card"><picture><source type="image/webp" srcset="/media/img/tgr-equipo/alejandro-curcio.webp"><img src="/media/img/tgr-equipo/alejandro-curcio.jpg" width="800" height="1000" loading="lazy" decoding="async" alt="Alejandro Curcio, piloto de Toyota Gazoo Racing Uruguay"></picture><span class="tgr-name pa-display">Alejandro Curcio</span></li><li class="tgr-card"><picture><source type="image/webp" srcset="/media/img/tgr-equipo/nicolas-acosta.webp"><img src="/media/img/tgr-equipo/nicolas-acosta.jpg" width="800" height="1000" loading="lazy" decoding="async" alt="Nicolás Acosta, piloto de Toyota Gazoo Racing Uruguay"></picture><span class="tgr-name pa-display">Nicolás Acosta</span></li><li class="tgr-card"><picture><source type="image/webp" srcset="/media/img/tgr-equipo/fernando-montero.webp"><img src="/media/img/tgr-equipo/fernando-montero.jpg" width="800" height="1000" loading="lazy" decoding="async" alt="Fernando «Monti» Montero, piloto de Toyota Gazoo Racing Uruguay"></picture><span class="tgr-name pa-display">Fernando «Monti» Montero</span></li><li class="tgr-card"><picture><source type="image/webp" srcset="/media/img/tgr-equipo/andres-garofalo.webp"><img src="/media/img/tgr-equipo/andres-garofalo.jpg" width="800" height="1000" loading="lazy" decoding="async" alt="Andrés Garófalo, piloto de Toyota Gazoo Racing Uruguay"></picture><span class="tgr-name pa-display">Andrés Garófalo</span></li><li class="tgr-card"><picture><source type="image/webp" srcset="/media/img/tgr-equipo/fernando-etchegorry.webp"><img src="/media/img/tgr-equipo/fernando-etchegorry.jpg" width="800" height="1000" loading="lazy" decoding="async" alt="Fernando Etchegorry, piloto de Toyota Gazoo Racing Uruguay"></picture><span class="tgr-name pa-display">Fernando Etchegorry</span></li></ul>
+</section>
+<script is:inline>(()=>{const t=document.querySelector('[data-tgr-track]');if(!t)return;const step=()=>(t.querySelector('.tgr-card')?.getBoundingClientRect().width||300)+16;document.querySelector('[data-tgr-prev]')?.addEventListener('click',()=>t.scrollBy({left:-step(),behavior:'smooth'}));document.querySelector('[data-tgr-next]')?.addEventListener('click',()=>t.scrollBy({left:step(),behavior:'smooth'}));})();</script>
       <!-- TOYOTA SUPRA 2027: dos verticales lado a lado, mismo comportamiento
            que el mosaico (reveal con máscara, autoplay en vista, pausa). -->
       <section class="dep-supra" aria-labelledby="dep-supra-t">
@@ -683,3 +691,18 @@ const mosaico = [
   addEventListener('resize', () => { if (!rafV) rafV = requestAnimationFrame(check); }, { passive: true });
   check();
 </script>
+
+<style is:inline>.tgr{margin:clamp(72px,9vw,140px) 0 clamp(40px,5vw,72px)}
+.tgr-head{display:flex;align-items:end;justify-content:space-between;gap:24px;margin-bottom:clamp(24px,3vw,40px)}
+.tgr-title{font-size:clamp(36px,5.4vw,88px);line-height:.95;letter-spacing:-.04em;margin:10px 0 0;color:#fff}
+.tgr-nav{display:flex;gap:10px}
+.tgr-btn{width:48px;height:48px;border-radius:50%;border:1px solid rgba(255,255,255,.25);background:transparent;color:#fff;font-size:18px;cursor:pointer;transition:background .3s,color .3s}
+.tgr-btn:hover{background:var(--pa-accent,#e8c874);color:#0c0a06;border-color:transparent}
+.tgr-track{list-style:none;margin:0;padding:0 0 8px;display:grid;grid-auto-flow:column;grid-auto-columns:clamp(220px,24vw,340px);gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none}
+.tgr-track::-webkit-scrollbar{display:none}
+.tgr-card{scroll-snap-align:start;position:relative;margin:0}
+.tgr-card picture,.tgr-card img{display:block;width:100%;height:auto;aspect-ratio:4/5;object-fit:cover;border-radius:16px}
+.tgr-card img{transition:transform .8s cubic-bezier(.2,.7,.2,1)}
+.tgr-card:hover img{transform:scale(1.03)}
+.tgr-name{display:block;margin-top:14px;font-size:clamp(20px,1rem + .7vw,28px);line-height:1.1;letter-spacing:-.02em;color:#fff}
+</style>

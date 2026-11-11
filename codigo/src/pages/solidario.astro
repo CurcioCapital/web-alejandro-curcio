@@ -95,20 +95,17 @@ const guinnessSlides = [
 			<header class="pa-cap-head">
 				<p class="pa-kick"><span class="pa-idx">[ 02 ]</span>Récord Guinness · 13 abril 2024</p>
 				<h2 class="pa-display pa-cap-title" data-split="lines">Meterse al hielo con los demás.</h2>
-				<p class="pa-lead" data-reveal>El 13 de abril de 2024, Montevideo fue sede del Ice Challenge 2024: el récord Guinness al mayor número de personas tomando un baño de hielo de forma simultánea. Lo organizó Curcio Capital como empresa — y Alejandro no lo miró desde afuera.</p>
+				<p class="pa-lead" data-reveal>El 13 de abril de 2024, Montevideo fue sede del Ice Challenge 2024: el récord Guinness al mayor número de personas tomando un baño de hielo de forma simultánea. Lo organizó Alejandro Curcio, y no lo miró desde afuera: se metió al hielo con los demás.</p>
 			</header>
 		</div>
 
 		<div class="guinness-gal" data-cursor="drag" data-cursor-label="Arrastrá">
 			<div class="wrap">
-				<Carousel dots ariaLabel="Momentos del récord Guinness Ice Challenge 2024" gap={16}>
+				<Carousel ariaLabel="Momentos del récord Guinness Ice Challenge 2024" gap={16}>
 					{
 						guinnessSlides.map((s, i) => (
 							<div class="guinness-slide" data-reveal="mask">
 								<BlurImage id={s.id} alt={s.caption} width={640} sizes="(max-width: 560px) 76vw, 360px" />
-								<div class="guinness-slide__scrim" />
-								<span class="guinness-slide__idx pa-mono" aria-hidden="true">{String(i + 1).padStart(2, '0')} / {String(guinnessSlides.length).padStart(2, '0')}</span>
-								<span class="guinness-slide__caption">{s.caption}</span>
 							</div>
 						))
 					}
@@ -118,13 +115,7 @@ const guinnessSlides = [
 
 		<div class="wrap">
 			<div class="guinness-pie">
-				<p class="aventura-para guinness-pie__texto" data-reveal>
-					Se metió al barril de hielo junto a todos los demás. Hay evidencia fotográfica oficial con
-					sello Guinness. <strong>Esa es la diferencia entre auspiciar y participar</strong>: entre
-					mirar desde el palco y estar adentro del agua helada, sintiendo lo mismo que sienten los
-					demás.
-				</p>
-
+				{/* 11/11/2026: se quitó «Se metió al barril…» (pedido de Emi). */}
 				<!-- Cifras de la nota oficial de Guinness World Records y de El
 				     Observador («05 — Hechos verificados.md»). Se publica 929 (la
 				     cifra homologada), nunca el «más de 1.000» de la prensa. -->
@@ -142,6 +133,18 @@ const guinnessSlides = [
 <div><p class="pa-mono sol-benef__kick">A beneficio de</p><p class="pa-display sol-benef__name">Centro Horizonte</p><p class="sol-benef__nota">Educación de niños con parálisis cerebral.</p></div>
 <p class="sol-benef__monto"><span class="pa-mono sol-benef__kick">El evento recaudó</span><strong class="pa-display">más de $975.000</strong></p>
 </div>
+<!-- 11/11/2026: qué es Centro Horizonte (texto entregado por Emi = horizonte.com.uy) + foto de la donación. -->
+<div class="sol-ch">
+<figure class="sol-ch__img"><picture><source type="image/webp" srcset="/media/img/guinness-cert/horizonte-donacion-800.webp 800w, /media/img/guinness-cert/horizonte-donacion-1206.webp 1206w" sizes="(min-width: 900px) 50vw, 100vw"><img src="/media/img/guinness-cert/horizonte-donacion-800.jpg" srcset="/media/img/guinness-cert/horizonte-donacion-800.jpg 800w, /media/img/guinness-cert/horizonte-donacion-1206.jpg 1206w" sizes="(min-width: 900px) 50vw, 100vw" width="1206" height="808" loading="lazy" decoding="async" alt="Alejandro Curcio sostiene el cheque gigante del Ice Challenge 2024: «Donamos a nombre de la fundación Centro Horizonte»"></picture></figure>
+<div class="sol-ch__txt">
+<p class="pa-mono sol-benef__kick">¿Qué es Centro Horizonte?</p>
+<p>La Escuela Horizonte nació en 1962 para brindar educación a niños con parálisis cerebral excluidos del sistema educativo.</p>
+<p>Evolucionó y obtuvo apoyo público, estableciendo convenios con INAU en 1991 y 1998 para programas de atención parcial y tiempo completo.</p>
+<p>En 2020, se modernizó con enfoque reflexivo e interacción, cambiando su nombre a Centro para destacar dos proyectos integrados.</p>
+<p>Este cambio no solo reafirma el compromiso del Centro con el tratamiento y desarrollo de personas con parálisis cerebral, sino que también lo posiciona como líder en la promoción de la integración social y la innovación en este campo.</p>
+<a class="pa-btn sol-ch__btn" href="https://www.horizonte.com.uy/" target="_blank" rel="noopener noreferrer"><span>Conocé más de Centro Horizonte</span><span class="pa-btn-ico" aria-hidden="true"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></span></a>
+</div>
+</div>
 <div class="sol-cert">
 <p class="pa-mono sol-cert__kick">Certificación oficial · Guinness World Records&trade;</p>
 <div class="sol-cert__grid">
@@ -158,6 +161,25 @@ const guinnessSlides = [
 .sol-benef__nota{font-size:clamp(18px,1rem + .5vw,24px);line-height:1.4;margin:16px 0 0;color:var(--ink-mid,rgba(255,255,255,.75))}
 .sol-benef__monto{margin:0;display:grid;gap:10px}
 .sol-benef__monto strong{font-size:clamp(48px,7.5vw,120px);line-height:.9;letter-spacing:-.05em;font-weight:var(--display-wght,560);background:linear-gradient(135deg,#b8892a 0%,#e8c874 46%,#c9992f 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.cir-grid{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:clamp(24px,4vw,64px);align-items:center;margin-top:clamp(28px,4vw,56px)}
+.cir-video{border-radius:18px;overflow:hidden;aspect-ratio:16/9;background:#000}
+.cir-video video{display:block;width:100%;height:100%;object-fit:cover}
+.cir-txt p{margin:0 0 16px;font-size:clamp(16px,.95rem + .25vw,19px);line-height:1.6;color:var(--ink-mid,rgba(255,255,255,.78))}
+.cir-txt .cir-dato{display:grid;gap:8px;margin-bottom:24px}
+.cir-dato strong{font-size:clamp(48px,6vw,96px);line-height:.9;letter-spacing:-.05em;background:linear-gradient(135deg,#b8892a 0%,#e8c874 46%,#c9992f 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.cir-dato span{color:var(--ink-hi,#fff)}
+@media (max-width:860px){.cir-grid{grid-template-columns:1fr}}
+.tel{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:clamp(28px,5vw,80px);align-items:start;margin:clamp(24px,3vw,40px) 0 clamp(48px,6vw,96px);padding:clamp(28px,3.5vw,48px) 0;border-top:1px solid rgba(20,17,12,.14);border-bottom:1px solid rgba(20,17,12,.14)}
+.tel-kick{font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:#8a6a24;margin:0 0 16px}
+.tel-intro p{margin:0 0 14px;font-size:clamp(16px,.95rem + .25vw,18px);line-height:1.6;color:#4a443a}
+.tel-intro p.tel-lead{font-size:clamp(22px,1rem + 1.1vw,32px);line-height:1.25;letter-spacing:-.01em;color:#14110c}
+.tel-btn{margin-top:10px}
+.tel-stats{margin:0;display:grid;gap:22px}
+.tel-stats div{display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:baseline;padding-bottom:18px;border-bottom:1px solid rgba(20,17,12,.1)}
+.tel-stats dt{font-size:clamp(44px,5vw,80px);line-height:.9;letter-spacing:-.05em;background:linear-gradient(135deg,#b8892a 0%,#e8c874 46%,#c9992f 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;min-width:2.2ch}
+.tel-stats dd{margin:0;font-size:15px;line-height:1.45;color:#4a443a}
+@media (max-width:860px){.tel{grid-template-columns:1fr}}
+.sol-ch{margin-top:clamp(40px,5vw,72px);display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:clamp(24px,4vw,64px);align-items:center}.sol-ch__img{margin:0;border-radius:18px;overflow:hidden}.sol-ch__img img{display:block;width:100%;height:auto}.sol-ch__txt p{margin:0 0 14px;font-size:clamp(16px,.95rem + .2vw,18px);line-height:1.6;color:var(--ink-mid,rgba(255,255,255,.78))}.sol-ch__txt p.sol-benef__kick{margin-bottom:18px}.sol-ch__btn{margin-top:14px}@media (max-width:820px){.sol-ch{grid-template-columns:1fr}}
 .sol-cert{margin-top:clamp(56px,7vw,104px)}
 .sol-cert__grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(12px,1.4vw,20px)}
 .sol-cert__fig{margin:0;overflow:hidden}
@@ -178,9 +200,24 @@ const guinnessSlides = [
 	<section id="drift-solidario" class="pa-cap pa-cap--bone pa-grid">
 		<div class="wrap">
 			<header class="pa-cap-head">
-				<p class="pa-kick"><span class="pa-idx">[ 03 ]</span>Drift Arena Solidario · noviembre 2024</p>
-				<h2 class="pa-display pa-cap-title" data-split="lines">Drift Arena Solidario.<br />Teletón.</h2>
+				<p class="pa-kick"><span class="pa-idx">[ 03 ]</span>Teletón · Drift solidario · 2022 — 2024</p>
+				<h2 class="pa-display pa-cap-title" data-split="lines">Teletón.<br />Drift solidario.</h2>
 			</header>
+<!-- 11/11/2026: Teletón con el mismo peso que el récord Guinness (pedido de Emi). Cifras: Teletón vía Montevideo Portal (2025) y cuenta pública 2016. -->
+<div class="tel">
+<div class="tel-intro">
+<p class="pa-mono tel-kick">¿Qué es Teletón?</p>
+<p class="tel-lead">La Fundación Teletón Uruguay brinda rehabilitación integral y gratuita a niños, niñas y adolescentes con discapacidad motriz, en todo el país.</p>
+<p>Su centro de Montevideo abrió en 2006 y el de Fray Bentos atiende desde 2012. Cada noviembre, la maratón televisiva reúne los fondos que sostienen esa atención durante todo el año. El drift solidario de Toyota Gazoo Racing suma su parte a esa causa.</p>
+<a class="pa-btn tel-btn" href="https://www.teleton.org.uy/" target="_blank" rel="noopener noreferrer"><span>Conocé más de Teletón</span><span class="pa-btn-ico" aria-hidden="true"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></span></a>
+</div>
+<dl class="tel-stats">
+<div><dt class="pa-display">2</dt><dd>Centros de rehabilitación: Montevideo y Fray Bentos</dd></div>
+<div><dt class="pa-display">+5.800</dt><dd>Niños y adolescentes atendidos</dd></div>
+<div><dt class="pa-display">3</dt><dd>Años seguidos de récord de recaudación en el drift solidario</dd></div>
+</dl>
+</div>
+
 			<MediaTextBlock>
 				<Fragment slot="media">
 					<div class="drift-media pa-crop" data-reveal="mask">
@@ -318,6 +355,26 @@ const guinnessSlides = [
 			<span class="pm-caption pa-mono">Copa Toyota — entrega de premios</span>
 		</div>
 	</section>
+
+<div class="section-gap"></div>
+<!-- 11/11/2026: Fundación Cireneos (texto de Emi; video: resumen de 1 min 48 s del reel «Rancho Cero», @cireneos_, 23/11/2025). -->
+<section id="cireneos" class="pa-cap pa-grid av-cap cir">
+<div class="wrap">
+<header class="pa-cap-head">
+<p class="pa-kick"><span class="pa-idx">[ 05 ]</span>Fundación Cireneos · Rancho Cero</p>
+<h2 class="pa-display pa-cap-title">Una casa cambia el punto de partida.</h2>
+</header>
+<div class="cir-grid">
+<div class="cir-video"><video data-audio="auto" src="/media/video/cireneos-resumen.mp4" poster="/media/video/cireneos-resumen-poster.jpg" muted loop autoplay playsinline preload="metadata" aria-label="Resumen del documental Rancho Cero de la Fundación Cireneos: familias que pasaron de un rancho a una vivienda digna"></video></div>
+<div class="cir-txt">
+<p class="cir-dato"><strong class="pa-display">+150.000</strong><span>niños en Uruguay viven en hogares que se inundan, tienen peligro de derrumbe o presentan carencias graves en sus materiales.</span></p>
+<p>Cuando una casa no protege, todo se vuelve más difícil. Dormir, estudiar, cuidar la salud, sostener una rutina o imaginar un futuro distinto.</p>
+<p>Por eso la vivienda no es solo un techo. Una vivienda segura cambia el punto de partida: permite descansar, cuidar la salud, sostener rutinas, estudiar y empezar a proyectar una vida con más estabilidad y oportunidades.</p>
+</div>
+</div>
+</div>
+</section>
+
 
 	<div class="section-gap"></div>
 

@@ -27,7 +27,8 @@ const { texto } = Astro.props;
 
 <section class="pl" data-pl aria-label={texto}>
   <div class="pl-pin">
-    <div class="pl-poster" data-pl-poster>
+    <!-- 11/11/2026: único sonido de Deportista: audio de TOYOTA DRIFT PARK2.MP4, arranca cuando entra este video (sonido.js). -->
+    <div class="pl-poster" data-pl-poster data-ambient="/media/audio/drift-park-audio.m4a" data-ambient-vol="0.45">
       <video
         class="pl-video"
         src="/media/video/deportista-plate-loop.mp4"

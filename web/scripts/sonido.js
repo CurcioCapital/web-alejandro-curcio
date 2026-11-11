@@ -40,8 +40,20 @@
 	const read = () => { try { return localStorage.getItem(KEY); } catch { return null; } };
 	const save = (v) => { try { localStorage.setItem(KEY, v); } catch {} };
 
-	let enabled = read() !== 'off';
-	let unlocked = false;
+	// 11/11/2026: el sonido no es opcional (pedido de Emi): sin botón y
+	// siempre activo; se ignora la preferencia guardada.
+	let enabled = true;
+	// 11/11/2026: si el navegador ya permite sonido sin gesto (por ejemplo,
+	// porque el usuario ya interactuó con el sitio), arranca sonando.
+	let unlocked = (() => {
+		try {
+			if (navigator.userActivation && navigator.userActivation.hasBeenActive) return true;
+			if (navigator.getAutoplayPolicy) return navigator.getAutoplayPolicy('mediaelement') === 'allowed';
+			const C = window.AudioContext || window.webkitAudioContext;
+			if (!C) return false;
+			const ctx = new C(); const ok = ctx.state === 'running'; ctx.close(); return ok;
+		} catch { return false; }
+	})();
 	let manual = null; // video que el usuario puso a sonar
 	let manualAt = 0;
 	const pausedAt = new WeakMap(); // momento de la última pausa real (play la borra)
@@ -191,7 +203,7 @@
 		if (v.muted) { try { v.volume = 0; } catch {} }
 		fadeTo(v, 1);
 		if (v.paused) {
-			v.play().catch(() => { setMuted(v, true); v.play().catch(() => {}); });
+			v.play().catch(() => { setMuted(v, true); unlocked = false; v.play().catch(() => {}); });
 		}
 		syncPm(v);
 	}
@@ -305,6 +317,7 @@
 	// ── Botón flotante ─────────────────────────────────────────────
 	let btn = null;
 	function mountButton() {
+		return; // sin botón flotante (11/11/2026)
 		if (btn || !hasAudioMark()) return;
 		const css = document.createElement('style');
 		css.textContent = `

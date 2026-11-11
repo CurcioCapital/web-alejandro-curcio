@@ -22,8 +22,8 @@ interface Props {
   piscinas: number;
   recordAnterior: number;
   recordAnteriorNota: string;
-  beneficiario: string;
-  beneficiarioNota: string;
+  beneficiario?: string;
+  beneficiarioNota?: string;
 }
 
 const {
@@ -94,11 +94,11 @@ const datos = [
     }
   </dl>
 
-  <p class="gw-beneficio">
+  {beneficiario && (<p class="gw-beneficio">
     <span class="gw-beneficio-etiqueta">A beneficio de</span>
     <strong>{beneficiario}</strong>
     <span class="gw-beneficio-nota">{beneficiarioNota}</span>
-  </p>
+  </p>)}
 </section>
 
 <style>

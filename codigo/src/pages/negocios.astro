@@ -82,8 +82,7 @@ const ayaxBeats = [
 			<div class="plate-media" data-parallax="0.18">
 				<video
 					class="plate-video"
-					src="/media/video/sucesion-plate-loop-audio.mp4"
-					data-full="/media/video/sucesion.mp4"
+					src="/media/video/sucesion.mp4"
 					data-audio="auto"
 					poster="/media/video/sucesion-poster.jpg"
 					muted
@@ -107,16 +106,7 @@ const ayaxBeats = [
 			<!-- Pie técnico: control de sonido + crédito sobre una hairline. -->
 			<div class="plate-foot">
 				<div class="wrap plate-foot-in">
-					<button class="plate-sound" type="button" data-sound-toggle data-magnetic>
-						<span class="plate-sound-ico" aria-hidden="true">
-							<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2">
-								<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" fill="currentColor" stroke="none"></polygon>
-								<path d="M15.5 8.5a5 5 0 0 1 0 7" data-wave></path>
-							</svg>
-						</span>
-						<span data-sound-label>Escuchar el discurso</span>
-					</button>
-					<span class="plate-eq" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
+					{/* 11/11/2026: sin botón de sonido: el discurso suena solo al entrar. */}
 					<a class="pa-btn" href="#ayax" data-magnetic data-roll>
 						<span>Conocé la historia</span>
 						<span class="pa-btn-ico" aria-hidden="true">
@@ -149,7 +139,7 @@ const ayaxBeats = [
 			</AyaxScrollStory>
 
 			<!-- Bloque editorial: cita grande + video al costado -->
-			<div class="ayax-body">
+			<div class="ayax-body" style="grid-template-columns:minmax(0,1fr);max-width:920px">
 				<div class="ayax-col">
 					<figure class="q pa-quote" data-reveal>
 						<blockquote>
@@ -169,51 +159,9 @@ const ayaxBeats = [
 					</figure>
 				</div>
 
-				<!-- Aftermovie del evento (recorte 8–18s). Loop mudo; sólo carga
-				     cuando se acerca al viewport (ver el script al final). -->
-				<figure class="ayax-media">
-					<div class="ayax-video-box pa-media pa-crop" data-reveal="mask">
-						<video
-							class="ayax-video"
-							data-lazy-video="/media/video/gala80-card.mp4"
-							poster="/media/video/gala80-card-poster.jpg"
-							muted
-							loop
-							playsinline
-							preload="none"
-							aria-label="Alejandro Curcio junto al presidente Yamandú Orsi en la alfombra roja de la gala de los 80 años de AYAX"
-						></video>
-					</div>
-					<figcaption class="media-caption">
-						Octubre de 2025: la gala de los 80 años en el Sodre reunió a casi 2.000 personas, con el
-						presidente Yamandú Orsi y delegaciones de Toyota y Suzuki llegadas desde Japón.
-					</figcaption>
-				</figure>
 			</div>
 
-			<!-- Electrificación: parte de AYAX, no una apuesta aparte -->
-			<div class="subfrente">
-				<div class="subfrente-head">
-					<span class="subfrente-tag pa-mono">Electrificación · 2026</span>
-					<h3 class="subfrente-title pa-display" data-split="lines">Toyota bZ4X</h3>
-					<span class="subfrente-gauge" aria-hidden="true"><i></i></span>
-				</div>
-				<div class="subfrente-body">
-					<p class="body-text">
-						El primer SUV eléctrico japonés en Uruguay. Autonomía de hasta <b>525 km WLTP</b>, dos
-						versiones —Limited 4x2 a <b>USD 49.990</b> y Limited 4x4 a <b>USD 52.990</b>— y garantía
-						extendida de hasta <b>10 años</b> vía Ayax Value, la cobertura más amplia entre los
-						eléctricos del mercado uruguayo.
-					</p>
-					<figure class="q q--sm pa-quote">
-						<blockquote>
-							&ldquo;Hace 18 años que introdujimos los primeros autos electrificados en Uruguay… en 18 años
-							no cambiamos una batería.&rdquo;
-						</blockquote>
-						<figcaption>Forbes Uruguay, 24/04/2026</figcaption>
-					</figure>
-				</div>
-			</div>
+			{/* 11/11/2026: se quitaron la foto de la gala con el presidente y el apartado bZ4X. */}
 		</div>
 	</section>
 

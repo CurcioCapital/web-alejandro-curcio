@@ -59,8 +59,9 @@ const guinnessSlides = [
 			<div class="av-plate-media" data-parallax="0.2">
 				<video
 					class="av-plate-video"
-					src="/media/video/aventura-plate-loop.mp4"
-					poster="/media/video/aventura-plate-poster.jpg"
+					data-audio="auto"
+					src="/media/video/ice-challenge-aftermovie.mp4"
+					poster="/media/video/ice-challenge-aftermovie-poster.jpg"
 					muted
 					loop
 					autoplay
@@ -134,10 +135,38 @@ const guinnessSlides = [
 					piscinas={90}
 					recordAnterior={509}
 					recordAnteriorNota="Perth, Australia — enero 2024"
-					beneficiario="Centro Horizonte"
-					beneficiarioNota="Educación de niños con parálisis cerebral. El evento recaudó unos $975.000."
 				/>
 			</div>
+<!-- 11/11/2026: beneficio destacado (Centro Horizonte) + certificación Guinness (4 fotos oficiales). -->
+<div class="sol-benef">
+<div><p class="pa-mono sol-benef__kick">A beneficio de</p><p class="pa-display sol-benef__name">Centro Horizonte</p><p class="sol-benef__nota">Educación de niños con parálisis cerebral.</p></div>
+<p class="sol-benef__monto"><span class="pa-mono sol-benef__kick">El evento recaudó</span><strong class="pa-display">más de $975.000</strong></p>
+</div>
+<div class="sol-cert">
+<p class="pa-mono sol-cert__kick">Certificación oficial · Guinness World Records&trade;</p>
+<div class="sol-cert__grid">
+<figure class="sol-cert__fig" data-reveal><picture><source type="image/webp" srcset="/media/img/guinness-cert/cert-1-800.webp 800w, /media/img/guinness-cert/cert-1-1400.webp 1400w" sizes="(min-width: 900px) 50vw, 100vw"><img src="/media/img/guinness-cert/cert-1-800.jpg" srcset="/media/img/guinness-cert/cert-1-800.jpg 800w, /media/img/guinness-cert/cert-1-1400.jpg 1400w" sizes="(min-width: 900px) 50vw, 100vw" width="1400" height="933" loading="lazy" decoding="async" alt="Escenario del Ice Challenge 2024 en Montevideo durante la entrega del certificado Guinness World Records"></picture></figure>
+<figure class="sol-cert__fig" data-reveal><picture><source type="image/webp" srcset="/media/img/guinness-cert/cert-2-800.webp 800w, /media/img/guinness-cert/cert-2-1400.webp 1400w" sizes="(min-width: 900px) 50vw, 100vw"><img src="/media/img/guinness-cert/cert-2-800.jpg" srcset="/media/img/guinness-cert/cert-2-800.jpg 800w, /media/img/guinness-cert/cert-2-1400.jpg 1400w" sizes="(min-width: 900px) 50vw, 100vw" width="1400" height="933" loading="lazy" decoding="async" alt="Entrega del certificado oficial de Guinness World Records del Ice Challenge 2024"></picture></figure>
+<figure class="sol-cert__fig" data-reveal><picture><source type="image/webp" srcset="/media/img/guinness-cert/cert-3-800.webp 800w, /media/img/guinness-cert/cert-3-1400.webp 1400w" sizes="(min-width: 900px) 50vw, 100vw"><img src="/media/img/guinness-cert/cert-3-800.jpg" srcset="/media/img/guinness-cert/cert-3-800.jpg 800w, /media/img/guinness-cert/cert-3-1400.jpg 1400w" sizes="(min-width: 900px) 50vw, 100vw" width="1400" height="933" loading="lazy" decoding="async" alt="La adjudicadora de Guinness World Records entrega el certificado del récord en el escenario del Ice Challenge 2024"></picture></figure>
+<figure class="sol-cert__fig" data-reveal><picture><source type="image/webp" srcset="/media/img/guinness-cert/cert-4-800.webp 800w, /media/img/guinness-cert/cert-4-1400.webp 1400w" sizes="(min-width: 900px) 50vw, 100vw"><img src="/media/img/guinness-cert/cert-4-800.jpg" srcset="/media/img/guinness-cert/cert-4-800.jpg 800w, /media/img/guinness-cert/cert-4-1400.jpg 1400w" sizes="(min-width: 900px) 50vw, 100vw" width="1400" height="933" loading="lazy" decoding="async" alt="Participantes del Ice Challenge 2024 celebran con el certificado Guinness World Records, 13 de abril de 2024"></picture></figure>
+</div>
+</div>
+<style is:inline>
+.sol-benef{margin-top:clamp(56px,7vw,104px);padding:clamp(32px,4vw,56px) 0;border-top:1px solid rgba(232,200,116,.35);border-bottom:1px solid rgba(232,200,116,.35);display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:clamp(24px,4vw,64px);align-items:end}
+.sol-benef__kick,.sol-cert__kick{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent,#e8c874);margin:0 0 14px}
+.sol-benef__name{font-size:clamp(44px,7vw,112px);line-height:.92;letter-spacing:-.04em;margin:0;color:var(--ink-hi,#fff)}
+.sol-benef__nota{font-size:clamp(18px,1rem + .5vw,24px);line-height:1.4;margin:16px 0 0;color:var(--ink-mid,rgba(255,255,255,.75))}
+.sol-benef__monto{margin:0;display:grid;gap:10px}
+.sol-benef__monto strong{font-size:clamp(48px,7.5vw,120px);line-height:.9;letter-spacing:-.05em;font-weight:var(--display-wght,560);background:linear-gradient(135deg,#b8892a 0%,#e8c874 46%,#c9992f 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.sol-cert{margin-top:clamp(56px,7vw,104px)}
+.sol-cert__grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(12px,1.4vw,20px)}
+.sol-cert__fig{margin:0;overflow:hidden}
+.teleton-records .tr-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+@media (max-width:820px){.teleton-records .tr-grid{grid-template-columns:1fr}}
+.sol-cert__fig img{display:block;width:100%;height:auto}
+@media (max-width:820px){.sol-benef{grid-template-columns:1fr}}
+@media (max-width:600px){.sol-cert__grid{grid-template-columns:1fr}}
+</style>
 		</div>
 	</section>
 
@@ -157,7 +186,8 @@ const guinnessSlides = [
 					<div class="drift-media pa-crop" data-reveal="mask">
 						<video
 							class="drift-video"
-							src="/media/video/drift-solidario-card.mp4"
+							data-audio="auto"
+							src="/media/video/drift-solidario-card-audio.mp4"
 							poster="/media/video/drift-solidario-card-poster.jpg"
 							muted
 							loop
@@ -190,7 +220,7 @@ const guinnessSlides = [
 			<div class="tr-head">
 			<p class="pa-mono tr-kick">2022 · 2023 · 2024</p>
 			<h3 class="pa-display tr-title" data-split="lines">Tres años consecutivos,<br> récord de recaudación.</h3>
-			<p class="aventura-para tr-lead" data-reveal>Tres ediciones seguidas del drift solidario, y en cada una se rompió el récord de recaudación para la Fundación Teletón. Montos en pesos uruguayos, tal como figuran en los cheques entregados.</p>
+			<p class="aventura-para tr-lead" data-reveal>Tres ediciones seguidas del drift solidario, y en cada una se rompió el récord de recaudación para la Fundación Teletón.</p>
 			</div>
 			<div class="tr-grid">
 			<figure class="tr-fig" data-reveal>
@@ -202,7 +232,7 @@ const guinnessSlides = [
 			</div>
 			<figcaption>
 			<span class="pa-mono tr-year">2022 · Drift Park Solidario</span>
-			<span class="tr-amount">Dos cheques: $ 859.400 y $ 2.177.000.</span>
+			<span class="tr-amount">Donación: $ 3.036.400.</span>
 			</figcaption>
 			</figure>
 			<figure class="tr-fig" data-reveal>
@@ -214,7 +244,7 @@ const guinnessSlides = [
 			</div>
 			<figcaption>
 			<span class="pa-mono tr-year">2023 · Drift Park Solidario 2K23</span>
-			<span class="tr-amount">Dos cheques: $ 2.351.160 y $ 1.314.990.</span>
+			<span class="tr-amount">Donación: $ 3.666.150.</span>
 			</figcaption>
 			</figure>
 			<figure class="tr-fig" data-reveal>
@@ -226,19 +256,7 @@ const guinnessSlides = [
 			</div>
 			<figcaption>
 			<span class="pa-mono tr-year">2024 · Drift Arena Solidario</span>
-			<span class="tr-amount">Un cheque: $ 5.000.584.</span>
-			</figcaption>
-			</figure>
-			<figure class="tr-fig" data-reveal>
-			<div class="tr-img">
-			<picture>
-			<source type="image/webp" srcset="/media/img/teleton/teleton-2024-b-800.webp 800w" sizes="(min-width: 1100px) 25vw, (min-width: 600px) 50vw, 100vw">
-			<img src="/media/img/teleton/teleton-2024-b-800.jpg" srcset="/media/img/teleton/teleton-2024-b-800.jpg 800w" sizes="(min-width: 1100px) 25vw, (min-width: 600px) 50vw, 100vw" width="800" height="533" loading="lazy" decoding="async" alt="Entrega del cheque a la Fundación Teletón frente al público del Drift Arena Solidario 2024">
-			</picture>
-			</div>
-			<figcaption>
-			<span class="pa-mono tr-year">2024 · La entrega</span>
-			<span class="tr-amount">Antel Arena, 9 de noviembre de 2024.</span>
+			<span class="tr-amount">Donación: $ 5.000.584.</span>
 			</figcaption>
 			</figure>
 			</div>
@@ -289,9 +307,6 @@ const guinnessSlides = [
 							data-audio="auto"
 							aria-label="Torneo del programa Pelota al Medio: jóvenes jugando al fútbol y celebrando"
 						></video>
-						<button class="pm-sound pa-mono" type="button" data-pm-sound aria-pressed="false">
-							<span class="pm-sound__ico" aria-hidden="true"></span><span data-pm-sound-label>Activar sonido</span>
-						</button>
 					</div>
 					<span class="pm-caption pa-mono">Pelota al Medio — torneo del programa</span>
 				</div>

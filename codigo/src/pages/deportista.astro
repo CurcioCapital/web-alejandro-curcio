@@ -143,7 +143,7 @@ const mosaico = [
         {
           mosaico.map((m, i) => (
             <figure class:list={['dep-pieza', m.clase]}>
-              <div class="dep-pieza-media pa-crop" data-reveal="mask" data-cursor="play" data-cursor-label="Play" data-dep-piece>
+              <div class="dep-pieza-media pa-crop" data-reveal="mask" data-dep-piece>
                 <div class="dep-pieza-par" data-parallax={i === 0 ? '0.1' : '0.05'}>
                   <video
                     src={m.src}
@@ -156,9 +156,6 @@ const mosaico = [
                     aria-label={m.alt}
                   />
                 </div>
-                <button class="dep-toggle pa-mono" type="button" data-dep-toggle aria-label={`Pausar: ${m.titulo}`}>
-                  <span class="dep-toggle-ico" aria-hidden="true"></span><span data-dep-toggle-label>Pausa</span>
-                </button>
                 <span class="dep-pieza-idx pa-mono" aria-hidden="true">{pad2(i + 1)} / {pad2(mosaico.length)}</span>
               </div>
               <figcaption>
@@ -181,13 +178,10 @@ const mosaico = [
           {
             supra.map((m, i) => (
               <figure class="dep-pieza dep-supra-pieza">
-                <div class="dep-pieza-media pa-crop" data-reveal="mask" data-cursor="play" data-cursor-label="Play" data-dep-piece>
+                <div class="dep-pieza-media pa-crop" data-reveal="mask" data-dep-piece>
                   <div class="dep-pieza-par" data-parallax={i === 0 ? '0.04' : '0.09'}>
                     <video src={m.src} poster={m.poster} muted loop autoplay playsinline preload="none" aria-label={m.alt} />
                   </div>
-                  <button class="dep-toggle pa-mono" type="button" data-dep-toggle aria-label={`Pausar: Toyota Supra 2027, video ${i + 1}`}>
-                    <span class="dep-toggle-ico" aria-hidden="true"></span><span data-dep-toggle-label>Pausa</span>
-                  </button>
                   <span class="dep-pieza-idx pa-mono" aria-hidden="true">{pad2(i + 1)} / {pad2(supra.length)}</span>
                 </div>
               </figure>
@@ -668,8 +662,8 @@ const mosaico = [
         v.pause();
       }
     };
-    item.btn?.addEventListener('click', toggle);
-    box.addEventListener('click', toggle);
+    // 11/11/2026: sin pausa (ni botón ni clic en el video).
+    void toggle;
     setUI();
   });
   if (heroVideo && prm.matches) {

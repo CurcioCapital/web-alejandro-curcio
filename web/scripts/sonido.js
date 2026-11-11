@@ -78,7 +78,7 @@
 			audio.loop = true;
 			audio.preload = 'none';
 			audio.volume = 0;
-			const a = { sec, audio, intro: null, vol: Math.min(1, +sec.dataset.ambientVol || 0.4), cur: 0, timer: 0 };
+			const a = { sec, audio, intro: null, seen: false, vol: Math.min(1, +sec.dataset.ambientVol || 0.4), cur: 0, timer: 0 };
 			a.el = () => (a.intro && !a.introDone ? a.intro : a.audio);
 			if (sec.dataset.ambientIntro) {
 				a.intro = new Audio();
@@ -132,7 +132,10 @@
 	}
 	function updateAmbients(videoSounding) {
 		for (const a of ambients) {
-			const want = enabled && unlocked && !document.hidden && screenShare(a.sec) >= AMB_MIN;
+			// data-ambient-sticky: una vez que arrancó, sigue sonando aunque la sección salga de pantalla (Deportista, 11/11/2026).
+			if (screenShare(a.sec) >= AMB_MIN) a.seen = true;
+			const inView = a.sec.dataset.ambientSticky != null ? a.seen : screenShare(a.sec) >= AMB_MIN;
+			const want = enabled && unlocked && !document.hidden && inView;
 			rampAmbient(a, want && !videoSounding ? a.vol : 0);
 		}
 	}

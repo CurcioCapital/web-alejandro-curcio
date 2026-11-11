@@ -25,7 +25,6 @@
  * inventadas.
  */
 import Base from '../layouts/Base.astro';
-import QuoteOverlay from '../components/QuoteOverlay.astro';
 import AyaxScrollStory from '../components/secciones/negocios/AyaxScrollStory.astro';
 import '../components/secciones/historia/pa-kit.css';
 
@@ -107,7 +106,7 @@ const ayaxBeats = [
 			<div class="plate-foot">
 				<div class="wrap plate-foot-in">
 					{/* 11/11/2026: sin botón de sonido: el discurso suena solo al entrar. */}
-					<a class="pa-btn" href="#ayax" data-magnetic data-roll>
+					<a class="pa-btn" href="#ayax" data-magnetic data-roll style="padding:10px 14px 10px 18px;gap:10px;font-size:11px">
 						<span>Conocé la historia</span>
 						<span class="pa-btn-ico" aria-hidden="true">
 							<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M6 13l6 6 6-6"></path></svg>
@@ -139,7 +138,7 @@ const ayaxBeats = [
 			</AyaxScrollStory>
 
 			<!-- Bloque editorial: cita grande + video al costado -->
-			<div class="ayax-body" style="grid-template-columns:minmax(0,1fr);max-width:920px">
+			<div class="ayax-body">
 				<div class="ayax-col">
 					<figure class="q pa-quote" data-reveal>
 						<blockquote>
@@ -159,9 +158,30 @@ const ayaxBeats = [
 					</figure>
 				</div>
 
+				<!-- Aftermovie del evento (recorte 8–18s). Loop mudo; sólo carga
+				     cuando se acerca al viewport (ver el script al final). -->
+				<figure class="ayax-media">
+					<div class="ayax-video-box pa-media pa-crop" data-reveal="mask">
+						<video
+							class="ayax-video"
+							data-lazy-video="/media/video/gala80-card.mp4"
+							poster="/media/video/gala80-card-poster.jpg"
+							muted
+							loop
+							playsinline
+							preload="none"
+							aria-label="Alejandro Curcio junto al presidente Yamandú Orsi en la alfombra roja de la gala de los 80 años de AYAX"
+						></video>
+					</div>
+					<figcaption class="media-caption">
+						Octubre de 2025: la gala de los 80 años en el Sodre reunió a casi 2.000 personas, con el
+						presidente Yamandú Orsi y delegaciones de Toyota y Suzuki llegadas desde Japón.
+					</figcaption>
+				</figure>
+
 			</div>
 
-			{/* 11/11/2026: se quitaron la foto de la gala con el presidente y el apartado bZ4X. */}
+			{/* 11/11/2026: se quitó el apartado bZ4X. */}
 		</div>
 	</section>
 
@@ -425,20 +445,7 @@ const ayaxBeats = [
 		</div>
 	</section>
 
-	<!-- ============ CITA DESTACADA ====================================== -->
-	<QuoteOverlay
-		id="quote"
-		bgId="gala-alfombra"
-		bgAlt="Alejandro Curcio en la alfombra roja de la gala de los 80 años de AYAX en el Sodre"
-		quote="El precio es el último recurso, nunca el primero. Preferimos construir valor antes que destruir precios."
-		attribution="Alejandro Curcio — El País, 09/08/2026"
-		avatars={[
-			{ id: 'ale-living', alt: '' },
-			{ id: 'gala-quinteto', alt: '' },
-			{ src: '/media/video/brindis-poster.jpg', alt: '' },
-			{ src: '/media/video/sucesion-poster.jpg', alt: '' },
-		]}
-	/>
+	{/* 11/11/2026: se quitó la cita destacada sobre la foto con el presidente (QuoteOverlay «gala-alfombra»). */}
 
 	<!-- ============ CIERRE ============================================== -->
 	<section class="neg-cierre pa-grid">

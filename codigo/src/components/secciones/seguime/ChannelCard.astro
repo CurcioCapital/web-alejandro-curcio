@@ -61,6 +61,8 @@ const pending = ctaHref === '#';
       class:list={['channel-link', featured && 'channel-link--pill']}
       href={pending ? undefined : ctaHref}
       aria-disabled={pending ? 'true' : undefined}
+      target={pending ? undefined : '_blank'}
+      rel={pending ? undefined : 'noopener noreferrer'}
       data-magnetic={featured ? '' : undefined}
     >
       <span>{ctaLabel}</span>

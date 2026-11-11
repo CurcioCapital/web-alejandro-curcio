@@ -18,8 +18,8 @@ interface Props {
   kicker: string;
   title: string;
   sub: string;
-  ctaHref: string;
-  ctaLabel: string;
+  ctaHref?: string;
+  ctaLabel?: string;
   imgId: string;
   imgIdNarrow?: string;
   imgAlt: string;
@@ -57,12 +57,14 @@ const { id, kicker, title, sub, ctaHref, ctaLabel, imgId, imgIdNarrow, imgAlt, y
 
     <div class="hh-copy">
       <p class="pa-lead hh-sub" data-reveal>{sub}</p>
+      {ctaHref && ctaLabel && (
       <a class="pa-btn" href={ctaHref} data-magnetic data-roll>
         <span>{ctaLabel}</span>
         <span class="pa-btn-ico" aria-hidden="true">
           <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M6 13l6 6 6-6"></path></svg>
         </span>
       </a>
+      )}
     </div>
   </div>
 </section>

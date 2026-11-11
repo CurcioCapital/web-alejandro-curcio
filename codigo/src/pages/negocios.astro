@@ -29,22 +29,36 @@ import AyaxScrollStory from '../components/secciones/negocios/AyaxScrollStory.as
 import '../components/secciones/historia/pa-kit.css';
 
 const ayaxBeats = [
+	// 11/11/2026: suma los hitos de ayax80aniversario.com.uy (salvo 1960 y The HY Project), pedido de Emi.
 	{
 		year: '1945',
 		title: 'No empezó con autos.',
-		body: 'Ayax nació trayendo al país insumos de laboratorio y telares de última generación que revolucionaron la industria textil. El movimiento estaba en el ADN desde el primer día: anticiparse, adaptarse, reinventarse.',
+		body: 'Ayax fue fundada por Emilio J. Curcio en 1945. Nació trayendo al país insumos de laboratorio y telares de última generación que revolucionaron la industria textil. El movimiento estaba en el ADN desde el primer día: anticiparse, adaptarse, reinventarse.',
+	},
+	{
+		year: '1955',
+		title: 'El motor de la industria.',
+		body: 'Llegan los autos. Ayax suma la importación de automóviles Opel, con modelos de carrocería monocasco: más livianos, más resistentes, más preparados para lo que venía.',
 	},
 	{
 		year: '1968',
-		title: 'La decisión que marcó el rumbo.',
-		body: 'Representar a Toyota en Uruguay. Una marca que, como Ayax, no se define solo por lo que vende, sino por cómo piensa. Suzuki llegaría a fines de los 70.',
+		title: 'El comienzo de una filosofía.',
+		body: 'La decisión que marcó el rumbo: representar a Toyota en Uruguay. Una marca que, como Ayax, no se define solo por lo que vende, sino por cómo piensa.',
 	},
-	// 10/11/2026: reemplaza al capítulo «Opel» (pedido de Emi). Fuente: brain,
-	// 01_Empresa/Historia AYAX (Brief agencias 2026 · toyota.com.uy/nuestra-historia).
 	{
 		year: '1971',
 		title: 'La primera Hilux fuera de Japón.',
 		body: 'Tres años después de elegir Toyota, en Uruguay se ensambló la primera Hilux fabricada fuera de Japón. El estándar japonés, hecho acá.',
+	},
+	{
+		year: '1980',
+		title: 'Llega Suzuki a Uruguay.',
+		body: 'Ayax suma la representación exclusiva de Suzuki. Una segunda marca japonesa con la misma manera de pensar, que hoy acumula más de cuatro décadas en el país.',
+	},
+	{
+		year: '1985',
+		title: 'Somos industria nacional.',
+		body: 'Planta propia en Montevideo: ahí se ensamblaron la Hilux, el Corolla y el Suzuki Forsa. Ayax pasó de distribuir autos a fabricarlos.',
 	},
 	{
 		year: 'Pioneros',
@@ -58,9 +72,44 @@ const ayaxBeats = [
 		note: '⚠ Fechas tomadas del copy aprobado; pendientes de confirmar en Hechos verificados.',
 	},
 	{
+		year: '2005',
+		title: 'Lucca Design: diseño que cruza fronteras.',
+		body: 'Una planta de tapizados de cuero que exporta a Toyota. El estándar de calidad de la marca, hecho en Uruguay y enviado al mundo.',
+	},
+	{
+		year: '2012',
+		title: 'Prius C: la llegada del primer híbrido.',
+		body: 'La tecnología híbrida de Toyota llega al gran público uruguayo con el Prius C. El primer paso de un camino que hoy sigue con híbridos, híbridos enchufables y eléctricos.',
+	},
+	{
+		year: '2019',
+		title: 'Nueve años liderando el segmento de pasajeros.',
+		body: 'Suzuki, nueve años consecutivos al frente del segmento de pasajeros en Uruguay. La confianza de los clientes, sostenida temporada tras temporada.',
+	},
+	{
+		year: '2020',
+		title: 'TGR: excelencia deportiva y tecnológica.',
+		body: 'Toyota Gazoo Racing en Uruguay: la pista como laboratorio de la marca. Alejandro no la mira desde la tribuna; corre como piloto del equipo de drift.',
+	},
+	{
+		year: '2023',
+		title: 'Alejandro Curcio presenta Toolbook.',
+		body: 'Su segundo libro: herramientas para comprender el mundo que viene. Inteligencia artificial, realidad virtual, nanotecnología y biotecnología, desde la mirada del inversor.',
+	},
+	{
+		year: '2023',
+		title: 'Kingdom of Drift.',
+		body: 'Una producción documental sobre el drift, la disciplina que Alejandro corre con Toyota Gazoo Racing.',
+	},
+	{
 		year: '2025',
 		title: 'Ochenta años de presencia ininterrumpida.',
 		body: 'La gala en el Sodre reunió a casi 2.000 personas, con el presidente Yamandú Orsi y delegaciones de Toyota y Suzuki llegadas desde Japón. No es un punto de llegada.',
+	},
+	{
+		year: '2050',
+		title: 'El futuro es carbono neutral.',
+		body: 'La meta: carbono neutral al 2050, en línea con Beyond Zero de Toyota. Ayax genera energía solar propia desde 2017.',
 	},
 ];
 ---
@@ -129,10 +178,10 @@ const ayaxBeats = [
 						<dt class="stat-value pa-display"><span data-counter>97</span>%</dt><dd class="stat-label pa-mono">De los clientes vuelve a elegir la marca</dd>
 					</div>
 					<div class="stat pa-crop">
-						<dt class="stat-value pa-display"><span data-counter>23</span></dt><dd class="stat-label pa-mono">Concesionarios en todo el país</dd>
+						<dt class="stat-value pa-display">+<span data-counter>23</span></dt><dd class="stat-label pa-mono">Concesionarios en todo el país</dd>
 					</div>
 					<div class="stat pa-crop">
-						<dt class="stat-value pa-display"><span data-counter>66</span></dt><dd class="stat-label pa-mono">Talleres autorizados</dd>
+						<dt class="stat-value pa-display">+<span data-counter>66</span></dt><dd class="stat-label pa-mono">Talleres autorizados</dd>
 					</div>
 				</dl>
 			</AyaxScrollStory>
@@ -149,13 +198,6 @@ const ayaxBeats = [
 						<figcaption>Alejandro Curcio — El País, 09/08/2026</figcaption>
 					</figure>
 
-					<figure class="q q--sm pa-quote" data-reveal>
-						<blockquote>
-							&ldquo;Nos templaron, nos forjaron, nos afilaron, nos hicieron más duros, pero también mucho
-							más humanos.&rdquo;
-						</blockquote>
-						<figcaption>Alejandro Curcio — Forbes Uruguay, 13/10/2025</figcaption>
-					</figure>
 				</div>
 
 				<!-- Aftermovie del evento (recorte 8–18s). Loop mudo; sólo carga
@@ -212,81 +254,52 @@ const ayaxBeats = [
 					<summary class="row-head" data-cursor="view" data-cursor-label="Abrir">
 						<span class="row-text">
 							<span class="row-name pa-display">Curcio Capital</span>
-							<span class="row-hook">El sello con el que la familia nombra su continuidad</span>
+							<span class="row-hook">Nuestra manera de hacer negocios y preservar el legado cultural familiar.</span>
 						</span>
 						<span class="row-tag pa-mono">El sello</span>
-						<span class="row-thumb row-thumb--type" aria-hidden="true">
-							<span class="row-thumb-rings"><i></i><i></i><i></i><i></i></span>
-						</span>
+						<span class="row-thumb ccx-thumb" aria-hidden="true"><img class="ccx-thumb-logo" src="/media/img/curcio-capital/logo-oro.svg" alt="" loading="lazy" /></span>
 						<span class="row-sign" aria-hidden="true"><i></i><i></i></span>
 					</summary>
 
-					<div class="row-panel">
-						<p class="row-lead">
-							No es solo un vehículo de inversión: es la formalización escrita —en 2017, como «Estilo
-							Comercial Curcio Capital»— de una manera de hacer negocios que Emilio J. Curcio fundó y
-							Alejandro extendió.
-						</p>
-
-						<figure class="q pa-quote">
-							<blockquote>
-								&ldquo;Curcio Capital simboliza un conjunto de valores, normas, creencias y experiencias de
-								referencia que se traducen en este sello específico de continuidad.&rdquo;
-							</blockquote>
-							<figcaption>curciocapital.com</figcaption>
-						</figure>
-
-						<div class="pillars">
-							<div class="pillar">
-								<h4 class="pillar-title">Mejora Continua</h4>
-								<p class="pillar-body">
-									Kaizen — la filosofía japonesa que AYAX heredó de casi seis décadas de relación con
-									Toyota.
-								</p>
-							</div>
-							<div class="pillar">
-								<h4 class="pillar-title">Respeto hacia las Personas</h4>
-								<p class="pillar-body">
-									Cada cliente, empleado y proveedor, tratado como una relación de largo plazo, no una
-									transacción.
-								</p>
-							</div>
-							<div class="pillar">
-								<h4 class="pillar-title">Crecimiento Sustentable</h4>
-								<p class="pillar-body">
-									Crecer de una forma que se pueda sostener en el tiempo, sin sacrificar el mañana por
-									el resultado de hoy.
-								</p>
-							</div>
-						</div>
-
-						<div class="cc-split">
-							<div class="cc-col">
-								<span class="cc-label pa-mono">Hacia uno mismo</span>
-								<ul class="cc-list"><li>Coraje</li><li>Creatividad</li><li>Convicción</li></ul>
-							</div>
-							<div class="cc-col">
-								<span class="cc-label pa-mono">Hacia el cliente</span>
-								<ul class="cc-list"><li>Comunicación</li><li>Cooperación</li><li>Consideración</li></ul>
-							</div>
-						</div>
-
-						<p class="cc-mission">«El cliente primero, el cliente fiel, el cliente para toda la vida.»</p>
-
-						<p class="body-text">
-							El foco inversor está puesto en tecnología, biotecnología —incluidos laboratorios de
-							exosomas en Estados Unidos— y real estate.
-						</p>
-
-						<figure class="q q--sm pa-quote">
-							<blockquote>
-								&ldquo;La disrupción no es una amenaza, es la mayor oportunidad para quienes están dispuestos
-								a aprender y adaptarse. En Curcio Capital, no invertimos solo en tecnología,
-								invertimos en mentalidades ágiles.&rdquo;
-							</blockquote>
-							<figcaption>Alejandro Curcio — Pilar «El Negocio»</figcaption>
-						</figure>
-					</div>
+					<div class="row-panel ccx">
+<!-- 11/11/2026: textos ajustados a curciocapital.com y logo oficial (pedido de Emi). -->
+<div class="ccx-hero">
+<div class="ccx-mark"><img src="/media/img/curcio-capital/logo-oro.svg" alt="Logo de Curcio Capital: dos C entrelazadas con una A, «Since 1945»" loading="lazy" /></div>
+<div class="ccx-intro">
+<p class="pa-mono ccx-kick">Curcio Capital · Desde 1945</p>
+<p class="pa-display ccx-lead">Nuestra manera de hacer negocios y preservar el legado cultural familiar.</p>
+<p class="ccx-text">AYAX nació en Uruguay en 1945 y creció en la industria automotriz: primero con Bedford y Vauxhall, después como concesionario de General Motors, distribuidor nacional de FIAT y, más tarde, representante de Toyota y Suzuki. Curcio Capital se creó para preservar el legado cultural de esa historia. Las dos «C» del logo nombran a la familia y al capital de valores que se transmite.</p>
+<figure class="ccx-quote pa-quote"><blockquote>&ldquo;El antídoto más potente contra la entropía es el legado cultural.&rdquo;</blockquote><figcaption class="pa-mono">Alejandro Curcio · curciocapital.com</figcaption></figure>
+</div>
+</div>
+<div class="ccx-block">
+<p class="pa-mono ccx-kick">El camino hacia el éxito sustentable · Estilo Comercial 2017</p>
+<div class="ccx-pillars">
+<div class="ccx-pillar"><span class="pa-display ccx-num">01</span><h4 class="ccx-pillar-title">Mejora continua</h4><p>Kaizen: la filosofía japonesa que AYAX hizo propia en casi seis décadas junto a Toyota.</p></div>
+<div class="ccx-pillar"><span class="pa-display ccx-num">02</span><h4 class="ccx-pillar-title">Respeto hacia las personas</h4><p>Cada cliente, colaborador y proveedor, tratado como una relación de largo plazo, no como una transacción.</p></div>
+<div class="ccx-pillar"><span class="pa-display ccx-num">03</span><h4 class="ccx-pillar-title">Crecimiento sustentable</h4><p>Crecer de una forma que se pueda sostener en el tiempo, sin sacrificar el mañana por el resultado de hoy.</p></div>
+</div>
+</div>
+<div class="ccx-block ccx-3c">
+<div><p class="pa-mono ccx-kick">Las 3C para crecer en armonía</p><ul class="ccx-words"><li><b>C</b>omunicación</li><li><b>C</b>ooperación</li><li><b>C</b>onsideración</li></ul></div>
+<div><p class="pa-mono ccx-kick">Las 3C para superarse</p><ul class="ccx-words"><li><b>C</b>oraje</li><li><b>C</b>reatividad</li><li><b>C</b>onvicción</li></ul></div>
+</div>
+<div class="ccx-block">
+<p class="pa-mono ccx-kick">Los procesos · cinco pasos del cliente</p>
+<ol class="ccx-steps">
+<li><span class="pa-mono">01</span><b>Buscar</b><p>Comunicar el mensaje de la marca y entender lo que el mercado necesita.</p></li>
+<li><span class="pa-mono">02</span><b>Visitar</b><p>Puntos de venta cómodos, con ventas, repuestos y servicio en un mismo lugar.</p></li>
+<li><span class="pa-mono">03</span><b>Comprar</b><p>Sin presión y con total transparencia.</p></li>
+<li><span class="pa-mono">04</span><b>Obtener</b><p>La entrega a tiempo, como se prometió.</p></li>
+<li><span class="pa-mono">05</span><b>Tener</b><p>Una posventa eficiente y justa que construye fidelidad.</p></li>
+</ol>
+</div>
+<p class="pa-display ccx-mission">«El cliente primero, el cliente fiel, el cliente para toda la vida.»</p>
+<div class="ccx-foot">
+<p>El foco inversor está puesto en tecnología, biotecnología —incluidos laboratorios de exosomas en Estados Unidos— y real estate.</p>
+<figure class="ccx-quote ccx-quote--sm pa-quote"><blockquote>&ldquo;La disrupción no es una amenaza, es la mayor oportunidad para quienes están dispuestos a aprender y adaptarse. En Curcio Capital, no invertimos solo en tecnología, invertimos en mentalidades ágiles.&rdquo;</blockquote><figcaption class="pa-mono">Alejandro Curcio · Pilar «El Negocio»</figcaption></figure>
+</div>
+</div>
 				</details>
 
 				<!-- ---------- El Nido ---------- -->
@@ -413,6 +426,8 @@ const ayaxBeats = [
 							Presentado en 2019 como desarrollo pionero a nivel mundial.
 						</p>
 
+						<div class="hya"><p class="pa-mono ccx-kick">Premios y reconocimientos</p><table class="hya-table"><caption class="sr-only">Premios y reconocimientos del HY Project</caption><thead><tr><th scope="col" class="pa-mono">Reconocimiento</th><th scope="col" class="pa-mono">Resultado</th></tr></thead><tbody><tr><th scope="row">New York Festivals</th><td>Oro</td></tr><tr><th scope="row">Cannes Lions</th><td>Plata</td></tr><tr><th scope="row">Londres</th><td>Plata</td></tr><tr><th scope="row">The One Show</th><td>Premiado</td></tr><tr><th scope="row">AICP Next</th><td>Premiado</td></tr><tr><th scope="row">Interactive Innovation Award</th><td>Premiado</td></tr><tr><th scope="row">World Changing Ideas 2020 · Fast Company</th><td>Reconocido</td></tr><tr><th scope="row">MoMA, Nueva York</th><td>Reconoce a sus inventores</td></tr></tbody></table><p class="hya-src pa-mono">Fuente: thehyproject.com y el relato de Alejandro Curcio.</p></div>
+
 						<figure class="row-media">
 							<video
 								src="/media/video/hyproject-moma-page.mp4"
@@ -451,13 +466,8 @@ const ayaxBeats = [
 	<section class="neg-cierre pa-grid">
 		<div class="wrap">
 			<p class="pa-kick"><span class="pa-idx">[ 04 ]</span>AYAX · Legado</p>
-			<h2 class="neg-cierre-title pa-display" data-split="lines">Forjado, no heredado.</h2>
+			{/* 11/11/2026: sin «Forjado, no heredado.» ni su texto (pedido de Emi). */}
 			<div class="neg-cierre-foot">
-				<p class="pa-lead" data-reveal>
-					Lo que Alejandro recibió de su padre Emilio J. Curcio no fue un imperio terminado — fue
-					conducta observada. Ochenta años después, el mismo gesto se repite con la generación que
-					sigue.
-				</p>
 				<a class="pa-btn" href="/historia" data-magnetic data-roll>
 					<span>Conocé la historia completa</span>
 					<span class="pa-btn-ico" aria-hidden="true">
@@ -469,6 +479,55 @@ const ayaxBeats = [
 	</section>
 </div>
 </Base>
+
+<style is:inline>
+/* 11/11/2026: Curcio Capital (rediseño), HY Project (premios), cifras centradas */
+.stat-strip .stat{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.stat-strip .stat-label{margin-left:auto;margin-right:auto}
+.ccx-thumb{background:radial-gradient(120% 120% at 30% 20%,#2a2314 0%,#0f0d09 70%)!important}
+.ccx-thumb .ccx-thumb-logo{position:absolute;left:50%;top:50%;width:auto;height:72%;transform:translate(-50%,-50%);object-fit:contain}
+.ccx{display:grid;gap:clamp(40px,5vw,72px)}
+.ccx-kick{font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:#8a6a24;margin:0 0 18px}
+.ccx-hero{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:clamp(24px,4vw,64px);align-items:center}
+.ccx-mark{position:relative;aspect-ratio:1/1;border-radius:22px;overflow:hidden;background:radial-gradient(90% 90% at 50% 35%,#2b2415 0%,#100e0a 72%);display:grid;place-items:center;box-shadow:inset 0 0 0 1px rgba(226,191,110,.25)}
+.ccx-mark::after{content:"";position:absolute;inset:14px;border:1px solid rgba(226,191,110,.22);border-radius:14px;pointer-events:none}
+.ccx-mark img{width:56%;height:auto;filter:drop-shadow(0 6px 24px rgba(226,191,110,.25))}
+.ccx-lead{font-size:clamp(28px,1.2rem + 2vw,48px);line-height:1.04;letter-spacing:-.03em;margin:0 0 22px;color:#14110c}
+.ccx-text{font-size:clamp(16px,.95rem + .2vw,18px);line-height:1.6;color:#4a443a;margin:0 0 26px;max-width:62ch}
+.ccx-quote{margin:0;padding-left:22px;border-left:2px solid #c9992f}
+.ccx-quote blockquote{margin:0;font-size:clamp(22px,1rem + 1.2vw,32px);line-height:1.2;color:#14110c}
+.ccx-quote figcaption{margin-top:12px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#8b8475}
+.ccx-quote--sm blockquote{font-size:clamp(18px,1rem + .6vw,24px)}
+.ccx-block{border-top:1px solid rgba(20,17,12,.12);padding-top:clamp(28px,3vw,40px)}
+.ccx-pillars{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(20px,3vw,44px)}
+.ccx-pillar{position:relative}
+.ccx-num{display:block;font-size:clamp(44px,5vw,76px);line-height:.9;letter-spacing:-.05em;background:linear-gradient(135deg,#b8892a 0%,#e8c874 46%,#c9992f 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:14px}
+.ccx-pillar-title{font-size:clamp(20px,1rem + .6vw,26px);line-height:1.15;margin:0 0 10px;color:#14110c;font-weight:600;letter-spacing:-.01em}
+.ccx-pillar p{margin:0;font-size:15.5px;line-height:1.55;color:#4a443a}
+.ccx-3c{display:grid;grid-template-columns:1fr 1fr;gap:clamp(20px,3vw,44px)}
+.ccx-words{list-style:none;margin:0;padding:0;display:grid;gap:4px}
+.ccx-words li{font-family:var(--pa-display,inherit);font-size:clamp(28px,1.2rem + 1.8vw,46px);line-height:1.05;letter-spacing:-.03em;color:#14110c}
+.ccx-words b{font-weight:inherit;color:#b8892a}
+.ccx-steps{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:0;counter-reset:s}
+.ccx-steps li{position:relative;padding:22px 18px 0 0;border-top:2px solid #14110c}
+.ccx-steps li::before{content:"";position:absolute;top:-7px;left:0;width:12px;height:12px;border-radius:50%;background:#e2bf6e;box-shadow:0 0 0 3px #fff}
+.ccx-steps span{display:block;font-size:11px;letter-spacing:.1em;color:#8b8475;margin-bottom:8px}
+.ccx-steps b{display:block;font-size:clamp(20px,1rem + .5vw,24px);color:#14110c;letter-spacing:-.01em;margin-bottom:8px}
+.ccx-steps p{margin:0;font-size:14.5px;line-height:1.5;color:#4a443a}
+.ccx-mission{margin:0;padding:clamp(28px,4vw,52px) clamp(20px,4vw,56px);border-radius:22px;background:#14110c;color:#f3ead6;font-size:clamp(24px,1rem + 1.8vw,42px);line-height:1.12;letter-spacing:-.03em;text-align:center}
+.ccx-foot{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:clamp(20px,4vw,56px);align-items:start}
+.ccx-foot>p{margin:0;font-size:16px;line-height:1.6;color:#4a443a}
+.hya{margin:clamp(8px,1vw,16px) 0}
+.hya-table{width:100%;border-collapse:collapse;font-size:clamp(15px,.9rem + .25vw,18px)}
+.hya-table thead th{text-align:left;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#8b8475;font-weight:500;padding:0 0 12px;border-bottom:1px solid rgba(20,17,12,.2)}
+.hya-table tbody th,.hya-table tbody td{padding:14px 0;border-bottom:1px solid rgba(20,17,12,.1);text-align:left;vertical-align:baseline}
+.hya-table tbody th{font-weight:600;color:#14110c;padding-right:16px}
+.hya-table tbody td{color:#6b5320;text-align:right;font-weight:500}
+.hya-table thead th:last-child{text-align:right}
+.hya-src{margin:12px 0 0;font-size:10.5px;letter-spacing:.06em;color:#8b8475}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+@media (max-width:860px){.ccx-hero,.ccx-foot,.ccx-3c{grid-template-columns:1fr}.ccx-mark{max-width:360px}.ccx-pillars{grid-template-columns:1fr}.ccx-steps{grid-template-columns:1fr;gap:22px}.ccx-steps li{border-top:0;border-left:2px solid #14110c;padding:0 0 0 22px}.ccx-steps li::before{top:2px;left:-7px}}
+</style>
 
 <style>
 	/* ================= HERO — plancha a sangre ================= */

@@ -247,14 +247,14 @@ const ayaxBeats = [
 							<span class="row-hook">Nuestra manera de hacer negocios y preservar el legado cultural familiar.</span>
 						</span>
 						<span class="row-tag pa-mono">El sello</span>
-						<span class="row-thumb ccx-thumb" aria-hidden="true"><img class="ccx-thumb-logo" src="/media/img/curcio-capital/logo-oro.svg" alt="" loading="lazy" /></span>
+						<span class="row-thumb ccx-thumb" aria-hidden="true"><img class="ccx-thumb-logo" src="/media/img/curcio-capital/logo-tinta.svg" alt="" loading="lazy" /></span>
 						<span class="row-sign" aria-hidden="true"><i></i><i></i></span>
 					</summary>
 
 					<div class="row-panel ccx">
 <!-- 11/11/2026: textos ajustados a curciocapital.com y logo oficial (pedido de Emi). -->
 <div class="ccx-hero">
-<div class="ccx-mark"><img src="/media/img/curcio-capital/logo-oro.svg" alt="Logo de Curcio Capital: dos C entrelazadas con una A, «Since 1945»" loading="lazy" /></div>
+<div class="ccx-mark ccx-mark--foto"><picture><source type="image/webp" srcset="/media/img/curcio-capital/ale-retrato-600.webp 600w, /media/img/curcio-capital/ale-retrato-1000.webp 1000w" sizes="(min-width: 860px) 36vw, 100vw" /><img src="/media/img/curcio-capital/ale-retrato-600.jpg" srcset="/media/img/curcio-capital/ale-retrato-600.jpg 600w, /media/img/curcio-capital/ale-retrato-1000.jpg 1000w" sizes="(min-width: 860px) 36vw, 100vw" width="1000" height="1469" alt="Retrato de Alejandro Curcio" loading="lazy" /></picture></div>
 <div class="ccx-intro">
 <p class="pa-mono ccx-kick">Curcio Capital · Desde 1945</p>
 <p class="pa-display ccx-lead">Nuestra manera de hacer negocios y preservar el legado cultural familiar.</p>
@@ -452,9 +452,10 @@ const ayaxBeats = [
 /* 11/11/2026: Curcio Capital (rediseño), HY Project (premios), cifras centradas */
 .stat-strip .stat{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
 .stat-strip .stat-label{margin-left:auto;margin-right:auto}
-.ccx-thumb{background:radial-gradient(120% 120% at 30% 20%,#2a2314 0%,#0f0d09 70%)!important}
+.ccx-thumb{background:#fff!important;box-shadow:inset 0 0 0 1px rgba(20,17,12,.12)}
 .ccx-thumb .ccx-thumb-logo{position:absolute;left:50%;top:50%;width:auto;height:72%;transform:translate(-50%,-50%);object-fit:contain}
-.ccx .ccx-lead{margin:0 0 22px}.ccx .ccx-kick{margin:0 0 18px}.ccx-thumb{position:relative;overflow:hidden}
+.ccx .ccx-mark--foto{aspect-ratio:4/5;background:#1a1611;box-shadow:none}.ccx-mark--foto::after{display:none}.ccx-mark--foto picture,.ccx-mark--foto img{display:block;width:100%!important;height:100%;object-fit:cover;object-position:50% 25%;filter:none}
+.ccx-lead{margin:0 0 22px}.ccx .ccx-kick{margin:0 0 18px}.ccx-thumb{position:relative;overflow:hidden}
 .ccx{display:grid;gap:clamp(40px,5vw,72px)}
 .ccx-kick{font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:#8a6a24;margin:0 0 18px}
 .ccx-hero{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:clamp(24px,4vw,64px);align-items:center}

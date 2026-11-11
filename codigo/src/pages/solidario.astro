@@ -179,6 +179,22 @@ const guinnessSlides = [
 .tel-stats dt{font-size:clamp(44px,5vw,80px);line-height:.9;letter-spacing:-.05em;background:linear-gradient(135deg,#b8892a 0%,#e8c874 46%,#c9992f 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;min-width:2.2ch}
 .tel-stats dd{margin:0;font-size:15px;line-height:1.45;color:#4a443a}
 @media (max-width:860px){.tel{grid-template-columns:1fr}}
+.tely-list{display:grid;gap:clamp(56px,7vw,110px);margin-top:clamp(32px,4vw,56px)}
+.tely-head{display:grid;grid-template-columns:auto 1fr auto;gap:clamp(16px,3vw,40px);align-items:end;padding-bottom:18px;border-bottom:1px solid rgba(20,17,12,.14)}
+.tely-year{font-size:clamp(64px,9vw,150px);line-height:.82;letter-spacing:-.06em;background:linear-gradient(135deg,#b8892a 0%,#e8c874 46%,#c9992f 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.tely-name{margin:0;font-size:clamp(22px,1rem + 1.2vw,34px);line-height:1.05;letter-spacing:-.02em;color:#14110c}
+.tely-meta{margin:8px 0 0;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#8b8475}
+.tely-don{margin:0;display:grid;justify-items:end;gap:6px;text-align:right}
+.tely-don span{font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:#8a6a24}
+.tely-don strong{font-size:clamp(28px,1rem + 2vw,48px);line-height:1;letter-spacing:-.03em;color:#14110c}
+.tely-txt{margin:20px 0 22px;max-width:68ch;font-size:clamp(16px,.95rem + .25vw,19px);line-height:1.6;color:#4a443a}
+.tely-grid{display:grid;grid-template-columns:minmax(0,.8fr) repeat(2,minmax(0,1.2fr));grid-auto-rows:clamp(150px,15vw,240px);gap:12px}
+.tely-video{grid-row:span 2;border-radius:16px;overflow:hidden;background:#000}
+.tely-video video{display:block;width:100%;height:100%;object-fit:cover}
+.tely-foto{margin:0;border-radius:16px;overflow:hidden}
+.tely-foto picture,.tely-foto img{display:block;width:100%;height:100%;object-fit:cover}
+.tely--novideo .tely-grid{grid-template-columns:repeat(3,minmax(0,1fr));grid-auto-rows:clamp(180px,20vw,300px)}
+@media (max-width:860px){.tely-head{grid-template-columns:1fr}.tely-don{justify-items:start;text-align:left}.tely-grid,.tely--novideo .tely-grid{grid-template-columns:1fr 1fr;grid-auto-rows:clamp(140px,40vw,240px)}.tely-video{grid-row:span 2;grid-column:span 1}}
 .sol-ch{margin-top:clamp(40px,5vw,72px);display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:clamp(24px,4vw,64px);align-items:center}.sol-ch__img{margin:0;border-radius:18px;overflow:hidden}.sol-ch__img img{display:block;width:100%;height:auto}.sol-ch__txt p{margin:0 0 14px;font-size:clamp(16px,.95rem + .2vw,18px);line-height:1.6;color:var(--ink-mid,rgba(255,255,255,.78))}.sol-ch__txt p.sol-benef__kick{margin-bottom:18px}.sol-ch__btn{margin-top:14px}@media (max-width:820px){.sol-ch{grid-template-columns:1fr}}
 .sol-cert{margin-top:clamp(56px,7vw,104px)}
 .sol-cert__grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(12px,1.4vw,20px)}
@@ -259,44 +275,28 @@ const guinnessSlides = [
 			<h3 class="pa-display tr-title" data-split="lines">Tres años consecutivos,<br> récord de recaudación.</h3>
 			<p class="aventura-para tr-lead" data-reveal>Tres ediciones seguidas del drift solidario, y en cada una se rompió el récord de recaudación para la Fundación Teletón.</p>
 			</div>
-			<div class="tr-grid">
-			<figure class="tr-fig" data-reveal>
-			<div class="tr-img">
-			<picture>
+			<div class="tely-list"><article class="tely" data-reveal>
+<header class="tely-head"><span class="pa-display tely-year">2022</span><div><p class="tely-name pa-display">Drift Park Solidario</p><p class="pa-mono tely-meta">5 de noviembre de 2022</p></div><p class="tely-don"><span class="pa-mono">Donación a Teletón</span><strong class="pa-display">$ 3.036.400</strong></p></header>
+<p class="tely-txt">La primera edición: pilotos de Toyota Gazoo Racing, autos de calle y de competencia, y un público que fue a ver drift y terminó donando para la Fundación Teletón.</p>
+<div class="tely-grid"><div class="tely-video"><video data-audio="auto" src="/media/video/drift-solidario-2022.mp4" poster="/media/video/drift-solidario-2022-poster.jpg" muted loop autoplay playsinline preload="none" aria-label="Video del Drift Park Solidario 2022"></video></div><figure class="tely-foto tely-cheque"><picture>
 			<source type="image/webp" srcset="/media/img/teleton/teleton-2022-800.webp 800w, /media/img/teleton/teleton-2022-1400.webp 1400w" sizes="(min-width: 1100px) 25vw, (min-width: 600px) 50vw, 100vw">
 			<img src="/media/img/teleton/teleton-2022-800.jpg" srcset="/media/img/teleton/teleton-2022-800.jpg 800w, /media/img/teleton/teleton-2022-1400.jpg 1400w" sizes="(min-width: 1100px) 25vw, (min-width: 600px) 50vw, 100vw" width="1400" height="933" loading="lazy" decoding="async" alt="Pilotos y equipo de Toyota Gazoo Racing celebran con los cheques gigantes de la donación a la Fundación Teletón, Drift Park Solidario, 5 de noviembre de 2022">
-			</picture>
-			</div>
-			<figcaption>
-			<span class="pa-mono tr-year">2022 · Drift Park Solidario</span>
-			<span class="tr-amount">Donación: $ 3.036.400.</span>
-			</figcaption>
-			</figure>
-			<figure class="tr-fig" data-reveal>
-			<div class="tr-img">
-			<picture>
+			</picture></figure><figure class="tely-foto"><picture><source type="image/webp" srcset="/media/img/teleton/2022-pista.webp"><img src="/media/img/teleton/2022-pista.jpg" width="1200" height="800" loading="lazy" decoding="async" alt="Un auto rojo derrapa en la pista del Drift Park Solidario 2022"></picture></figure><figure class="tely-foto"><picture><source type="image/webp" srcset="/media/img/teleton/2022-humo.webp"><img src="/media/img/teleton/2022-humo.jpg" width="1200" height="800" loading="lazy" decoding="async" alt="Un auto de Toyota Gazoo Racing entre el humo de neumático, Drift Park Solidario 2022"></picture></figure><figure class="tely-foto"><picture><source type="image/webp" srcset="/media/img/teleton/2022-boxes.webp"><img src="/media/img/teleton/2022-boxes.jpg" width="1200" height="800" loading="lazy" decoding="async" alt="Autos y pilotos en la pista del Drift Park Solidario 2022"></picture></figure></div>
+</article><article class="tely" data-reveal>
+<header class="tely-head"><span class="pa-display tely-year">2023</span><div><p class="tely-name pa-display">Drift Park Solidario 2K23</p><p class="pa-mono tely-meta">Noviembre de 2023</p></div><p class="tely-don"><span class="pa-mono">Donación a Teletón</span><strong class="pa-display">$ 3.666.150</strong></p></header>
+<p class="tely-txt">La segunda edición creció en pilotos, en exhibiciones y en público, y volvió a superar la recaudación del año anterior.</p>
+<div class="tely-grid"><div class="tely-video"><video data-audio="auto" src="/media/video/drift-solidario-2023.mp4" poster="/media/video/drift-solidario-2023-poster.jpg" muted loop autoplay playsinline preload="none" aria-label="Video del Drift Park Solidario 2K23 2023"></video></div><figure class="tely-foto tely-cheque"><picture>
 			<source type="image/webp" srcset="/media/img/teleton/teleton-2023-800.webp 800w" sizes="(min-width: 1100px) 25vw, (min-width: 600px) 50vw, 100vw">
 			<img src="/media/img/teleton/teleton-2023-800.jpg" srcset="/media/img/teleton/teleton-2023-800.jpg 800w" sizes="(min-width: 1100px) 25vw, (min-width: 600px) 50vw, 100vw" width="800" height="533" loading="lazy" decoding="async" alt="Equipo de Toyota Gazoo Racing y voluntarias de Teletón en la pista con los cheques de la donación, Drift Park Solidario 2023">
-			</picture>
-			</div>
-			<figcaption>
-			<span class="pa-mono tr-year">2023 · Drift Park Solidario 2K23</span>
-			<span class="tr-amount">Donación: $ 3.666.150.</span>
-			</figcaption>
-			</figure>
-			<figure class="tr-fig" data-reveal>
-			<div class="tr-img">
-			<picture>
+			</picture></figure><figure class="tely-foto"><picture><source type="image/webp" srcset="/media/img/teleton/2023-pista.webp"><img src="/media/img/teleton/2023-pista.jpg" width="1200" height="800" loading="lazy" decoding="async" alt="El Supra de Toyota Gazoo Racing derrapa frente al público, Drift Park Solidario 2K23"></picture></figure><figure class="tely-foto"><picture><source type="image/webp" srcset="/media/img/teleton/2023-giro.webp"><img src="/media/img/teleton/2023-giro.jpg" width="1200" height="800" loading="lazy" decoding="async" alt="El Supra de Toyota Gazoo Racing en plena curva, Drift Park Solidario 2K23"></picture></figure></div>
+</article><article class="tely tely--novideo" data-reveal>
+<header class="tely-head"><span class="pa-display tely-year">2024</span><div><p class="tely-name pa-display">Drift Arena Solidario</p><p class="pa-mono tely-meta">Antel Arena · 9 de noviembre de 2024 · entrada libre</p></div><p class="tely-don"><span class="pa-mono">Donación a Teletón</span><strong class="pa-display">$ 5.000.584</strong></p></header>
+<p class="tely-txt">El drift se mudó a la ciudad: el Antel Arena convertido en pista, de noche, con las tribunas llenas. El tercer récord seguido de recaudación.</p>
+<div class="tely-grid"><figure class="tely-foto tely-cheque"><picture>
 			<source type="image/webp" srcset="/media/img/teleton/teleton-2024-a-800.webp 800w" sizes="(min-width: 1100px) 25vw, (min-width: 600px) 50vw, 100vw">
 			<img src="/media/img/teleton/teleton-2024-a-800.jpg" srcset="/media/img/teleton/teleton-2024-a-800.jpg 800w" sizes="(min-width: 1100px) 25vw, (min-width: 600px) 50vw, 100vw" width="800" height="533" loading="lazy" decoding="async" alt="Un niño de la Fundación Teletón sostiene el cheque de la donación del Drift Arena Solidario, 9 de noviembre de 2024">
-			</picture>
-			</div>
-			<figcaption>
-			<span class="pa-mono tr-year">2024 · Drift Arena Solidario</span>
-			<span class="tr-amount">Donación: $ 5.000.584.</span>
-			</figcaption>
-			</figure>
-			</div>
+			</picture></figure><figure class="tely-foto"><picture><source type="image/webp" srcset="/media/img/teleton/2024-fuego.webp"><img src="/media/img/teleton/2024-fuego.jpg" width="1200" height="800" loading="lazy" decoding="async" alt="Un auto de drift con llamaradas detrás, frente a las tribunas del Drift Arena Solidario 2024"></picture></figure><figure class="tely-foto"><picture><source type="image/webp" srcset="/media/img/teleton/2024-noche.webp"><img src="/media/img/teleton/2024-noche.jpg" width="1200" height="800" loading="lazy" decoding="async" alt="Un Toyota Supra derrapa de noche en el Drift Arena Solidario 2024"></picture></figure></div>
+</article></div>
 			</div>
 		</div>
 	</section>

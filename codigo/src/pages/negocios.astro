@@ -515,6 +515,11 @@ const ayaxBeats = [
 .hya-item:hover{background:rgba(226,191,110,.12)}
 .hya-item img{height:64px;width:auto;max-width:100%;object-fit:contain;filter:grayscale(1) contrast(1.1)}
 .hya-item span{font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#6b5320;line-height:1.4}
+.hya-grid{grid-template-columns:repeat(7,minmax(0,1fr))}
+.hya-item{padding:22px 10px 16px}
+.hya-item img{height:52px}
+@media (max-width:900px){.hya-grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media (max-width:560px){.hya-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .ccx-mission-q{max-width:none}
 .ccx-mission-q blockquote{font-size:clamp(26px,1rem + 2vw,44px)!important;line-height:1.15}
 .hya{margin:clamp(8px,1vw,16px) 0}

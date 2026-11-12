@@ -1,0 +1,154 @@
+/* La historia del trébol — v2 (fluida).
+   El texto corre con el scroll nativo (Lenis incluido): nada de transform
+   por JS sobre el texto. Lo fijo es el trébol (sticky) y las bandas de
+   fundido arriba y abajo (sticky). El JS solo pinta el trébol según el %
+   leído y ajusta la opacidad de cada párrafo según su distancia a la
+   línea de lectura. */
+.trb {
+  --trb-gold: #e2bf63;
+  --trb-oro: linear-gradient(135deg, #b8892a 0%, #e8c874 46%, #c9992f 100%);
+  --trb-bgc: #0c0a06;
+  --trb-top: 84px;
+  --trb-ink: rgba(255, 255, 255, 0.92);
+  --trb-mid: rgba(255, 255, 255, 0.62);
+  --trb-mono: 'JetBrains Mono Variable', 'JetBrains Mono', ui-monospace, monospace;
+  --trb-serif: 'Instrument Serif', 'Instrument Serif Fallback', Georgia, serif;
+  --trb-sans: 'Geist Variable', -apple-system, system-ui, sans-serif;
+  position: relative;
+  background: var(--trb-bgc);
+  color: var(--trb-ink);
+  font-family: var(--trb-sans);
+}
+.trb *, .trb *::before, .trb *::after { box-sizing: border-box; }
+.trb p, .trb h2, .trb h3 { margin: 0; }
+
+.trb-grid {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+  gap: clamp(32px, 5vw, 96px);
+  width: min(100%, 1440px);
+  margin: 0 auto;
+  padding: 0 clamp(20px, 4vw, 64px);
+}
+
+/* ---- Columna fija: trébol + % ---- */
+.trb-side {
+  position: sticky;
+  top: var(--trb-top);
+  height: calc(100svh - var(--trb-top));
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  padding: 18px 0 clamp(20px, 4vh, 40px);
+  z-index: 2;
+}
+.trb-top { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.trb-kick {
+  font-family: var(--trb-mono); font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--trb-gold); display: flex; align-items: center; gap: 12px;
+}
+.trb-kick::after { content: ''; width: 40px; height: 1px; background: currentColor; opacity: 0.5; }
+.trb-skip {
+  font-family: var(--trb-mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--trb-mid); text-decoration: none; display: inline-flex; align-items: center; gap: 8px;
+  min-height: 44px; padding: 0 2px; transition: color 0.25s;
+}
+.trb-skip:hover, .trb-skip:focus-visible { color: var(--trb-gold); }
+.trb-skip:focus-visible { outline: 1px solid var(--trb-gold); outline-offset: 4px; }
+
+.trb-mark { display: grid; place-items: center; align-content: center; gap: clamp(18px, 3vh, 32px); min-height: 0; }
+.trb-svgbox { position: relative; width: min(30vw, 46vh, 420px); aspect-ratio: 1; }
+.trb-svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.trb-ghost path { fill: rgba(255, 255, 255, 0.07); }
+.trb-leaf path { fill: url(#trb-oro); }
+.trb-glow { opacity: 0.55; }
+.trb-leafshine { opacity: 0; }
+.trb-spark { opacity: 0; }
+.trb.is-painting .trb-spark { opacity: 1; }
+.trb.is-complete .trb-glow { animation: trb-breathe 3.2s ease-in-out infinite; }
+@keyframes trb-breathe { 0%, 100% { opacity: 0.55; } 50% { opacity: 0.9; } }
+
+.trb-meta { display: grid; justify-items: center; gap: 8px; text-align: center; }
+.trb-pct {
+  font-family: var(--trb-mono); font-variant-numeric: tabular-nums;
+  font-size: clamp(28px, 1rem + 1.6vw, 44px); line-height: 1; letter-spacing: -0.02em;
+  background: var(--trb-oro); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+}
+.trb-pct small { font-size: 0.5em; margin-left: 2px; }
+.trb-leafline {
+  font-family: var(--trb-mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--trb-mid);
+  min-height: 1.4em;
+}
+.trb-leafline b { color: var(--trb-gold); font-weight: 500; }
+.trb-bar { width: min(220px, 60%); height: 2px; background: rgba(255, 255, 255, 0.12); border-radius: 2px; overflow: hidden; }
+.trb-bar i { display: block; height: 100%; background: var(--trb-oro); transform-origin: 0 50%; transform: scaleX(var(--trb-p, 0)); will-change: transform; }
+
+/* ---- Columna de texto: scroll nativo ---- */
+.trb-text { position: relative; padding: 0 0 0; z-index: 1; }
+.trb-fade {
+  position: sticky; height: 0; z-index: 3; pointer-events: none;
+}
+.trb-fade i { position: absolute; left: -2px; right: -2px; height: clamp(110px, 22vh, 220px); display: block; }
+.trb-fade--top { top: 0; }
+.trb-fade--top i { top: 0; height: calc(var(--trb-top) + clamp(90px, 18vh, 180px)); background: linear-gradient(var(--trb-bgc) 0, var(--trb-bgc) calc(var(--trb-top) + 10px), rgba(12, 10, 6, 0)); }
+.trb-fade--bot { bottom: 0; }
+.trb-fade--bot i { bottom: 0; background: linear-gradient(rgba(12, 10, 6, 0), var(--trb-bgc) 88%); }
+
+.trb-reel { max-width: 40rem; padding: 34vh 0 44vh; }
+.trb-item { will-change: opacity; }
+.trb-intro { margin-bottom: 22vh; }
+.trb-intro-kick { font-family: var(--trb-mono); font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--trb-mid); margin-bottom: 18px !important; }
+.trb-title { font-size: clamp(2.8rem, 1.2rem + 4.4vw, 6rem); line-height: 0.96; letter-spacing: -0.04em; font-weight: 560; color: #fff; }
+.trb-title em { font-family: var(--trb-serif); font-style: italic; font-weight: 400; letter-spacing: -0.01em; background: var(--trb-oro); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; padding-right: 0.06em; }
+.trb-sub { margin-top: 22px !important; font-size: clamp(17px, 1rem + 0.3vw, 21px); line-height: 1.5; color: var(--trb-mid); max-width: 30rem; }
+
+.trb-act { margin-top: 16vh; }
+.trb-act:first-of-type { margin-top: 0; }
+.trb-act-head { display: flex; align-items: center; gap: 14px; font-family: var(--trb-mono); font-size: 11px; font-weight: 400; letter-spacing: 0.16em; text-transform: uppercase; color: var(--trb-mid); margin-bottom: 4vh !important; }
+.trb-act-no { color: var(--trb-gold); }
+.trb-act-head::after { content: ''; width: 28px; height: 1px; background: currentColor; opacity: 0.6; order: 1; }
+.trb-act-label { order: 2; }
+
+.trb-beat--read { font-size: clamp(20px, 0.95rem + 0.75vw, 29px); line-height: 1.48; letter-spacing: -0.012em; color: var(--trb-ink); margin-bottom: 1.15em !important; text-wrap: pretty; }
+.trb-beat--big, .trb-beat--final {
+  font-family: var(--trb-serif); font-style: italic; font-weight: 400;
+  font-size: clamp(34px, 1.1rem + 3.2vw, 68px); line-height: 1.06; letter-spacing: -0.012em;
+  margin: 13vh 0 !important; text-wrap: balance;
+  background: var(--trb-oro); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+}
+.trb-beat--final { margin-bottom: 4vh !important; }
+.trb-sign { display: flex; align-items: center; gap: 14px; font-family: var(--trb-serif); font-style: italic; font-size: clamp(20px, 1rem + 0.6vw, 28px); color: var(--trb-ink); }
+.trb-sign-dash { width: 40px; height: 1px; background: var(--trb-gold); opacity: 0.7; }
+#trb-fin:focus { outline: none; }
+
+/* ---- Móvil: el trébol pasa a una barra fija arriba ---- */
+@media (max-width: 860px) {
+  .trb { --trb-top: 64px; }
+  .trb-grid { grid-template-columns: 1fr; gap: 0; }
+  .trb-side {
+    height: auto; top: var(--trb-top); padding: 10px 0 12px;
+    grid-template-rows: auto; grid-template-columns: auto 1fr auto; align-items: center; gap: 14px;
+    background: var(--trb-bgc);
+  }
+  .trb-top { display: contents; }
+  .trb-kick { display: none; }
+  .trb-skip { order: 3; font-size: 10px; }
+  .trb-mark { order: 1; grid-template-columns: auto 1fr; justify-items: start; place-items: center start; gap: 14px; grid-column: 1 / 3; }
+  .trb-svgbox { width: 64px; }
+  .trb-meta { justify-items: start; text-align: left; gap: 5px; }
+  .trb-pct { font-size: 24px; }
+  .trb-leafline { font-size: 10px; }
+  .trb-bar { width: 100%; max-width: 180px; }
+  .trb-side::before { content: ''; position: absolute; left: -40px; right: -40px; bottom: 100%; height: var(--trb-top); background: var(--trb-bgc); }
+  .trb-fade--top i { height: calc(var(--trb-top) + 88px + 80px); background: linear-gradient(var(--trb-bgc) 0, var(--trb-bgc) calc(var(--trb-top) + 88px), rgba(12, 10, 6, 0)); }
+  .trb-reel { padding: 26vh 0 40vh; }
+}
+
+/* ---- Movimiento reducido: texto corrido completo, sin fundidos ---- */
+@media (prefers-reduced-motion: reduce) {
+  .trb-fade { display: none; }
+  .trb-item { opacity: 1 !important; }
+  .trb-reel { padding: 12vh 0 16vh; }
+  .trb-spark { display: none; }
+  .trb.is-complete .trb-glow { animation: none; }
+}

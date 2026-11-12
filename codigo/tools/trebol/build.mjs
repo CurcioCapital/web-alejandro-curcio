@@ -25,8 +25,8 @@ if (fs.existsSync(editorial)) {
   } catch (e) { console.warn('editorial.json inválido, uso story.js:', e.message); }
 }
 const renderSrc = rd('src/render.js');
-const css = rd('src/trebol.css');
-const js = rd('src/trebol.js');
+const css = rd('src/trebol2.css');
+const js = rd('src/trebol2.js');
 const leaves = JSON.parse(rd('trebol-leaves.json'));
 
 const ctx = {};
@@ -49,29 +49,32 @@ svg += '<g class="trb-glow" filter="url(#trb-blur)">' + order.map((k, i) => `<pa
 svg += '</svg>';
 svg += '<svg class="trb-svg trb-svg--draw" viewBox="-8 -8 272 272" aria-hidden="true" focusable="false">';
 svg += `<g class="trb-ghost"><path d="${leaves.full}"/></g>`;
-svg += order.map((k, i) => `<g class="trb-leaf" data-leaf="${i + 1}"><path d="${leaves[k].fill}"/></g>`).join('');
+svg += order.map((k, i) => `<g class="trb-leaf" data-leaf="${i + 1}" mask="url(#trb-m${i + 1})"><path d="${leaves[k].fill}"/></g>`).join('');
 svg += order.map((k, i) => `<path class="trb-center" data-leaf="${i + 1}" d="${leaves[k].center}" fill="none" stroke="none"/>`).join('');
 svg += '<circle class="trb-spark" r="10" fill="url(#trb-sparkg)"/>';
 svg += '</svg>';
 
 const section = (reelHtml) => `<section class="trb" id="historia-trebol" data-trb aria-labelledby="trb-title">
-  <div class="trb-pin">
-    <div class="trb-bg" aria-hidden="true"></div>
-    <div class="trb-stage">
+  <div class="trb-grid">
+    <aside class="trb-side">
       <div class="trb-top">
-        <p class="trb-kick"><span class="trb-idx" aria-hidden="true">[ ✣ ]</span>Trébol solidario</p>
-        <a class="trb-skip" href="#trb-fin">Saltar historia <span class="trb-skip-arrow" aria-hidden="true">↓</span></a>
+        <p class="trb-kick">Trébol solidario</p>
+        <a class="trb-skip" href="#trb-fin">Saltar historia <span aria-hidden="true">↓</span></a>
       </div>
       <div class="trb-mark" aria-hidden="true">
         <div class="trb-svgbox">${svg}</div>
         <div class="trb-meta">
-          <p class="trb-leafno">Hoja <span class="trb-leafno-n">00</span> <span class="trb-leafno-of">/ 04</span></p>
-          <p class="trb-leafname">Una historia en cuatro hojas</p>
-          <div class="trb-prog"><i><b></b></i><i><b></b></i><i><b></b></i><i><b></b></i></div>
+          <p class="trb-pct"><span data-trb-pct>000</span><small>%</small></p>
+          <p class="trb-leafline" data-trb-leaf>Una historia en cuatro hojas</p>
+          <div class="trb-bar"><i></i></div>
         </div>
       </div>
-      <div class="trb-col"><div class="trb-reel" data-trb-reel>${reelHtml}</div></div>
-      <p class="trb-cue" aria-hidden="true"><i></i>Deslizá para leer</p>
+      <span></span>
+    </aside>
+    <div class="trb-text">
+      <div class="trb-fade trb-fade--top" aria-hidden="true"><i></i></div>
+      <div class="trb-reel" data-trb-reel>${reelHtml}</div>
+      <div class="trb-fade trb-fade--bot" aria-hidden="true"><i></i></div>
     </div>
   </div>
 </section>`;

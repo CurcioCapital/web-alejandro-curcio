@@ -28,6 +28,8 @@ const pasos = [
 
 <section class="lh ed-grid">
   <div class="lh-glow" aria-hidden="true"></div>
+  <!-- 12/11/2026: abre con el video de la faceta Pensador (mismo fragmento de Toolbook, con sonido). -->
+  <div class="lh-vid"><video data-audio="auto" src="/media/video/toolbook-pensador-card.mp4" poster="/media/video/toolbook-pensador-card-poster.jpg" muted loop autoplay playsinline preload="metadata" aria-label="Alejandro Curcio en la presentación de Toolbook"></video></div>
   <div class="ed-wrap lh-inner">
     <div class="lh-top ed-mono">
       <span class="lh-kicker">{'— '}Tres libros, un solo arco</span>
@@ -239,4 +241,6 @@ const pasos = [
       transition: none;
     }
   }
+  /* 12/11/2026: video de apertura */
+  .lh-vid{position:absolute;z-index:-1;top:0;bottom:0;left:41%;height:100%;aspect-ratio:9/16;max-width:62vw;pointer-events:none}.lh-vid video{display:block;width:100%;height:100%;object-fit:cover}.lh-vid::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,var(--ed-bg,#0c0a06) 0%,rgba(12,10,6,0) 24%,rgba(12,10,6,0) 76%,var(--ed-bg,#0c0a06) 100%),linear-gradient(0deg,var(--ed-bg,#0c0a06) 0%,rgba(12,10,6,.55) 22%,rgba(12,10,6,0) 48%),linear-gradient(180deg,rgba(12,10,6,.6) 0%,rgba(12,10,6,0) 22%)}@media (max-width:860px){.lh-vid{right:0;left:0;transform:none;width:100%;max-width:none;aspect-ratio:auto}.lh-vid::after{background:linear-gradient(0deg,var(--ed-bg,#0c0a06) 0%,rgba(12,10,6,.72) 40%,rgba(12,10,6,.25) 70%,rgba(12,10,6,.55) 100%)}}
 </style>

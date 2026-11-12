@@ -26,15 +26,9 @@ const DEFAULT_MODELS = [
   'anthropic/claude-sonnet-5.5',
   'google/gemini-3.5-flash',
   'openai/gpt-5.6-luna',
-  // Plan gratuito de AI Gateway (pruebas): modelos sin costo.
-  'reflection/beam',
-  'reflection/beam-free',
-  'humansand/ampersand-v0.1',
-  'stealth/glyph-cluster',
-  'nvidia/nemotron-3.5-lightning-free',
+  // Plan gratuito de AI Gateway (pruebas): el primero que respondió bien en las pruebas del 12/11.
   'google/gemini-2.5-flash-lite',
-  'openai/gpt-5-nano',
-  'anthropic/claude-haiku-5.5',
+  'nvidia/nemotron-3.5-lightning-free',
 ];
 const MAX_PREGUNTA = 500;
 const TOP_K = 6;

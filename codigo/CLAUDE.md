@@ -23,7 +23,7 @@ La persona que dirige el proyecto es Emi (equipo de marketing). La gerente de ma
 4. **Récord Guinness = 929 personas.** El hijo se llama **Lucca Curcio**. Alejandro es la **segunda** generación al frente de AYAX y asumió la dirección en 1995.
 5. **No tocar la animación del casco** (CascoEnPista, secuencia `media/casco-gr360`) salvo pedido explícito.
 6. El formulario de CEO DE TU VIDA está **desactivado a propósito** (falta la herramienta de email).
-7. El chat **Preguntale a Ale** no tiene backend. Siempre tiene que decir que es una IA y no Alejandro.
+7. El chat **Preguntale a Ale** corre en `web/api/chat.js` (Vercel + AI Gateway). Desde el 12/11/2026 responde en primera persona con la voz de Ale (decisión de Marketing), pero siempre muestra un aviso visible de que es una IA que no habla en nombre de Alejandro, y si le preguntan dice que es una IA. Gobernanza: nota «Preguntale a Ale» del Marketing Brain.
 8. **Nunca** incluir un `.env` con claves. Una clave de OpenRouter circuló en un zip viejo y **hay que rotarla**.
 9. Textos en español rioplatense (vos), tono sobrio y editorial.
 

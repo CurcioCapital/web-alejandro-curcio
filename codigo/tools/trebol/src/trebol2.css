@@ -76,7 +76,7 @@
 }
 .trb-pct small { font-size: 0.5em; margin-left: 2px; }
 .trb-leafline {
-  font-family: var(--trb-mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--trb-mid);
+  font-family: var(--trb-mono); font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--trb-mid);
   min-height: 1.4em;
 }
 .trb-leafline b { color: var(--trb-gold); font-weight: 500; }

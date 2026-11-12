@@ -46,6 +46,7 @@
     total += L.len;
     L.mp.style.strokeDasharray = L.len + ' ' + (L.len + 1);
     L.mp.style.strokeDashoffset = L.len;
+    L.mp.style.visibility = 'hidden'; L.vis = false;
     var N = 80;
     for (var i = 0; i <= N; i++) {
       var pt = L.mp.getPointAtLength(L.len * i / N);
@@ -55,18 +56,20 @@
 
   // ---- Medidas cacheadas
   var M = { top: 0, start: 0, end: 1, vh: 1, items: [], acts: [] };
+  // Posiciones RELATIVAS a la sección: no se desfasan si cambia el alto
+  // de lo que está arriba (videos, imágenes que cargan tarde).
   function absTop(el) {
-    var r = el.getBoundingClientRect();
-    return r.top + (window.scrollY || window.pageYOffset);
+    return el.getBoundingClientRect().top - root.getBoundingClientRect().top;
   }
   function measure() {
     M.vh = window.innerHeight;
-    var first = root.querySelector('.trb-act') || text;
+    var title = root.querySelector('.trb-title') || text;
     var finEl = fin || text;
     // Línea de lectura al 52% de la pantalla. 0% cuando arranca la Hoja 1,
     // 100% cuando la frase final llega a esa línea.
     M.line = M.vh * 0.52;
-    M.start = absTop(first) - M.line;
+    // 0 % mientras se lee el titular; empieza a pintar cuando el titular sube.
+    M.start = absTop(title) - M.vh * 0.3;
     M.end = absTop(finEl) + finEl.offsetHeight * 0.5 - M.line;
     if (M.end <= M.start) M.end = M.start + 1;
     M.items = items.map(function (el) {
@@ -88,6 +91,8 @@
       if (!L.len) continue;
       var d = drawn - L.start;
       d = d < 0 ? 0 : d > L.len ? L.len : d;
+      var vis = d > 0.01;
+      if (vis !== L.vis) { L.mp.style.visibility = vis ? 'visible' : 'hidden'; L.vis = vis; }
       var off = L.len - d;
       if (Math.abs(off - L.last) > 0.05) { L.mp.style.strokeDashoffset = off.toFixed(2); L.last = off; }
       var full = d >= L.len;
@@ -110,11 +115,6 @@
       root.classList.toggle('is-painting', state === 'painting');
       root.classList.toggle('is-complete', state === 'done');
       lastState = state;
-    }
-    var pct = Math.round(p * 100);
-    if (pct !== lastPct && pctEl) {
-      pctEl.textContent = (pct < 10 ? '00' : pct < 100 ? '0' : '') + pct;
-      lastPct = pct;
     }
     root.style.setProperty('--trb-p', p.toFixed(4));
   }
@@ -149,7 +149,8 @@
   function frame() {
     raf = 0;
     if (!running) return;
-    var y = window.scrollY || window.pageYOffset;
+    // Una sola lectura de layout por frame (antes de cualquier escritura).
+    var y = -root.getBoundingClientRect().top;
     if (y !== lastY || dirty) {
       lastY = y; dirty = false;
       var p = c01((y - M.start) / (M.end - M.start));
@@ -182,7 +183,7 @@
   if (skip) skip.addEventListener('click', function (ev) {
     ev.preventDefault();
     measure();
-    var target = M.end + 2;
+    var target = M.end + 2 + root.getBoundingClientRect().top + (window.scrollY || window.pageYOffset);
     var lenis = window.__lenis || window.lenis;
     if (lenis && lenis.scrollTo) lenis.scrollTo(target, { duration: 1.4, force: true });
     else window.scrollTo({ top: target, behavior: reduce.matches ? 'auto' : 'smooth' });

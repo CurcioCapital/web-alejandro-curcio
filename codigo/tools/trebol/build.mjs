@@ -64,7 +64,6 @@ const section = (reelHtml) => `<section class="trb" id="historia-trebol" data-tr
       <div class="trb-mark" aria-hidden="true">
         <div class="trb-svgbox">${svg}</div>
         <div class="trb-meta">
-          <p class="trb-pct"><span data-trb-pct>000</span><small>%</small></p>
           <p class="trb-leafline" data-trb-leaf>Una historia en cuatro hojas</p>
           <div class="trb-bar"><i></i></div>
         </div>

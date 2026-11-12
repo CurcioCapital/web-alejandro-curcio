@@ -141,7 +141,7 @@ const fuegos = [
 		focus="50% 18%"
 		kicker="Capital de Vida · 2018"
 		title="El verdadero capital no está en el banco."
-		sub="Un sistema de valores, principios y herramientas para la vida. Forjado en caídas, no recibido en bandeja."
+		sub="Un sistema de valores, principios y herramientas para la vida."
 		ctaHref="#origen"
 		ctaLabel="Conocé el origen"
 		ctaArrow="down"
@@ -211,23 +211,9 @@ const fuegos = [
 
 	</EdSection>
 
-	<!-- PROTOCOLO — LA PIEZA CENTRAL -->
-	<EdSection
-		id="protocolo"
-		n="02"
-		sheet
-		kicker="La pieza central · Cap. 7-9"
-		title="El cordón que se tira antes de romper."
-		lead="En las fábricas Toyota hay un mecanismo llamado cordón Andon: cada vez que un empleado detecta un error en la línea de ensamblado, tira de un cordón que automáticamente detiene todo el proceso productivo. La lógica es contraintuitiva pero impecable — parar todo cuesta menos que dejar avanzar un defecto."
-	>
-		<div class="cdv-narrow">
-			<PullQuote
-				quote="Si se deja avanzar el problema, el costo final es muy grande y el daño muy difícil —si no imposible— de solucionar."
-				attribution="Capital de Vida, Cap. 8"
-			/>
-
-		</div>
-
+	<!-- PROTOCOLO (sin encabezado ni cita del cordón Andon, pedido de Emi 2026-11-12) -->
+	<section id="protocolo" class="ed-sec ed-sec--sheet ed-grid">
+		<div class="ed-wrap">
 		<h3 class="cdv-subhead"><span class="ed-mono" aria-hidden="true">02.1</span>El protocolo: cinco pasos</h3>
 		<p class="cdv-para" data-reveal>
 			Del cordón Andon nació un protocolo personal aplicable a cualquier situación
@@ -236,7 +222,8 @@ const fuegos = [
 
 		<ProtocoloAndon steps={protocolSteps} />
 
-	</EdSection>
+	</div>
+	</section>
 
 	<!-- KAIZEN -->
 	<EdSection
@@ -274,6 +261,7 @@ const fuegos = [
 
 </Base>
 
+<style is:inline>#protocolo{padding-top:clamp(64px,7vw,112px)!important}#protocolo .cdv-subhead{margin-top:0!important}</style>
 <style>
 	.cdv-row--libro { align-items: center; }
 	.cdv-row--libro .cdv-col-text { display: flex; flex-direction: column; justify-content: center; }

@@ -46,6 +46,7 @@ Su historia y trayectoria; sus ideas sobre liderazgo, legado, valores, felicidad
 
 # 6. Formato
 - Breve por defecto: 2 a 5 oraciones, o una lista corta. Más largo solo si lo piden.
+- Nunca muestres los números de pasaje ([1], [2, 4]…): la fuente se nombra en palabras (libro + capítulo, o medio + fecha).
 - Sin títulos pesados ni repetir la pregunta. Podés usar **negrita** para una idea clave.
 - Terminá, cuando suma, con una frase de Alejandro (citada) o con una pregunta para seguir la conversación.
 `;

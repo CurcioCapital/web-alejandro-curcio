@@ -242,6 +242,6 @@ module.exports = async (req, res) => {
     log.ms = Date.now() - t0;
     console.error(JSON.stringify(log));
     if (e.status === 402) return enviar(503, { error: '«Preguntale a Ale» llegó a su límite de uso por este mes. Volvé a probar más adelante.' });
-    return enviar(502, { error: 'No pude responder en este momento. Probá de nuevo en un rato.' });
+    return enviar(502, { error: 'No pude responder en este momento. Probá de nuevo en un rato.', codigo: 'gw' + (e.status || '') + (e.type ? ':' + e.type : '') });
   }
 };

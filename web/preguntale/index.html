@@ -393,7 +393,7 @@
 .chat-dots i:nth-child(3) { animation-delay: .3s; }
 
 /* fuentes */
-.chat-src { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; margin-top: 18px; animation: chat-in .6s var(--c-ease) both; }
+.chat-src { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 0; margin-top: 14px; animation: chat-in .6s var(--c-ease) both; }
 .chat-src-k { font-family: var(--c-mono); font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--c-t3); margin-right: 2px; }
 .chat-chip {
   display: inline-flex; align-items: center; gap: 7px; max-width: 100%;
@@ -563,6 +563,33 @@
     .chat-input { font-size: 16.5px; }
   .chat-foot { font-size: 9.5px; margin-top: 7px; }
 }
+
+
+/* ===== 12/11/2026 (pedido de Emi): vista más limpia ===== */
+/* Fuentes: una línea de texto chico en lugar de cápsulas. */
+.chat-src-k { font-size: 9.5px; margin-right: 8px; }
+.chat-chip { display: inline; padding: 0; border: 0; border-radius: 0; background: none; font-size: 10.5px; letter-spacing: 0; color: var(--c-t3); max-width: none; }
+.chat-chip span { white-space: normal; }
+.chat-chip + .chat-chip::before { content: "·"; margin: 0 8px; color: var(--c-t3); }
+.chat-actions { margin-top: 10px; }
+/* Aviso de IA: solo abajo del campo de texto. */
+.chat-foot { font-family: var(--c-sans); font-size: 11.5px; letter-spacing: 0; color: var(--c-t3); }
+.chat-foot strong { color: var(--c-t2); font-weight: 600; }
+.chat-field-row { justify-content: flex-end; }
+/* Sin el botón «CEO DE TU VIDA» del encabezado en esta página. */
+.nav-cta { display: none !important; }
+/* En pantallas anchas el chat sube a la altura del encabezado. */
+@media (min-width: 1100px) {
+  .chat { margin-top: calc(-1 * var(--chat-nav-h, 64px)); }
+  .nav, .nav-inner { pointer-events: none; }
+  .nav a, .nav button { pointer-events: auto; }
+  .chat-bar { min-height: var(--chat-nav-h, 64px); padding: 0; border-bottom: 0; }
+}
+/* Campo de texto en una sola línea con el botón al costado (más compacto). */
+.chat-field { display: flex; align-items: flex-end; gap: 10px; }
+.chat-input { flex: 1; padding-top: 7px; padding-bottom: 7px; }
+.chat-field .chat-field-row { margin: 0; min-height: 40px; }
+@media (max-width: 559px) { .chat-foot { font-size: 10.5px; line-height: 1.45; } }
 </style>
 <section class="chat" id="chat" data-state="empty" aria-labelledby="chat-h1" data-av-webp="../media/img/ale-avatar/ale-avatar-96.webp" data-av-webp2="../media/img/ale-avatar/ale-avatar-256.webp" data-av-png="../media/img/ale-avatar/ale-avatar-96.png" data-av-webm="../media/img/ale-avatar/ale-avatar-pensando.webm" data-av-mp4="../media/img/ale-avatar/ale-avatar-pensando.mp4" data-av-poster="../media/img/ale-avatar/ale-avatar-pensando-poster.jpg" style="--chat-trebol:url(../media/marca/trebol.png)">
   <div class="chat-glow" aria-hidden="true"></div>
@@ -571,12 +598,7 @@
       <div class="chat-id">
         <span class="chat-id-mark" aria-hidden="true"></span>
         <h1 class="chat-h1" id="chat-h1">Preguntale a Ale</h1>
-        <span class="chat-tag" aria-hidden="true">IA</span>
       </div>
-      <p class="chat-aviso" id="chat-aviso">
-        <span class="chat-aviso-dot" aria-hidden="true"></span>
-        <span><strong>Esto es una IA</strong> entrenada con los libros y entrevistas de Alejandro Curcio. No habla en su nombre y puede equivocarse.</span>
-      </p>
       <button class="chat-new" type="button" id="chat-new" hidden>
         <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
         <span>Nueva conversación</span>
@@ -591,7 +613,7 @@
               <span class="chat-av chat-av--lg" data-av-static>
                 <span class="chat-av-face"><span class="chat-av-fb"></span><picture><source type="image/webp" srcset="../media/img/ale-avatar/ale-avatar-96.webp 96w, ../media/img/ale-avatar/ale-avatar-256.webp 256w" sizes="56px"><img src="../media/img/ale-avatar/ale-avatar-96.png" srcset="../media/img/ale-avatar/ale-avatar-96.png 96w, ../media/img/ale-avatar/ale-avatar-256.png 256w" sizes="56px" alt="" width="56" height="56" decoding="async"></picture></span>
               </span>
-              <p class="chat-kicker"><span class="chat-kicker-b">[ IA ]</span> Entrenada con sus libros y entrevistas</p>
+              <p class="chat-kicker">Entrenada con sus libros y entrevistas</p>
             </div>
             <p class="chat-hello">Hola, soy la versión IA de Ale. <em>Preguntame sobre mis ideas, mis libros y mis proyectos.</em></p>
             <p class="chat-sub">Respondo con lo que está en mis libros, entrevistas y prensa, y te muestro de dónde sale cada cosa. Si algo no está ahí, te lo digo en vez de inventarlo.</p>
@@ -599,7 +621,7 @@
           <figure class="chat-figure" aria-hidden="true">
             <span class="chat-figure-glow"></span>
             <picture><source type="image/webp" srcset="../media/img/ale-avatar/ale-avatar-cuerpo.webp"><img src="../media/img/ale-avatar/ale-avatar-cuerpo.png" alt="" width="640" height="687" loading="lazy" decoding="async"></picture>
-            <figcaption class="chat-figure-cap">Caricatura · IA</figcaption>
+            
           </figure>
         </div>
         <ul class="chat-sugs" aria-label="Preguntas sugeridas">
@@ -622,9 +644,8 @@
     <form class="chat-compose" id="chat-form" autocomplete="off" novalidate>
       <div class="chat-field">
         <label class="chat-sr" for="preguntale-input">Tu pregunta para Ale</label>
-        <textarea id="preguntale-input" class="chat-input" name="q" rows="1" maxlength="500" placeholder="Preguntale lo que quieras a Ale…" enterkeyhint="send" aria-describedby="chat-aviso chat-count"></textarea>
+        <textarea id="preguntale-input" class="chat-input" name="q" rows="1" maxlength="500" placeholder="Preguntale lo que quieras a Ale…" enterkeyhint="send" aria-describedby="chat-foot chat-count"></textarea>
         <div class="chat-field-row">
-          <span class="chat-hint" aria-hidden="true"><kbd>Enter</kbd> envía · <kbd>Shift</kbd>+<kbd>Enter</kbd> salto de línea</span>
           <span class="chat-count" id="chat-count" aria-live="polite"></span>
           <button class="chat-stop" type="button" id="chat-stop" aria-label="Detener respuesta" hidden>
             <svg viewBox="0 0 24 24" width="12" height="12" aria-hidden="true"><rect x="5" y="5" width="14" height="14" rx="3" fill="currentColor"/></svg>
@@ -635,7 +656,7 @@
           </button>
         </div>
       </div>
-      <p class="chat-foot">Generado por IA a partir de los libros y entrevistas de Alejandro Curcio · Revisá las fuentes</p>
+      <p class="chat-foot" id="chat-foot"><strong>Esto es una IA</strong> entrenada con los libros y entrevistas de Alejandro Curcio. No habla en su nombre y puede equivocarse.</p>
     </form>
     <p class="chat-sr" id="chat-status" role="status" aria-live="polite"></p>
   </div>
@@ -867,6 +888,8 @@
 
   function syncComposeH() { root.style.setProperty('--chat-compose-h', compose.offsetHeight + 'px'); }
   function syncTop() {
+    var nav = document.querySelector('.nav');
+    if (nav) root.style.setProperty('--chat-nav-h', nav.offsetHeight + 'px');
     var top = root.getBoundingClientRect().top + window.scrollY;
     if (top > 0 && top < 400) root.style.setProperty('--chat-top', Math.round(top) + 'px');
   }
@@ -947,7 +970,6 @@
     var av = makeAvatar();
     var label = el('span', 'chat-ai-label');
     label.appendChild(document.createTextNode('Ale'));
-    label.appendChild(el('b', 'chat-ai-tag', 'IA'));
     var body = el('div', 'chat-ai-body');
     var mdBox = el('div', 'chat-md');
     body.appendChild(mdBox);
@@ -964,7 +986,6 @@
       if (!txt) return;
       var chip = el('span', 'chat-chip');
       chip.title = 'Fuente: ' + txt;
-      chip.appendChild(el('i', null, String(i + 1).padStart(2, '0')));
       chip.appendChild(el('span', null, txt));
       box.appendChild(chip);
     });

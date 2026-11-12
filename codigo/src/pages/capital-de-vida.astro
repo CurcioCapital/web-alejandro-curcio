@@ -189,7 +189,7 @@ const fuegos = [
 
 		<h3 class="cdv-subhead"><span class="ed-mono" aria-hidden="true">01.1</span>Qué es el Capital de Vida</h3>
 
-		<div class="cdv-row cdv-row--reverse">
+		<div class="cdv-row cdv-row--reverse cdv-row--libro">
 			<div class="cdv-col-media cdv-col-media--cover" data-ed-tilt="12">
 				<div class="ed-tilt__obj ed-crop">
 					<MediaCard
@@ -205,15 +205,6 @@ const fuegos = [
 				<PullQuote
 					quote="Todo ese gran paquete de información y herramientas para la vida compuesto por nuestros valores, creencias, experiencias y principios es lo que denomino capital de vida."
 					attribution="Capital de Vida, Introducción"
-				/>
-				<p class="cdv-para" data-reveal>
-					Es la convicción central: no puede haber un juego de valores para la casa y otro para
-					la empresa.
-				</p>
-				<PullQuote
-					size="sm"
-					quote="Si a mis hijos, en casa, les fomento la importancia de la honestidad y la integridad, pero cuando van a la empresa les digo 'si podemos hacer trampa, mejor', estoy generando una grave inconsistencia en el mensaje que les quiero legar."
-					attribution='Pilar "La Intimidad"'
 				/>
 			</div>
 		</div>
@@ -265,13 +256,13 @@ const fuegos = [
 		<div class="cdv-quote-pair">
 			<PullQuote
 				size="sm"
-				quote="No importa cuántas veces haya sido mejorado, cada parte en la línea de producción está llena de desperdicios, y aunque hoy esté perfecta, mañana cambiará y el desperdicio volverá a crecer."
-				attribution="Taiichi Ohno, citado en curciocapital.com"
+				quote="La velocidad sin dirección puede destruir la cadena de valor. La innovación sin calidad puede destruir confianza."
+				attribution="Alejandro Curcio — El País, 09/08/2026"
 			/>
 			<PullQuote
 				size="sm"
-				quote="La velocidad sin dirección puede destruir la cadena de valor. La innovación sin calidad puede destruir confianza."
-				attribution="Alejandro Curcio — El País, 09/08/2026"
+				quote="No importa cuántas veces haya sido mejorado, cada parte en la línea de producción está llena de desperdicios, y aunque hoy esté perfecta, mañana cambiará y el desperdicio volverá a crecer."
+				attribution="Taiichi Ohno, citado en curciocapital.com"
 			/>
 			<PullQuote
 				size="sm"
@@ -284,6 +275,10 @@ const fuegos = [
 </Base>
 
 <style>
+	.cdv-row--libro { align-items: center; }
+	.cdv-row--libro .cdv-col-text { display: flex; flex-direction: column; justify-content: center; }
+	.cdv-row--libro :global(.cdv-quote) { margin: 0; }
+	:global(#origen) { padding-bottom: clamp(64px, 7vw, 120px) !important; }
 	.cdv-row {
 		display: grid;
 		grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);

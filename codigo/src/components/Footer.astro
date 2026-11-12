@@ -38,7 +38,7 @@ const columnas = [
     links: [
       { href: '/prensa', texto: 'Prensa' },
       { href: '/seguime', texto: 'Seguime' },
-      { href: '/preguntale', texto: 'Ale IA' },
+      { href: '/preguntale', texto: 'Preguntale a Ale' },
     ],
   },
   {
@@ -71,6 +71,7 @@ const marcas = ['Curcio Capital', 'AYAX', 'El Nido'];
             <span class="t-mono">Volver arriba</span>
           </a>
         </div>
+        <style is:inline>{`@media (min-width:1024px){.footer-links{grid-template-columns:repeat(4,max-content)!important;justify-content:space-between}}`}</style>
         <div class="footer-links">
           {
             columnas.map((col, ci) => (
@@ -81,7 +82,7 @@ const marcas = ['Curcio Capital', 'AYAX', 'El Nido'];
                 </h4>
                 {col.links.map((l) =>
                   'href' in l && l.href ? (
-                    <a class="roll-host" href={l.href} {...('externo' in l && l.externo ? { target: '_blank', rel: 'noopener noreferrer' } : {})}>
+                    <a class="roll-host" style="white-space:nowrap" href={l.href} {...('externo' in l && l.externo ? { target: '_blank', rel: 'noopener noreferrer' } : {})}>
                       <span class="roll">
                         <span class="roll__in">
                           <span>{l.texto}</span>

@@ -90,6 +90,7 @@ async function gw(path, body, key) {
   try { json = JSON.parse(txt); } catch (e) {}
   if (!r.ok) {
     const err = new Error('gateway ' + r.status + ' ' + txt.slice(0, 300));
+    err.msg = (json && json.error && json.error.message) ? String(json.error.message).slice(0, 220) : '';
     err.status = r.status;
     err.type = json && json.error && json.error.type;
     throw err;
@@ -133,7 +134,7 @@ async function completar(messages, key, opts) {
       if (text.trim()) return { text: text.trim(), model, usage: j.usage };
     } catch (e) {
       ultimo = e;
-      fallos.push(model.split('/')[1] + ':' + (e.status || '') + (e.type ? '-' + e.type : ''));
+      fallos.push(model.split('/')[1] + ':' + (e.status || '') + (e.type ? '-' + e.type : '') + (fallos.length ? '' : ' «' + (e.msg || '') + '»'));
       // Presupuesto agotado o sin créditos: no tiene sentido probar otro modelo.
       if (e.status === 402 || e.status === 401) throw e;
     }

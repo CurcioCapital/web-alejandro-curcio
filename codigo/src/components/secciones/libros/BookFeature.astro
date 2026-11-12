@@ -49,6 +49,11 @@ const { id, n, kicker, title, lead, cover, ratio, alt, year, sheet = false } = A
     gap: clamp(40px, 7vw, 128px);
     align-items: center;
   }
+  /* 12/11/2026: la tapa queda fija mientras el texto sube */
+  @media (min-width: 861px) {
+    .bf-grid { align-items: start; }
+    .bf-cover { position: sticky; top: clamp(110px, 16vh, 170px); }
+  }
   .bf-cover {
     perspective: 1200px;
     max-width: 380px;

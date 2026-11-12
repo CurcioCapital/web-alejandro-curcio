@@ -65,7 +65,7 @@ const libros = [
           <span class="lb-rule" aria-hidden="true"></span>
           <span class="lb-num" aria-hidden="true">[ 03 ]</span>
         </div>
-        <h2 class="lb-h2" data-split="lines">Tres libros,<br /> una misma mirada.</h2>
+        <h2 class="lb-h2" data-split="lines">Tres libros,<br class="lb-br" /> una misma mirada.</h2>
       </div>
 
       <div class="wrap lb-stage" data-lb-stage>
@@ -113,12 +113,6 @@ const libros = [
             <p class="lb-sub">
               51 reglas para decidir mejor, liderar con claridad y construir una vida con intención.
             </p>
-            <a class="pill pill--accent" href="/ceo-de-tu-vida" data-magnetic data-roll>
-              Enterate del lanzamiento
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
-                <line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" />
-              </svg>
-            </a>
           </article>
         </div>
 
@@ -475,6 +469,8 @@ const libros = [
       min-height: 0;
     }
   }
+  /* 12/11/2026: titular en una línea, a la izquierda */
+  .lb-h2{text-align:left!important;margin-left:0!important;margin-right:auto!important}.lb-br{display:none}@media (min-width:861px){.lb-h2{white-space:nowrap}}@media (max-width:860px){.lb-br{display:inline}}
 </style>
 
 <script>

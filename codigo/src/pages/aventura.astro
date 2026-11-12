@@ -22,6 +22,7 @@ import '../components/secciones/historia/pa-kit.css';
 	     va entera en un marco a la derecha — sin degradés sobre las caras — y
 	     la copia a la izquierda, sobre un «FUJI» en contorno de fondo. -->
 	<section class="avf">
+		<video class="avf-vid" data-audio="auto" autoplay muted loop playsinline preload="auto" poster="/media/video/fuji-hero-poster.jpg" aria-hidden="true" tabindex="-1"><source src="/media/video/fuji-hero-720.mp4" type="video/mp4" media="(max-width: 860px)"><source src="/media/video/fuji-hero.mp4" type="video/mp4"></video><span class="avf-veil" aria-hidden="true"></span>
 		<span class="avf-word" aria-hidden="true" data-parallax="-0.12">FUJI</span>
 		<span class="avf-glow" aria-hidden="true"></span>
 		<div class="wrap avf-grid">
@@ -84,6 +85,7 @@ import '../components/secciones/historia/pa-kit.css';
 </div>
 </Base>
 
+<style is:inline>.avf{background:#05070b!important}.avf-vid{position:absolute;inset:0;z-index:-2;width:100%;height:100%;object-fit:cover;object-position:62% 50%}.avf-veil{position:absolute;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(90deg,rgb(5 7 11/.72) 0%,rgb(5 7 11/.38) 38%,rgb(5 7 11/0) 62%),linear-gradient(0deg,rgb(5 7 11/.55) 0%,rgb(5 7 11/0) 30%)}.avf .avf-word,.avf .avf-glow,.avf .avf-photo{display:none!important}.avf .avf-grid{grid-template-columns:1fr!important;align-items:end}.avf{min-height:calc(100svh - 115px)!important;align-items:flex-end!important;padding-bottom:clamp(40px,7vh,80px)!important}@media (max-width:860px){.avf{min-height:88svh!important;padding:0 0 48px!important}.avf-vid{object-position:58% 50%}.avf-veil{background:linear-gradient(0deg,rgb(5 7 11/.8) 0%,rgb(5 7 11/.25) 55%,rgb(5 7 11/.1) 100%)}}</style>
 <style>
 	/* ---- hero ---- */
 	.av-plate {

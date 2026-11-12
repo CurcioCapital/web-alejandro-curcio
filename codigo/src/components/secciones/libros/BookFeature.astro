@@ -114,6 +114,9 @@ const { id, n, kicker, title, lead, cover, ratio, alt, year, sheet = false } = A
   .bf-body :global(p) {
     margin: 0;
   }
+  .bf-body :global(p + p) {
+    margin-top: 0.9em;
+  }
   /* Palabras apagadas hasta que el scroll las enciende (sólo con JS). */
   :global(html.bf-on) .bf :global(.bf-w) {
     opacity: 0.16;

@@ -20,41 +20,9 @@ const { ohnoQuote, ohnoSource } = Astro.props;
 <div class="kaizen" data-scrub>
   <div class="kaizen-head">
     <span class="kaizen-glyph" aria-hidden="true">改善</span>
-    <p class="kaizen-lead" data-reveal>
-      Kaizen tiene dos formas complementarias — una resuelve, la otra nunca se da por satisfecha.
-    </p>
   </div>
 
-  <div class="kaizen-cols">
-    <div class="kaizen-col" data-reveal>
-      <span class="kaizen-col-label ed-mono"><b aria-hidden="true">A</b> Kaizen de mantenimiento</span>
-      <p class="kaizen-col-desc">
-        Resuelve problemas puntuales con el ciclo PDCA de Deming.
-      </p>
-      <ol class="kaizen-pdca">
-        <li><span>P</span>Planificar</li>
-        <li><span>D</span>Hacer</li>
-        <li><span>C</span>Verificar</li>
-        <li><span>A</span>Actuar</li>
-      </ol>
-    </div>
-    <div class="kaizen-col" data-reveal>
-      <span class="kaizen-col-label ed-mono"><b aria-hidden="true">B</b> Kaizen de mejora</span>
-      <p class="kaizen-col-desc">
-        La mentalidad permanente de elevar los estándares, aunque hoy algo funcione bien.
-      </p>
-      <div class="kaizen-curve" aria-hidden="true">
-        <svg viewBox="0 0 400 140" preserveAspectRatio="none">
-          <path d="M0 130 L80 130 L80 104 L160 104 L160 76 L240 76 L240 48 L320 48 L320 20 L400 20" pathLength="1" />
-        </svg>
-      </div>
-    </div>
-  </div>
-
-  <figure class="ed-quote ed-quote--wide kaizen-ohno">
-    <blockquote data-split="lines"><p>&ldquo;{ohnoQuote}&rdquo;</p></blockquote>
-    <figcaption class="ed-mono">{ohnoSource}</figcaption>
-  </figure>
+  <!-- 12/11/2026: sin las columnas A/B; la cita de Ohno pasó a la fila de tres citas de la página. -->
 </div>
 
 <style>
@@ -74,6 +42,8 @@ const { ohnoQuote, ohnoSource } = Astro.props;
     padding-bottom: 28px;
   }
   .kaizen-glyph {
+    color: var(--ed-accent-ink) !important;
+    -webkit-text-stroke: 0 !important;
     font-size: clamp(8rem, 26vw, 24rem);
     line-height: 0.8;
     font-weight: 700;

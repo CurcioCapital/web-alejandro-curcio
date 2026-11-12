@@ -218,15 +218,6 @@ const fuegos = [
 			</div>
 		</div>
 
-		<div class="cdv-pilares">
-			<span class="cdv-pilares-label ed-mono">Los tres pilares del Estilo</span>
-			<div class="cdv-pilares-tags">
-				<span class="cdv-tag" data-reveal><i class="ed-mono" aria-hidden="true">01</i>Mejora Continua</span>
-				<span class="cdv-tag" data-reveal><i class="ed-mono" aria-hidden="true">02</i>Respeto hacia las Personas</span>
-				<span class="cdv-tag" data-reveal><i class="ed-mono" aria-hidden="true">03</i>Crecimiento Sustentable</span>
-			</div>
-			<p class="cdv-mission" data-split="lines">«El cliente primero, el cliente fiel, el cliente para toda la vida.»</p>
-		</div>
 	</EdSection>
 
 	<!-- PROTOCOLO — LA PIEZA CENTRAL -->
@@ -274,6 +265,11 @@ const fuegos = [
 		<div class="cdv-quote-pair">
 			<PullQuote
 				size="sm"
+				quote="No importa cuántas veces haya sido mejorado, cada parte en la línea de producción está llena de desperdicios, y aunque hoy esté perfecta, mañana cambiará y el desperdicio volverá a crecer."
+				attribution="Taiichi Ohno, citado en curciocapital.com"
+			/>
+			<PullQuote
+				size="sm"
 				quote="La velocidad sin dirección puede destruir la cadena de valor. La innovación sin calidad puede destruir confianza."
 				attribution="Alejandro Curcio — El País, 09/08/2026"
 			/>
@@ -285,47 +281,6 @@ const fuegos = [
 		</div>
 	</EdSection>
 
-	<!-- FRASES — QUOTE ROTATOR -->
-	<EdSection
-		id="frases"
-		n="04"
-		sheet
-		kicker="En sus palabras"
-		title="Un solo mapa de valores."
-		lead="Cuatro citas del libro, sobre el dinero, la felicidad y el propósito. El mismo mapa que usa en la empresa y en la casa."
-	>
-		<div class="cdv-rotator ed-crop">
-			<QuoteRotator items={quoteRotatorItems} dwell={4200} />
-		</div>
-	</EdSection>
-
-	<!-- TRES FUEGOS -->
-	<EdSection
-		id="tres-fuegos"
-		n="05"
-		tone="dark2"
-		kicker="Tres fuegos"
-		title="No vino de la teoría. Vino de romperse tres veces."
-		lead="Su credibilidad no viene de la lectura. Viene de tres tipos de crisis atravesadas — y las cuenta sin heroísmo."
-	>
-		<TresFuegos fuegos={fuegos} />
-	</EdSection>
-
-	<!-- CTA FINAL -->
-	<EdHero
-		id="libros"
-		variant="cta"
-		imgId="capital-de-vida-front"
-		imgKind="cover"
-		imgAlt="Tapa del libro Capital de Vida, de Alejandro Curcio"
-		kicker="Capital de Vida"
-		title="El método completo está en los libros."
-		sub="«Hacé lo que tengas que hacer hasta que puedas hacer lo que querés.» El protocolo completo, con historias y capítulos, está en el libro."
-		ctaHref="/libros"
-		ctaLabel="Leé Capital de Vida"
-		titleSize="md"
-		n="06"
-	/>
 </Base>
 
 <style>
@@ -415,7 +370,8 @@ const fuegos = [
 	}
 	.cdv-quote-pair {
 		display: grid;
-		grid-template-columns: 1fr 1fr;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		align-items: stretch;
 		gap: clamp(24px, 4vw, 72px);
 		margin-top: 24px;
 		padding-top: 12px;
@@ -426,6 +382,12 @@ const fuegos = [
 	}
 	.cdv-quote-pair :global(.cdv-quote) {
 		margin: 24px 0 0;
+		display: flex;
+		flex-direction: column;
+	}
+	.cdv-quote-pair :global(.cdv-quote figcaption) {
+		margin-top: auto;
+		padding-top: 18px;
 	}
 	.cdv-protocol-close {
 		margin-top: clamp(56px, 7vw, 112px);

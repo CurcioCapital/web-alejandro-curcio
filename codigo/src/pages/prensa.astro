@@ -26,8 +26,6 @@ const awards = [
     year: '2024',
     name: 'Récord Guinness World Records™',
     detail: 'Ice Challenge — organizado por Curcio Capital',
-    photoId: 'guinness-02',
-    photoAlt: 'Participante ingresando a un barril de hielo durante el récord Guinness Ice Challenge 2024',
   },
   {
     year: '2022',
@@ -84,6 +82,7 @@ const stats = [
 		sheet
 		kicker="Reconocimientos"
 		title="Lo que no admite discusión."
+		hideHead
 		lead="Tres reconocimientos, tres oficios distintos: el negocio, la aventura física, la creatividad publicitaria. Ninguno se hereda — se gana."
 	>
 		<AwardsRow awards={awards} />
@@ -96,23 +95,11 @@ const stats = [
 		tone="light"
 		kicker="La selección"
 		title="Tres décadas de oficio, en sus propias palabras."
-		lead={`${priorityCount} notas destacadas, filtradas de ${totalCount} relevadas entre 2005 y 2026. La prensa no cuenta una historia lineal — cuenta intentos, caídas, reinvenciones.`}
 		class="prensa-lista"
 	>
 		<PressList items={press} />
 	</EdSection>
 
-	<!-- HABLAN LOS HECHOS -->
-	<EdSection
-		id="hechos"
-		n="03"
-		sheet
-		kicker="Hablan los hechos"
-		title="Los números no opinan."
-		lead="Estas notas recorren tres décadas de oficio: crisis que templaron, libros que abrieron preguntas, una empresa que cumplió 80 años sin jubilarse. No hay acá una biografía armada por otros; hay un diálogo público sostenido en el tiempo, con nombres, fechas y decisiones concretas."
-	>
-		<PressStats stats={stats} />
-	</EdSection>
 
 	<!-- CTA -->
 	<section class="ed-sec ed-sec--2 ed-sec--sheet ed-grid prensa-cta">
@@ -123,10 +110,6 @@ const stats = [
 			</div>
 			<h2 class="ed-display prensa-cta__t" data-split="lines">¿Sos periodista? Hablemos directamente.</h2>
 			<div class="prensa-cta__foot">
-				<p class="final-cta-sub" data-reveal>
-					Sin gabinete de prensa ni respuestas guionadas. Para entrevistas, notas o verificar un dato,
-					el canal es directo.
-				</p>
 				<a class="ed-btn" href="/seguime" data-magnetic data-roll>
 					<span>Contacto de prensa</span>
 					<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">

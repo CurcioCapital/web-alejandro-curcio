@@ -5,6 +5,8 @@
  * - Videos que ya tienen src y data-src-m (se reproducen al tocar o pasar el mouse): en celular se cambia el src
  *   antes de que se descargue nada.
  * - Pausa los videos automáticos cuando salen de pantalla y los retoma al volver (ahorra batería y procesador).
+ * - data-lv-wait (trailers): no arranca hasta que se ve al menos la mitad del video, y la primera vez
+ *   empieza desde el principio (13/11/2026, Kingdom of Drift).
  * Fuente: codigo/public/scripts/videos.js. Visualmente no cambia nada: los posters se ven igual que antes.
  */
 (() => {
@@ -28,7 +30,7 @@
 		const sources = v.querySelectorAll('source[data-src]');
 		if (sources.length) { sources.forEach((s) => { s.src = pick(s); }); v.load(); }
 		else if (v.dataset.src) { v.src = pick(v); }
-		if (v.autoplay) play(v);
+		if (v.autoplay && !v.hasAttribute('data-lv-wait')) play(v);
 	};
 
 	if (!('IntersectionObserver' in window)) { vids.forEach(load); return; }
@@ -46,8 +48,19 @@
 		}
 	}, { threshold: 0 });
 
+	const half = new IntersectionObserver((entries) => {
+		for (const e of entries) {
+			const v = e.target;
+			if (e.isIntersecting && e.intersectionRatio >= 0.5) {
+				load(v);
+				if (!v.dataset.lvStarted) { v.dataset.lvStarted = '1'; try { v.currentTime = 0; } catch {} }
+				if (v.paused) play(v);
+			} else if (!e.isIntersecting && !v.paused) v.pause();
+		}
+	}, { threshold: [0, 0.5] });
+
 	for (const v of vids) {
 		if (v.hasAttribute('data-lv-eager')) load(v); else near.observe(v);
-		seen.observe(v);
+		if (v.hasAttribute('data-lv-wait')) half.observe(v); else seen.observe(v);
 	}
 })();

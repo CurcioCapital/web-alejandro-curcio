@@ -444,3 +444,13 @@
     opacity: 0 !important;
   }
 }
+
+/* ---------- NEG · historia de AYAX pineada también en celular (2026-11-13) ------ */
+@media (max-width: 860px) {
+  .pin.is-pinned[data-pin] { height: calc((var(--beats) + 1) * 100svh) !important; }
+  .pin.is-pinned[data-pin] .pin-stage { height: 100svh !important; padding-top: 92px !important; padding-bottom: 28px !important; }
+  .pin.is-pinned[data-pin] .pin-hud { gap: 14px !important; }
+  .pin.is-pinned[data-pin] .pin-beat { align-content: center !important; align-items: start !important; row-gap: 22px !important; }
+  .pin.is-pinned[data-pin] .pin-year { font-size: min(32vw, 22svh, calc(92vw / var(--len, 4))) !important; line-height: .9 !important; }
+  .pin.is-pinned[data-pin] .pin-big { display: flex; flex-direction: column; gap: 6px; }
+}

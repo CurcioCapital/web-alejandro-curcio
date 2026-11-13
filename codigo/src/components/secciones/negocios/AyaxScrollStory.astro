@@ -48,6 +48,9 @@ const longest = (s: string) => Math.max(4, ...s.split(/\s+/).map((w) => w.length
       </div>
       <span class="pa-mono pin-hud-r"><b data-pin-count>01</b> / {pad2(beats.length)}</span>
     </div>
+    <button type="button" class="pin-skip pa-mono" data-pin-skip>Saltar la historia <span aria-hidden="true">↓</span></button>
+    <style is:inline>.pin-skip{display:none}.pin.is-pinned .pin-skip{display:inline-flex;align-items:center;gap:10px;white-space:nowrap;position:absolute;right:0;bottom:clamp(20px,4vh,40px);z-index:4;min-height:44px;padding:0 20px;border-radius:999px;border:1px solid rgb(243 234 214/.25);background:rgb(12 10 6/.6);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);color:#f3ead6;font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;transition:background .3s,color .3s,border-color .3s,opacity .4s}.pin.is-pinned .pin-skip:hover{background:#e8c874;color:#0c0a06;border-color:#e8c874}.pin.is-pinned .pin-skip:focus-visible{outline:2px solid #e8c874;outline-offset:3px}@media (max-width:860px){.pin.is-pinned .pin-skip{right:auto;left:50%;transform:translateX(-50%);bottom:calc(16px + env(safe-area-inset-bottom))}}</style>
+    <script is:inline>(()=>{document.querySelectorAll("[data-pin-skip]").forEach(b=>{const root=b.closest("[data-pin]");if(!root)return;b.addEventListener("click",()=>{const y=root.getBoundingClientRect().bottom+window.scrollY;if(window.__lenis)window.__lenis.scrollTo(y,{duration:1.2});else window.scrollTo({top:y,behavior:"smooth"})})})})()</script>
 
     <div class="pin-beats">
       {
@@ -287,7 +290,7 @@ const longest = (s: string) => Math.max(4, ...s.split(/\s+/).map((w) => w.length
 </style>
 
 <script>
-  const PIN_MIN_WIDTH = 861;
+  const PIN_MIN_WIDTH = 0; // 2026-11-13: también se pinea en celular (pedido de Emi)
   const prm = window.matchMedia('(prefers-reduced-motion: reduce)');
 
   document.querySelectorAll<HTMLElement>('[data-pin]').forEach((root) => {

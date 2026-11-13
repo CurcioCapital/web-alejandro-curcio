@@ -1,0 +1,446 @@
+/* =============================================================================
+   mobile.css — correcciones de la versión celular (auditoría 2026-11-13).
+   REGLA: todo va dentro de @media (max-width: 860px) o menor. En escritorio
+   esta hoja no aplica nada. Los IDs (SYS-01, HOME-02…) remiten a
+   /home/claude/mobile-audit/REPORTE.md y CAMBIOS.md.
+   ========================================================================== */
+
+@media (max-width: 860px) {
+
+  /* ---------- SYS-02 · kickers «[ 0X ]» sin corchete huérfano ------------ */
+  .pa .pa-kick {
+    display: block;
+    line-height: 1.5;
+  }
+  .pa .pa-kick .pa-idx {
+    white-space: nowrap;
+    margin-right: 10px;
+  }
+  .pa .pa-kick::after {
+    display: none;
+  }
+  .sgc-top span + span {
+    white-space: nowrap;
+    flex: none;
+  }
+
+  /* ---------- SYS-05 · header más compacto, MENÚ con texto --------------- */
+  :root {
+    --nav-h: 60px;
+  }
+  .nav-cta,
+  .nav-burger {
+    min-height: 44px !important;
+    height: 44px !important;
+  }
+
+  /* ---------- CDV-01 · citas apiladas sin pisarse ------------------------ */
+  .cdv-quote-pair {
+    gap: 40px !important;
+  }
+  .cdv-quote-pair > figure {
+    height: auto !important;
+    padding-top: 24px;
+    border-top: 1px solid rgb(12 10 6 / 0.12);
+  }
+  .cdv-quote-pair > figure:first-child {
+    border-top: 0;
+    padding-top: 0;
+  }
+  .cdv-quote-pair > figure > figcaption {
+    margin-top: 14px !important;
+  }
+
+  /* ---------- HOME-01/02/03 · escenario de los libros -------------------- */
+  .arco-section .lb-escena {
+    justify-content: flex-start;
+  }
+  .arco-section .lb-head {
+    margin-left: 0;
+    margin-right: 0;
+    align-self: stretch;
+  }
+  .arco-section .lb-fichas {
+    display: grid;
+    min-height: 0;
+  }
+  .arco-section .lb-ficha {
+    position: relative;
+    inset: auto;
+    grid-area: 1 / 1;
+  }
+  .arco-section .lb-tapas {
+    margin-top: 18px;
+  }
+  .arco-section .lb-pasos {
+    z-index: 2;
+  }
+
+  /* ---------- HIST-01 · HUD del año compacto, abajo ---------------------- */
+  .tlx.is-live:not(.is-h) .tlx-hud {
+    bottom: calc(8px + env(safe-area-inset-bottom, 0px)) !important;
+    padding: 8px 14px 12px !important;
+    gap: 14px !important;
+    border-radius: 14px !important;
+    background: rgb(12 10 6 / 0.96) !important;
+  }
+  .tlx.is-live:not(.is-h) .tlx-hud-num {
+    font-size: 20px !important;
+  }
+  .tlx .tlx-hud-k {
+    display: none !important;
+  }
+  .tlx .tlx-hud-meta {
+    margin-bottom: 6px !important;
+    font-size: 11px;
+  }
+
+  /* ---------- SYS-06 · lectura palabra a palabra: base más legible -------- */
+  html.qe-on .qe .qe-w:not(.is-on),
+  html.bf-on .bf .bf-w:not(.is-on) {
+    opacity: 0.32 !important;
+  }
+
+  /* ---------- CEO-01 · en /ceo-de-tu-vida, sin atajos a la misma página --- */
+  body:has(.ceo-hero) a.ribbon,
+  body:has(.ceo-hero) .nav .nav-cta {
+    display: none !important;
+  }
+
+  /* ---------- DEP-01 · velocímetro solo durante los pins ------------------ */
+  .dep-gauge.is-mob-off {
+    opacity: 0 !important;
+    transform: translateY(14px);
+    pointer-events: none;
+    transition: opacity 0.35s ease, transform 0.35s ease;
+  }
+}
+
+@media (max-width: 720px) {
+  /* DEP-02 · PUSHING THE LIMITS entra un poco antes: menos negro entre el
+     casco (que no se toca) y el video. */
+  .dep > .pl {
+    margin-top: -200svh;
+  }
+  /* DEP-02 · al terminar la frase, el contenido siguiente sube sobre el video
+     en lugar de dejar una pantalla de humo gris. */
+  .dep > .dep-gauge + .wrap {
+    position: relative;
+    z-index: 2;
+    margin-top: -42svh;
+    padding-top: 48px;
+    background: rgb(12 10 6);
+  }
+
+  /* HOME-01 · año gigante adentro de la pantalla, detrás de los pasos */
+  .arco-section .lb-bigyear {
+    right: 12px; /* el tracking negativo hacía asomar el último dígito */
+    font-size: 30vw;
+    -webkit-text-stroke-color: rgb(232 200 116 / 0.14);
+  }
+}
+
+@media (max-width: 380px) {
+  /* SYS-05 · a 360 la pill «MENÚ» vuelve a mostrar el texto */
+  .nav-burger .nav-burger-label {
+    display: inline !important;
+  }
+  .nav-burger {
+    padding: 0 5px 0 12px !important;
+    gap: 8px !important;
+  }
+}
+
+/* =============================== TANDA 2 ================================ */
+@media (max-width: 860px) {
+
+  /* ---------- SYS-02 / SEG-01 · kicker de las cards de Seguime ----------- */
+  .sgc-kick,
+  .sgc-top {
+    font-size: 12px;
+  }
+
+  /* ---------- SYS-03 · texto informativo nunca menor a 11–12 px ---------- */
+  .pa .pa-kick,
+  .stat-label,
+  .ribbon-count,
+  .libros-countdown__label,
+  .tgr-first,
+  .mft-foto figcaption,
+  .gw-credito,
+  .gw-dato dt,
+  .gw-beneficio-etiqueta,
+  .lb-tag,
+  .lb-meta,
+  .bf-meta,
+  .sgc-btn,
+  .dsu-kick,
+  .dsu-cheq figcaption span {
+    font-size: 12px !important;
+    letter-spacing: 0.06em !important;
+  }
+  .stat-src,
+  .tlx-hud-meta,
+  .gw-dato-idx,
+  .trb-leafline,
+  .kaizen-pdca li,
+  .chat-chip,
+  .chat-chip i {
+    font-size: 11px !important;
+  }
+  .hh-book-label {
+    font-size: 11px !important;
+    letter-spacing: 0.1em !important;
+  }
+
+  /* ---------- SYS-04 · objetivos táctiles de 44 px ------------------------ */
+  .footer-col a {
+    display: flex !important;
+    align-items: center;
+    min-height: 44px;
+    margin-bottom: 0 !important;
+  }
+  .footer-col h4 {
+    margin-bottom: 6px !important;
+  }
+  .pa-chip,
+  .chat-sug {
+    min-height: 44px !important;
+  }
+  #preguntale-input {
+    min-height: 44px;
+  }
+  a.wordmark {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* ---------- HOME-04 · tarjeta flotante del libro más chica -------------- */
+  .hh-book .hh-book-frame {
+    width: 84px !important;
+  }
+  .hh-book {
+    align-items: flex-end;
+    gap: 8px !important;
+  }
+
+  /* ---------- HIST-02 · títulos de era sin partirse en 4 líneas ---------- */
+  .tlx-era-title {
+    font-size: clamp(28px, 8vw, 36px) !important;
+    text-wrap: balance;
+    max-width: none !important;
+  }
+  /* HIST-03 · el año ya está en el número grande */
+  .tlx:not(.is-h) .tlx-ms-label {
+    display: none;
+  }
+  /* HIST-04 · años gigantes del héroe más tenues detrás del H1 */
+  .hh-year {
+    -webkit-text-stroke-color: rgb(232 200 116 / 0.11) !important;
+  }
+
+  /* ---------- NEG-03 · cifras: etiqueta y fuente legibles ---------------- */
+  .stat-label br {
+    display: none;
+  }
+  .stat-label {
+    max-width: 26ch !important;
+  }
+
+  /* ---------- DEP-03 · índice «03 / 05» legible sobre video claro --------- */
+  .dep-pieza-idx {
+    background: rgb(12 10 6 / 0.62);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+    padding: 5px 9px;
+    border-radius: 999px;
+    color: #fff !important;
+  }
+  /* ---------- DEP-04 · Equipo TGR: flechas debajo, cards al 80 % ---------- */
+  .tgr-head {
+    flex-direction: column;
+    align-items: flex-start !important;
+    gap: 18px !important;
+  }
+  .tgr-track {
+    grid-auto-columns: 80% !important;
+  }
+
+  /* ---------- SOL-02 · menos negro al terminar el trébol ------------------ */
+  .trb .trb-reel {
+    padding-bottom: 22vh !important;
+  }
+  /* SOL-02 · héroe de Teletón: menos alto, scrim más liviano arriba */
+  .dsh {
+    min-height: 72svh !important;
+  }
+  /* ---------- SOL-03 · trébol: barra superior opaca, leyenda en una línea - */
+  .trb-side {
+    background: var(--trb-bgc, #0c0a06);
+  }
+  .trb-leafline {
+    text-wrap: balance;
+  }
+  .trb-skip {
+    font-size: 12px !important;
+    min-height: 44px;
+    display: inline-flex !important;
+    align-items: center;
+  }
+  /* ---------- SOL-04 · cifra 929: grilla que no se pisa -------------------- */
+  .gw-cifra {
+    grid-template-columns: minmax(0, 1fr) auto !important;
+    gap: 8px 12px !important;
+  }
+  .gw-credito {
+    flex-wrap: wrap;
+  }
+  /* el índice «01…04» va absoluto arriba a la derecha: la etiqueta le deja lugar */
+  .gw-dato dt {
+    padding-right: 26px;
+  }
+  /* ---------- SOL-06 · título y bajada de «Drift solidario» ---------------- */
+  .dsu-title {
+    margin-bottom: 16px !important;
+  }
+  /* ---------- SOL-08 · CTA «CONOCÉ MÁS DE …» en una línea ------------------ */
+  .pa .pa-btn {
+    letter-spacing: 0.06em;
+  }
+  /* ---------- SOL-09 · «929 personas…» sin cortes forzados ----------------- */
+  .gw-leyenda br {
+    display: none;
+  }
+  .gw-leyenda {
+    max-width: 28ch !important;
+  }
+  /* ---------- SOL-10 · fotos de la certificación en 2 columnas ------------ */
+  .sol-cert__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 8px !important;
+  }
+
+  /* ---------- LIB-02 · tapa centrada, corchetes alineados ----------------- */
+  .bf .bf-cover {
+    position: relative !important;
+    top: auto !important;
+    width: min(66vw, 280px) !important;
+    max-width: none !important;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .bf .bf-tag {
+    text-align: center;
+  }
+  /* LIB-03 · meta en dorado oscuro, más contraste sobre hueso */
+  .bf .bf-meta {
+    display: block;
+    line-height: 1.5;
+    color: #6f5210 !important;
+    font-weight: 500;
+  }
+  .bf .bf-meta .bf-n {
+    white-space: nowrap;
+    margin-right: 12px;
+  }
+  /* LIB-04 · menos negro arriba del escenario 3D */
+  html.ed-on .arco .arco-sticky {
+    padding-top: 40px !important;
+  }
+
+  /* ---------- CDV-02 · fuente de la cita del protocolo, pegada a la cita --- */
+  .protocol-step-quote footer {
+    margin-top: 10px !important;
+    padding: 0 !important;
+  }
+  /* CDV-03 · tapa centrada */
+  .cdv-col-media--cover {
+    margin-left: auto !important;
+    margin-right: auto !important;
+    justify-self: center;
+  }
+
+  /* ---------- CEO-01 · H1 de la página del libro más contenido ------------ */
+  .ceo-hero .ceo-title {
+    font-size: clamp(40px, 11.5vw, 50px) !important;
+    line-height: 0.86 !important;
+  }
+  /* CEO-02 · cuenta regresiva: el dígito gira rápido, sin glifos encimados */
+  .ceo-climax .ed-odo__col {
+    transition-duration: 0.32s !important;
+  }
+
+  /* ---------- PRE-02 · premios sin vacíos ---------------------------------- */
+  .award-item .award-top {
+    min-height: 0 !important;
+    margin-bottom: 0 !important;
+  }
+  .award-item .award-year {
+    font-size: clamp(3.5rem, 16vw, 4.5rem) !important;
+    margin-top: 16px !important;
+  }
+  .award-item {
+    padding-top: 20px !important;
+    padding-bottom: 24px !important;
+  }
+
+  /* ---------- AV-02 · menos aire antes del footer ----------------------- */
+  .ajp {
+    padding-bottom: 40px !important;
+  }
+
+  /* ---------- SEG-02 · menos aire arriba de cada card ---------------------- */
+  .sgc-tile {
+    height: auto !important;
+    min-height: 120px;
+    gap: 28px;
+  }
+
+  /* ---------- POD-01 · «Próximamente» sin una pantalla vacía --------------- */
+  .pod {
+    min-height: 60svh !important;
+  }
+
+  /* ---------- PREG-01 · pie del chat legible ------------------------------- */
+  .chat-foot,
+  #chat-foot {
+    font-size: 12px !important;
+  }
+
+  /* ---------- MENU-01/02 · menú ------------------------------------------- */
+  .menu .menu-grupo {
+    margin: 28px 0 4px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .menu .menu-word {
+    font-size: clamp(30px, 9.6vw, 44px) !important;
+  }
+}
+
+/* ---------- SYS-07 · sin hovers «pegados» en pantallas táctiles ---------- */
+@media (hover: none) and (max-width: 860px) {
+  .row-head:hover .row-name,
+  .row-head:hover .row-thumb img,
+  .row-head:hover .row-thumb-rings i,
+  .pillar:hover,
+  .pill:hover,
+  .tgr-card:hover img,
+  .dep-pieza-media:hover video,
+  .guinness-slide:hover img,
+  .hh-book:hover .hh-book-frame,
+  .book-card:hover .media-card,
+  .palabra:hover .palabra-kanji,
+  .channel-card:hover .channel-tile .tk,
+  .ajp-it:hover video,
+  .ajp-it:hover img,
+  .chat-send:hover:not(:disabled) {
+    transform: none !important;
+  }
+  .award-item:hover::before,
+  .palabra:hover::before,
+  .channel-card:hover::before {
+    opacity: 0 !important;
+  }
+}

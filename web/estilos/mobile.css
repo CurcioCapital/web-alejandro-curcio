@@ -459,3 +459,15 @@
 .ml-buy{padding:9px 16px;font-size:12.5px;gap:7px;margin-top:24px;width:-moz-fit-content;width:fit-content;align-self:flex-start}
 .ml-buy svg{flex:none}
 .lb-ficha .ml-buy{margin:0 0 0 14px;vertical-align:middle}
+
+/* Safari (iPad/iPhone/Mac): las tapas de «Tres libros» de la home se veían en negro en iPad.
+   WebKit falla al componer preserve-3d + filter: drop-shadow + recorte con border-radius en la escena fija.
+   Solo en Safari: tapas en 2D, sombra con box-shadow; misma secuencia de entrada. 16/11/2026 */
+@supports (font: -apple-system-body) and (-webkit-appearance: none) {
+  .lb-tapa[data-lb-tapa]{filter:none;transform-style:flat}
+  .lb-tapas{perspective:none}
+  .lb-tapa[data-lb-tapa] .media-card{box-shadow:0 24px 40px rgba(0,0,0,.55)}
+  html.lb-on .lb-tapa[data-lb-tapa]{transform:translate(90px,30px) scale(.88)}
+  html.lb-on .lb-tapa[data-lb-tapa].is-on{transform:none}
+  html.lb-on .lb-tapa[data-lb-tapa].is-on.is-current{transform:translateY(-14px) scale(1.04)}
+}

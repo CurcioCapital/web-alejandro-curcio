@@ -24,12 +24,18 @@ interface Props {
 }
 
 const {
-  title = 'Alejandro Curcio',
-  description = 'Alejandro Curcio — empresario, piloto, aventurero, pensador, solidario, padre. El verdadero capital se forja.',
+  title = 'Alejandro Curcio | Sitio oficial — empresario, autor y piloto',
+  description = 'Sitio oficial de Alejandro Curcio, empresario uruguayo al frente de AYAX y Curcio Capital, autor de CEO DE TU VIDA y piloto de Toyota Gazoo Racing.',
   preloadImage,
 } = Astro.props;
 
 const isHome = Astro.url.pathname === '/' || Astro.url.pathname === '/index.html';
+// SEO (16/11/2026): dominio oficial único, canónica y tarjetas para redes.
+const SITE = 'https://alejandrocurcio.com';
+const pathSeo = isHome ? '/' : Astro.url.pathname.replace(/index\.html$/, '').replace(/\/?$/, '/');
+const canonical = SITE + pathSeo;
+const ogImage = SITE + '/media/og/alejandro-curcio-og.jpg';
+const personLd = JSON.stringify({"@context": "https://schema.org", "@graph": [{"@type": "WebSite", "@id": "https://alejandrocurcio.com/#website", "url": "https://alejandrocurcio.com/", "name": "Alejandro Curcio", "inLanguage": "es", "publisher": {"@id": "https://alejandrocurcio.com/#person"}}, {"@type": "Person", "@id": "https://alejandrocurcio.com/#person", "name": "Alejandro Curcio", "url": "https://alejandrocurcio.com/", "image": "https://alejandrocurcio.com/media/img/hero-ale-traje-1280.webp", "jobTitle": "Empresario", "nationality": {"@type": "Country", "name": "Uruguay"}, "description": "Empresario uruguayo al frente de AYAX, representante de Toyota en Uruguay, y de Curcio Capital. Autor de Capital de Vida, Toolbook y CEO DE TU VIDA. Piloto de drift de Toyota Gazoo Racing.", "worksFor": [{"@type": "Organization", "name": "AYAX"}, {"@type": "Organization", "name": "Curcio Capital", "url": "https://curciocapital.com"}], "sameAs": ["https://www.instagram.com/alecurcio_capitaldevida/", "https://www.youtube.com/@alejandrocurcio-capitaldev5482"]}, {"@type": "Book", "name": "Capital de Vida", "author": {"@id": "https://alejandrocurcio.com/#person"}, "datePublished": "2018", "publisher": {"@type": "Organization", "name": "Editorial Conecta"}, "inLanguage": "es", "url": "https://alejandrocurcio.com/capital-de-vida/"}, {"@type": "Book", "name": "Toolbook", "author": {"@id": "https://alejandrocurcio.com/#person"}, "datePublished": "2023", "publisher": {"@type": "Organization", "name": "Editorial Conecta"}, "inLanguage": "es", "url": "https://alejandrocurcio.com/libros/"}, {"@type": "Book", "name": "CEO DE TU VIDA", "author": {"@id": "https://alejandrocurcio.com/#person"}, "datePublished": "2026-11-17", "publisher": {"@type": "Organization", "name": "Grijalbo"}, "inLanguage": "es", "url": "https://alejandrocurcio.com/ceo-de-tu-vida/"}]});
 const lcp =
   preloadImage === false
     ? null
@@ -96,6 +102,23 @@ const lcp =
 		<meta name="generator" content={Astro.generator} />
 		<meta name="description" content={description} />
 		<title>{title}</title>
+		<link rel="canonical" href={canonical} />
+		<meta property="og:type" content={isHome ? 'website' : 'article'} />
+		<meta property="og:site_name" content="Alejandro Curcio" />
+		<meta property="og:locale" content="es_UY" />
+		<meta property="og:url" content={canonical} />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<meta property="og:image" content={ogImage} />
+		<meta property="og:image:width" content="1200" />
+		<meta property="og:image:height" content="630" />
+		<meta property="og:image:alt" content="Alejandro Curcio — sitio oficial" />
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:title" content={title} />
+		<meta name="twitter:description" content={description} />
+		<meta name="twitter:image" content={ogImage} />
+		{isHome && <script type="application/ld+json" set:html={personLd} />}
+		{pathSeo === '/podcast/' && <meta name="robots" content="noindex" />}
 
 		<!-- Fonts — self-hosted (see /public/fonts/). Archivo Variable
 		     (wght 100-900, wdth 62-125, latin subset ~90KB) for everything +

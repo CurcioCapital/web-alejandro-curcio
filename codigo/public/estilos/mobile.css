@@ -454,3 +454,8 @@
   .pin.is-pinned[data-pin] .pin-year { font-size: min(32vw, 22svh, calc(92vw / var(--len, 4))) !important; line-height: .9 !important; }
   .pin.is-pinned[data-pin] .pin-big { display: flex; flex-direction: column; gap: 6px; }
 }
+
+/* Global (desktop + mobile): botón «Lo quiero» → Mercado Libre, 16/11/2026 */
+.ml-buy{padding:9px 16px;font-size:12.5px;gap:7px;margin-top:24px;width:-moz-fit-content;width:fit-content;align-self:flex-start}
+.ml-buy svg{flex:none}
+.lb-ficha .ml-buy{margin:0 0 0 14px;vertical-align:middle}

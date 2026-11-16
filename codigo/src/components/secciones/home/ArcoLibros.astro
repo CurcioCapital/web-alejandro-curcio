@@ -36,6 +36,7 @@ const libros = [
     meta: 'Conecta · Prólogo de Hugo Burel · 256 páginas',
     href: '/capital-de-vida',
     accion: 'Ver el libro',
+    ml: 'https://www.mercadolibre.com.uy/capital-de-vida-legado-de-valores-en-la-cultura-empresarial-y-familiar-de-alejandro-curcio-serie-capital-de-vida-vol-1-editorial-conecta-tapa-blanda-edicion-1a-en-espanol-2018/p/MLU23590535',
     coverId: 'capital-de-vida-front',
     ratio: '2048 / 3216',
     alt: 'Tapa del libro Capital de Vida, de Alejandro Curcio',
@@ -47,6 +48,7 @@ const libros = [
     meta: 'Conecta · Serie Capital de Vida',
     href: '/libros',
     accion: 'Ver el libro',
+    ml: 'https://www.mercadolibre.com.uy/toolbook-del-mundo-que-viene-de-alejandro-curcio-editorial-conecta-en-espanol/p/MLU23069786?pdp_filters=official_store%3A632',
     coverId: 'toolbook-front',
     ratio: '2048 / 3008',
     alt: 'Tapa del libro Toolbook, de Alejandro Curcio',
@@ -103,6 +105,8 @@ const libros = [
                     <line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" />
                   </svg>
                 </a>
+                {/* 16/11/2026: «Lo quiero» → Mercado Libre (estilo .ml-buy en estilos/mobile.css) */}
+                {l.ml && <a class="pill pill--accent ml-buy" href={l.ml} target="_blank" rel="noopener" aria-label={`Comprar ${l.titulo} en Mercado Libre`}>Lo quiero <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9" /></svg></a>}
               </article>
             ))
           }

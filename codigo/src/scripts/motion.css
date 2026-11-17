@@ -230,16 +230,14 @@ html.mo-fail .reveal {
     opacity 0.25s linear,
     translate 0.4s var(--mo-ease-expo);
 }
-/* hover sobre link/botón: anillo hueco, el punto desaparece */
+/* 17/11/2026 (Emi): sin anillo alrededor del punto en links y botones */
 .mo-cursor[data-state='hover'] .mo-cursor__ring,
 .mo-cursor[data-state='link'] .mo-cursor__ring {
-  scale: 0.5;
-  background: transparent;
-  box-shadow: inset 0 0 0 2px var(--mo-accent);
+  scale: 0;
 }
 .mo-cursor[data-state='hover'] .mo-cursor__dot,
 .mo-cursor[data-state='link'] .mo-cursor__dot {
-  scale: 0.5;
+  scale: 1.5;
 }
 /* view / play / drag: burbuja dorada con etiqueta */
 .mo-cursor[data-state='view'] .mo-cursor__ring,

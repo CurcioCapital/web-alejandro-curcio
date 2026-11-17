@@ -63,12 +63,15 @@ export function initCursor() {
       if (e.pointerType !== 'mouse' && e.pointerType !== 'pen') return;
       mx = e.clientX;
       my = e.clientY;
-      if (!seen) {
-        seen = true;
+      seen = true;
+      // reaparece en el puntero (sin barrer la pantalla) si estaba oculto
+      if (!root.classList.contains('is-visible')) {
         rx = mx;
         ry = my;
         root.classList.add('is-visible');
       }
+      // el punto se mueve en el mismo evento: no depende del ticker
+      dot.style.transform = `translate3d(${mx}px,${my}px,0)`;
       setState(e.target as Element);
     },
     { passive: true }
@@ -81,6 +84,24 @@ export function initCursor() {
   // un click puede abrir un modal/menú bajo el puntero sin que se mueva
   addEventListener('click', () => setTimeout(() => seen && setState(document.elementFromPoint(mx, my)), 60));
   addEventListener('pointerup', () => root.classList.remove('is-down'));
+  // 17/11/2026: evitar el cursor «desfasado». Se oculta al salir de la ventana, al entrar a un iframe
+  // (YouTube, Vimeo), al cambiar de app o pestaña; vuelve con el próximo movimiento.
+  addEventListener('blur', () => root.classList.remove('is-visible'));
+  document.addEventListener('mouseout', (e) => {
+    if (!e.relatedTarget) root.classList.remove('is-visible');
+  });
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) root.classList.remove('is-visible');
+  });
+  addEventListener(
+    'wheel',
+    (e) => {
+      if (!seen) return;
+      mx = e.clientX;
+      my = e.clientY;
+    },
+    { passive: true }
+  );
 
   state.tickers.add((dt) => {
     const k = 1 - Math.pow(0.0001, dt); // ~ independiente del framerate

@@ -490,3 +490,7 @@
 .cd-ya__btn.pill svg{width:18px;height:18px}
 .cd-ya__btn.pill:hover{transform:translateY(-3px)}
 @media (max-width:860px){.cd-ya__btn.pill{width:100%;justify-content:center}}
+
+/* 17/11/2026 (Emi): sin el anillo alrededor del punto dorado al pasar por links y botones; el punto crece un poco. */
+.mo-cursor[data-state='hover'] .mo-cursor__ring,.mo-cursor[data-state='link'] .mo-cursor__ring{scale:0!important}
+.mo-cursor[data-state='hover'] .mo-cursor__dot,.mo-cursor[data-state='link'] .mo-cursor__dot{scale:1.5!important}

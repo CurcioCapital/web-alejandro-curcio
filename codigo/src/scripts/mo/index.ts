@@ -88,11 +88,18 @@ export function initMotion() {
       state.dirty = false;
       update();
     }
+    // un error en un ticker no puede congelar los demás (p. ej. el cursor)
     if (anim) {
-      tickMarquees(dt);
-      tickMagnetic(dt);
+      try {
+        tickMarquees(dt);
+        tickMagnetic(dt);
+      } catch {}
     }
-    state.tickers.forEach((fn) => fn(dt, time));
+    state.tickers.forEach((fn) => {
+      try {
+        fn(dt, time);
+      } catch {}
+    });
   });
 
   window.__motion = {

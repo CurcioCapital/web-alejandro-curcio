@@ -16,7 +16,7 @@
     "@type": "ProfilePage",
     "@id": "https://alejandrocurcio.com/#profilepage",
     "url": "https://alejandrocurcio.com/",
-    "name": "Alejandro Curcio | Sitio oficial — empresario, autor y piloto",
+    "name": "Alejandro Curcio | Empresario, autor y piloto uruguayo",
     "inLanguage": "es",
     "isPartOf": {
      "@id": "https://alejandrocurcio.com/#website"
@@ -27,7 +27,8 @@
     "primaryImageOfPage": {
      "@type": "ImageObject",
      "url": "https://alejandrocurcio.com/media/img/hero-ale-traje-1280.webp"
-    }
+    },
+    "description": "Sitio oficial de Alejandro Curcio: presidente de AYAX, autor de Capital de Vida, Toolbook y CEO DE TU VIDA, y piloto de drift. Conocé su historia."
    },
    {
     "@type": "Person",
@@ -151,7 +152,11 @@
      "@type": "Organization",
      "name": "Grijalbo"
     },
-    "image": "https://alejandrocurcio.com/media/covers/ceo-de-tu-vida-front-1280.jpg"
+    "image": "https://alejandrocurcio.com/media/covers/ceo-de-tu-vida-front-1280.jpg",
+    "isbn": "9789915707808",
+    "sameAs": [
+     "https://www.penguinlibros.com/uy/tematicas/643963-libro-ceo-de-tu-vida-9789915707808"
+    ]
    }
   ]
  },
@@ -162,7 +167,7 @@
     "@type": "WebPage",
     "@id": "https://alejandrocurcio.com/capital-de-vida/#webpage",
     "url": "https://alejandrocurcio.com/capital-de-vida/",
-    "name": "Capital de Vida — Alejandro Curcio",
+    "name": "Capital de Vida, el libro (2018) | Alejandro Curcio",
     "inLanguage": "es",
     "isPartOf": {
      "@id": "https://alejandrocurcio.com/#website"
@@ -170,7 +175,7 @@
     "about": {
      "@id": "https://alejandrocurcio.com/#person"
     },
-    "description": "El libro que sistematiza el legado de valores: el protocolo de cinco pasos nacido del cordón Andon, Kaizen aplicado a la vida y las crisis que lo forjaron.",
+    "description": "Capital de Vida, de Alejandro Curcio: el legado de valores, el protocolo de cinco pasos nacido del cordón Andon y el Kaizen aplicado a la vida. Leelo.",
     "mainEntity": {
      "@id": "https://alejandrocurcio.com/#book-capital-de-vida"
     }
@@ -223,7 +228,7 @@
     "@type": "CollectionPage",
     "@id": "https://alejandrocurcio.com/libros/#webpage",
     "url": "https://alejandrocurcio.com/libros/",
-    "name": "Libros — Alejandro Curcio",
+    "name": "Libros: Capital de Vida, Toolbook y más | Alejandro Curcio",
     "inLanguage": "es",
     "isPartOf": {
      "@id": "https://alejandrocurcio.com/#website"
@@ -231,7 +236,7 @@
     "about": {
      "@id": "https://alejandrocurcio.com/#person"
     },
-    "description": "Tres libros. Un solo arco: de adentro hacia afuera, y después el método. Capital de Vida, Toolbook y CEO DE TU VIDA — noviembre 2026."
+    "description": "Los tres libros de Alejandro Curcio: Capital de Vida (2018), Toolbook (2023) y CEO DE TU VIDA (Grijalbo, 2026). Conocé de qué trata cada uno."
    },
    {
     "@type": "BreadcrumbList",
@@ -298,7 +303,11 @@
      "@type": "Organization",
      "name": "Grijalbo"
     },
-    "image": "https://alejandrocurcio.com/media/covers/ceo-de-tu-vida-front-1280.jpg"
+    "image": "https://alejandrocurcio.com/media/covers/ceo-de-tu-vida-front-1280.jpg",
+    "isbn": "9789915707808",
+    "sameAs": [
+     "https://www.penguinlibros.com/uy/tematicas/643963-libro-ceo-de-tu-vida-9789915707808"
+    ]
    }
   ]
  },
@@ -309,7 +318,7 @@
     "@type": "WebPage",
     "@id": "https://alejandrocurcio.com/seguime/#webpage",
     "url": "https://alejandrocurcio.com/seguime/",
-    "name": "Seguime — Alejandro Curcio",
+    "name": "Instagram, YouTube y redes oficiales | Alejandro Curcio",
     "inLanguage": "es",
     "isPartOf": {
      "@id": "https://alejandrocurcio.com/#website"
@@ -317,7 +326,7 @@
     "about": {
      "@id": "https://alejandrocurcio.com/#person"
     },
-    "description": "Instagram, YouTube, libros y charlas. Un solo lugar para cada cosa."
+    "description": "Seguí a Alejandro Curcio en Instagram (@alecurcio_capitaldevida, 375.000+ seguidores) y en YouTube, con podcasts y entrevistas largas. Sumate."
    },
    {
     "@type": "BreadcrumbList",
@@ -344,7 +353,7 @@
     "@type": "WebPage",
     "@id": "https://alejandrocurcio.com/aventura/#webpage",
     "url": "https://alejandrocurcio.com/aventura/",
-    "name": "Aventura — Alejandro Curcio",
+    "name": "Subida al Monte Fuji por la ruta Gotemba | Alejandro Curcio",
     "inLanguage": "es",
     "isPartOf": {
      "@id": "https://alejandrocurcio.com/#website"
@@ -352,7 +361,7 @@
     "about": {
      "@id": "https://alejandrocurcio.com/#person"
     },
-    "description": "Monte Fuji, Japón: una subida compartida entre generaciones. La montaña y los negocios tienen mucho en común."
+    "description": "Alejandro Curcio subió el Monte Fuji por la ruta Gotemba con su hijo Lucca: una subida entre generaciones. Mirá por qué la montaña enseña a liderar."
    },
    {
     "@type": "BreadcrumbList",
@@ -379,7 +388,7 @@
     "@type": "WebPage",
     "@id": "https://alejandrocurcio.com/preguntale/#webpage",
     "url": "https://alejandrocurcio.com/preguntale/",
-    "name": "Preguntale a Ale — Alejandro Curcio",
+    "name": "Preguntale a Ale: chat IA con sus libros | Alejandro Curcio",
     "inLanguage": "es",
     "isPartOf": {
      "@id": "https://alejandrocurcio.com/#website"
@@ -387,7 +396,7 @@
     "about": {
      "@id": "https://alejandrocurcio.com/#person"
     },
-    "description": "Un chat entrenado con sus libros y su prensa. Responde sólo con lo que Alejandro publicó."
+    "description": "Preguntale a Ale: un chat con inteligencia artificial entrenado con los libros y la prensa de Alejandro Curcio. Responde solo con lo que él publicó."
    },
    {
     "@type": "BreadcrumbList",
@@ -414,7 +423,7 @@
     "@type": "CollectionPage",
     "@id": "https://alejandrocurcio.com/prensa/#webpage",
     "url": "https://alejandrocurcio.com/prensa/",
-    "name": "Prensa — Alejandro Curcio",
+    "name": "Prensa y entrevistas, 2005–2026 | Alejandro Curcio",
     "inLanguage": "es",
     "isPartOf": {
      "@id": "https://alejandrocurcio.com/#website"
@@ -422,7 +431,7 @@
     "about": {
      "@id": "https://alejandrocurcio.com/#person"
     },
-    "description": "Más de 40 notas relevadas entre 2005 y 2026. Esto es lo que se dijo, y lo que se dijo importa."
+    "description": "Más de 40 notas sobre Alejandro Curcio en El País, Forbes Uruguay, El Observador e InfoNegocios, de 2005 a 2026. ¿Sos periodista? Escribinos."
    },
    {
     "@type": "BreadcrumbList",
@@ -449,7 +458,7 @@
     "@type": "WebPage",
     "@id": "https://alejandrocurcio.com/ceo-de-tu-vida/#webpage",
     "url": "https://alejandrocurcio.com/ceo-de-tu-vida/",
-    "name": "CEO DE TU VIDA — Alejandro Curcio",
+    "name": "CEO DE TU VIDA, nuevo libro (Grijalbo) | Alejandro Curcio",
     "inLanguage": "es",
     "isPartOf": {
      "@id": "https://alejandrocurcio.com/#website"
@@ -457,7 +466,7 @@
     "about": {
      "@id": "https://alejandrocurcio.com/#person"
     },
-    "description": "51 reglas para decidir mejor, liderar con claridad y construir una vida con intención. El tercer libro de Alejandro Curcio, por Grijalbo. Noviembre de 2026.",
+    "description": "CEO DE TU VIDA, el nuevo libro de Alejandro Curcio por Grijalbo: 51 reglas para decidir mejor y liderar con claridad. Ya disponible.",
     "mainEntity": {
      "@id": "https://alejandrocurcio.com/#book-ceo-de-tu-vida"
     }
@@ -499,7 +508,11 @@
      "@type": "Organization",
      "name": "Grijalbo"
     },
-    "image": "https://alejandrocurcio.com/media/covers/ceo-de-tu-vida-front-1280.jpg"
+    "image": "https://alejandrocurcio.com/media/covers/ceo-de-tu-vida-front-1280.jpg",
+    "isbn": "9789915707808",
+    "sameAs": [
+     "https://www.penguinlibros.com/uy/tematicas/643963-libro-ceo-de-tu-vida-9789915707808"
+    ]
    }
   ]
  },
@@ -510,7 +523,7 @@
     "@type": "WebPage",
     "@id": "https://alejandrocurcio.com/negocios/#webpage",
     "url": "https://alejandrocurcio.com/negocios/",
-    "name": "Negocios — Alejandro Curcio",
+    "name": "AYAX, Curcio Capital y otros negocios | Alejandro Curcio",
     "inLanguage": "es",
     "isPartOf": {
      "@id": "https://alejandrocurcio.com/#website"
@@ -518,7 +531,7 @@
     "about": {
      "@id": "https://alejandrocurcio.com/#person"
     },
-    "description": "AYAX: ochenta años de una empresa que casi muere dos veces. Y tres frentes más que la extienden — Curcio Capital, El Nido y HY Project."
+    "description": "AYAX, representante de Toyota en Uruguay desde 1968, y los frentes que la extienden: Curcio Capital, El Nido y HY Project. Conocé cada proyecto."
    },
    {
     "@type": "BreadcrumbList",
@@ -571,7 +584,7 @@
     "@type": "WebPage",
     "@id": "https://alejandrocurcio.com/deportista/#webpage",
     "url": "https://alejandrocurcio.com/deportista/",
-    "name": "Deportista — Alejandro Curcio",
+    "name": "Piloto de drift Toyota Gazoo Racing | Alejandro Curcio",
     "inLanguage": "es",
     "isPartOf": {
      "@id": "https://alejandrocurcio.com/#website"
@@ -579,7 +592,7 @@
     "about": {
      "@id": "https://alejandrocurcio.com/#person"
     },
-    "description": "No mira las carreras desde la tribuna: corre drift él mismo con Toyota Gazoo Racing Drift."
+    "description": "Alejandro Curcio corre drift con Toyota Gazoo Racing Uruguay y usa la pista para devolver: Drift Park, Teletón y Centro Horizonte. Conocé al equipo."
    },
    {
     "@type": "BreadcrumbList",
@@ -606,7 +619,7 @@
     "@type": "WebPage",
     "@id": "https://alejandrocurcio.com/historia/#webpage",
     "url": "https://alejandrocurcio.com/historia/",
-    "name": "Historia — Alejandro Curcio",
+    "name": "Historia de AYAX, de 1945 a 2026 | Alejandro Curcio",
     "inLanguage": "es",
     "isPartOf": {
      "@id": "https://alejandrocurcio.com/#website"
@@ -614,7 +627,7 @@
     "about": {
      "@id": "https://alejandrocurcio.com/#person"
     },
-    "description": "Ochenta años. Dos crisis. Una sola conducta. La historia de AYAX y de Alejandro Curcio, de 1945 a 2026."
+    "description": "Ochenta años, dos crisis y una sola conducta: la historia de AYAX y de Alejandro Curcio, de su fundación en 1945 a hoy. Recorré cada hito, en orden."
    },
    {
     "@type": "BreadcrumbList",
@@ -641,7 +654,7 @@
     "@type": "WebPage",
     "@id": "https://alejandrocurcio.com/solidario/#webpage",
     "url": "https://alejandrocurcio.com/solidario/",
-    "name": "Solidario — Alejandro Curcio",
+    "name": "Récord Guinness Ice Challenge y Teletón | Alejandro Curcio",
     "inLanguage": "es",
     "isPartOf": {
      "@id": "https://alejandrocurcio.com/#website"
@@ -649,7 +662,7 @@
     "about": {
      "@id": "https://alejandrocurcio.com/#person"
     },
-    "description": "Récord Guinness Ice Challenge 2024: meterse al hielo con los demás. Esa es la diferencia entre auspiciar y participar."
+    "description": "Récord Guinness Ice Challenge 2024 por Centro Horizonte, drift solidario por la Teletón, TECHO, Cireneos y Pelota al Medio. Conocé cada causa."
    },
    {
     "@type": "BreadcrumbList",

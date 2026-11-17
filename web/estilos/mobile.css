@@ -475,3 +475,6 @@
 /* Global (SEO, 17/11/2026): la segunda copia de los efectos «roll» (menú, footer, títulos de Prensa)
    se dibuja desde el atributo data-roll-text, así Google no lee el texto duplicado. */
 [data-roll-text]::before{content:attr(data-roll-text)}
+
+/* 17/11/2026: «Lo quiero» de CEO DE TU VIDA en la ficha del home (no tiene «Ver el libro» al lado). */
+.lb-ficha--proximo .ml-buy{margin-left:0}

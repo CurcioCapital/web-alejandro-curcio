@@ -478,3 +478,15 @@
 
 /* 17/11/2026: «Lo quiero» de CEO DE TU VIDA en la ficha del home (no tiene «Ver el libro» al lado). */
 .lb-ficha--proximo .ml-buy{margin-left:0}
+
+/* 17/11/2026: lanzamiento de CEO DE TU VIDA. Desde las 20:00 (scripts/lanzamiento.js agrega .is-disponible)
+   el contador del clímax se reemplaza por «YA DISPONIBLE» y un botón grande de compra. */
+.cd-ya{display:none}
+.ceo-climax__count.is-disponible>:not(.cd-ya){display:none!important}
+.ceo-climax__count.is-disponible .cd-ya{display:flex;flex-direction:column;align-items:flex-start;gap:clamp(18px,2.4vw,28px)}
+.cd-ya__k{font-family:var(--font-mono,ui-monospace,monospace);font-size:12px;letter-spacing:.16em;text-transform:uppercase;opacity:.75}
+.cd-ya__t{margin:0;font-family:var(--font-display,inherit);font-weight:var(--display-wght,560);font-size:clamp(52px,7.4vw,128px);line-height:.88;letter-spacing:-.045em;color:#fff}
+.cd-ya__btn.pill{min-height:64px;padding:0 34px;font-size:clamp(17px,1.35vw,20px);gap:12px;box-shadow:0 18px 48px -14px rgb(0 0 0/.6)}
+.cd-ya__btn.pill svg{width:18px;height:18px}
+.cd-ya__btn.pill:hover{transform:translateY(-3px)}
+@media (max-width:860px){.cd-ya__btn.pill{width:100%;justify-content:center}}

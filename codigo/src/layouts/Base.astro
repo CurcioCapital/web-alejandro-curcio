@@ -35,7 +35,10 @@ const SITE = 'https://alejandrocurcio.com';
 const pathSeo = isHome ? '/' : Astro.url.pathname.replace(/index\.html$/, '').replace(/\/?$/, '/');
 const canonical = SITE + pathSeo;
 const ogImage = SITE + '/media/og/alejandro-curcio-og.jpg';
-const personLd = JSON.stringify({"@context": "https://schema.org", "@graph": [{"@type": "WebSite", "@id": "https://alejandrocurcio.com/#website", "url": "https://alejandrocurcio.com/", "name": "Alejandro Curcio", "inLanguage": "es", "publisher": {"@id": "https://alejandrocurcio.com/#person"}}, {"@type": "Person", "@id": "https://alejandrocurcio.com/#person", "name": "Alejandro Curcio", "url": "https://alejandrocurcio.com/", "image": "https://alejandrocurcio.com/media/img/hero-ale-traje-1280.webp", "jobTitle": "Empresario", "nationality": {"@type": "Country", "name": "Uruguay"}, "description": "Empresario uruguayo al frente de AYAX, representante de Toyota en Uruguay, y de Curcio Capital. Autor de Capital de Vida, Toolbook y CEO DE TU VIDA. Piloto de drift de Toyota Gazoo Racing.", "worksFor": [{"@type": "Organization", "name": "AYAX"}, {"@type": "Organization", "name": "Curcio Capital", "url": "https://curciocapital.com"}], "sameAs": ["https://www.instagram.com/alecurcio_capitaldevida/", "https://www.youtube.com/@alejandrocurcio-capitaldev5482"]}, {"@type": "Book", "name": "Capital de Vida", "author": {"@id": "https://alejandrocurcio.com/#person"}, "datePublished": "2018", "publisher": {"@type": "Organization", "name": "Editorial Conecta"}, "inLanguage": "es", "url": "https://alejandrocurcio.com/capital-de-vida/"}, {"@type": "Book", "name": "Toolbook", "author": {"@id": "https://alejandrocurcio.com/#person"}, "datePublished": "2023", "publisher": {"@type": "Organization", "name": "Editorial Conecta"}, "inLanguage": "es", "url": "https://alejandrocurcio.com/libros/"}, {"@type": "Book", "name": "CEO DE TU VIDA", "author": {"@id": "https://alejandrocurcio.com/#person"}, "datePublished": "2026-11-17", "publisher": {"@type": "Organization", "name": "Grijalbo"}, "inLanguage": "es", "url": "https://alejandrocurcio.com/ceo-de-tu-vida/"}]});
+import jsonld from '../data/jsonld.json';
+// Datos estructurados por página (SEO 17/11/2026): fuente única en src/data/jsonld.json
+const ldData = (jsonld as Record<string, unknown>)[pathSeo];
+const pageLd = ldData ? JSON.stringify(ldData).replace(/<\//g, '<\\/') : null;
 const lcp =
   preloadImage === false
     ? null
@@ -117,7 +120,7 @@ const lcp =
 		<meta name="twitter:title" content={title} />
 		<meta name="twitter:description" content={description} />
 		<meta name="twitter:image" content={ogImage} />
-		{isHome && <script type="application/ld+json" set:html={personLd} />}
+		{pageLd && <script type="application/ld+json" set:html={pageLd} />}
 		{pathSeo === '/podcast/' && <meta name="robots" content="noindex" />}
 
 		<!-- Fonts — self-hosted (see /public/fonts/). Archivo Variable
@@ -201,7 +204,7 @@ const lcp =
 		     escritorio no aplican). Van últimas en el head. Ver public/estilos/mobile.css. -->
 		<script is:inline src="/scripts/mobile.js?v=2" defer></script>
 		<script is:inline src="/scripts/videos.js?v=2" defer></script>
-		<link rel="stylesheet" href="/estilos/mobile.css?v=5" />
+		<link rel="stylesheet" href="/estilos/mobile.css?v=6" />
 	</head>
 	<body>
 		<!-- Preloader (primera visita de la sesión) y cortina de transición:

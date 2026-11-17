@@ -1,0 +1,658 @@
+{
+ "/": {
+  "@context": "https://schema.org",
+  "@graph": [
+   {
+    "@type": "WebSite",
+    "@id": "https://alejandrocurcio.com/#website",
+    "url": "https://alejandrocurcio.com/",
+    "name": "Alejandro Curcio",
+    "inLanguage": "es",
+    "publisher": {
+     "@id": "https://alejandrocurcio.com/#person"
+    }
+   },
+   {
+    "@type": "ProfilePage",
+    "@id": "https://alejandrocurcio.com/#profilepage",
+    "url": "https://alejandrocurcio.com/",
+    "name": "Alejandro Curcio | Sitio oficial — empresario, autor y piloto",
+    "inLanguage": "es",
+    "isPartOf": {
+     "@id": "https://alejandrocurcio.com/#website"
+    },
+    "mainEntity": {
+     "@id": "https://alejandrocurcio.com/#person"
+    },
+    "primaryImageOfPage": {
+     "@type": "ImageObject",
+     "url": "https://alejandrocurcio.com/media/img/hero-ale-traje-1280.webp"
+    }
+   },
+   {
+    "@type": "Person",
+    "@id": "https://alejandrocurcio.com/#person",
+    "name": "Alejandro Curcio",
+    "url": "https://alejandrocurcio.com/",
+    "image": {
+     "@type": "ImageObject",
+     "url": "https://alejandrocurcio.com/media/img/hero-ale-traje-1280.webp",
+     "width": 1280,
+     "height": 1919
+    },
+    "jobTitle": [
+     "Presidente de Ayax S.A.",
+     "Presidente de Curcio Capital"
+    ],
+    "description": "Empresario uruguayo, presidente de Ayax S.A. —importador oficial de Toyota y Suzuki en Uruguay— y de Curcio Capital. Autor de Capital de Vida, Toolbook y CEO DE TU VIDA. Piloto de drift de Toyota Gazoo Racing.",
+    "nationality": {
+     "@type": "Country",
+     "name": "Uruguay"
+    },
+    "worksFor": [
+     {
+      "@id": "https://alejandrocurcio.com/#ayax"
+     },
+     {
+      "@id": "https://alejandrocurcio.com/#curcio-capital"
+     }
+    ],
+    "memberOf": {
+     "@type": "SportsTeam",
+     "name": "Toyota Gazoo Racing"
+    },
+    "award": [
+     "Empresario del Año 2022 (InfoNegocios, galardón de Oro)",
+     "Récord Guinness Ice Challenge 2024"
+    ],
+    "sameAs": [
+     "https://www.instagram.com/alecurcio_capitaldevida/",
+     "https://www.youtube.com/@alejandrocurcio-capitaldev5482"
+    ]
+   },
+   {
+    "@type": "Organization",
+    "@id": "https://alejandrocurcio.com/#ayax",
+    "name": "Ayax S.A.",
+    "alternateName": "AYAX",
+    "url": "https://www.ayax.com.uy/",
+    "foundingDate": "1945",
+    "address": {
+     "@type": "PostalAddress",
+     "addressLocality": "Montevideo",
+     "addressCountry": "UY"
+    },
+    "sameAs": [
+     "https://www.wikidata.org/wiki/Q55692124"
+    ]
+   },
+   {
+    "@type": "Organization",
+    "@id": "https://alejandrocurcio.com/#curcio-capital",
+    "name": "Curcio Capital",
+    "url": "https://curciocapital.com/"
+   },
+   {
+    "@type": "Book",
+    "@id": "https://alejandrocurcio.com/#book-capital-de-vida",
+    "name": "Capital de Vida",
+    "author": {
+     "@id": "https://alejandrocurcio.com/#person"
+    },
+    "inLanguage": "es",
+    "url": "https://alejandrocurcio.com/capital-de-vida/",
+    "alternativeHeadline": "Legado de valores en la cultura empresarial y familiar",
+    "datePublished": "2018",
+    "publisher": {
+     "@type": "Organization",
+     "name": "Editorial Conecta"
+    },
+    "image": "https://alejandrocurcio.com/media/covers/capital-de-vida-front-1280.jpg"
+   },
+   {
+    "@type": "Book",
+    "@id": "https://alejandrocurcio.com/#book-toolbook",
+    "name": "Toolbook",
+    "author": {
+     "@id": "https://alejandrocurcio.com/#person"
+    },
+    "inLanguage": "es",
+    "url": "https://alejandrocurcio.com/libros/",
+    "alternativeHeadline": "Herramientas para comprender el mundo que viene",
+    "datePublished": "2023",
+    "publisher": {
+     "@type": "Organization",
+     "name": "Editorial Conecta"
+    },
+    "image": "https://alejandrocurcio.com/media/covers/toolbook-front-1280.jpg"
+   },
+   {
+    "@type": "Book",
+    "@id": "https://alejandrocurcio.com/#book-ceo-de-tu-vida",
+    "name": "CEO DE TU VIDA",
+    "author": {
+     "@id": "https://alejandrocurcio.com/#person"
+    },
+    "inLanguage": "es",
+    "url": "https://alejandrocurcio.com/ceo-de-tu-vida/",
+    "alternativeHeadline": "51 reglas para decidir mejor, liderar con claridad y construir una vida con intención",
+    "datePublished": "2026-11-17",
+    "publisher": {
+     "@type": "Organization",
+     "name": "Grijalbo"
+    },
+    "image": "https://alejandrocurcio.com/media/covers/ceo-de-tu-vida-front-1280.jpg"
+   }
+  ]
+ },
+ "/capital-de-vida/": {
+  "@context": "https://schema.org",
+  "@graph": [
+   {
+    "@type": "WebPage",
+    "@id": "https://alejandrocurcio.com/capital-de-vida/#webpage",
+    "url": "https://alejandrocurcio.com/capital-de-vida/",
+    "name": "Capital de Vida — Alejandro Curcio",
+    "inLanguage": "es",
+    "isPartOf": {
+     "@id": "https://alejandrocurcio.com/#website"
+    },
+    "about": {
+     "@id": "https://alejandrocurcio.com/#person"
+    },
+    "description": "El libro que sistematiza el legado de valores: el protocolo de cinco pasos nacido del cordón Andon, Kaizen aplicado a la vida y las crisis que lo forjaron.",
+    "mainEntity": {
+     "@id": "https://alejandrocurcio.com/#book-capital-de-vida"
+    }
+   },
+   {
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+     {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Inicio",
+      "item": "https://alejandrocurcio.com/"
+     },
+     {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Libros",
+      "item": "https://alejandrocurcio.com/libros/"
+     },
+     {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "Capital de Vida"
+     }
+    ]
+   },
+   {
+    "@type": "Book",
+    "@id": "https://alejandrocurcio.com/#book-capital-de-vida",
+    "name": "Capital de Vida",
+    "author": {
+     "@id": "https://alejandrocurcio.com/#person"
+    },
+    "inLanguage": "es",
+    "url": "https://alejandrocurcio.com/capital-de-vida/",
+    "alternativeHeadline": "Legado de valores en la cultura empresarial y familiar",
+    "datePublished": "2018",
+    "publisher": {
+     "@type": "Organization",
+     "name": "Editorial Conecta"
+    },
+    "image": "https://alejandrocurcio.com/media/covers/capital-de-vida-front-1280.jpg"
+   }
+  ]
+ },
+ "/libros/": {
+  "@context": "https://schema.org",
+  "@graph": [
+   {
+    "@type": "CollectionPage",
+    "@id": "https://alejandrocurcio.com/libros/#webpage",
+    "url": "https://alejandrocurcio.com/libros/",
+    "name": "Libros — Alejandro Curcio",
+    "inLanguage": "es",
+    "isPartOf": {
+     "@id": "https://alejandrocurcio.com/#website"
+    },
+    "about": {
+     "@id": "https://alejandrocurcio.com/#person"
+    },
+    "description": "Tres libros. Un solo arco: de adentro hacia afuera, y después el método. Capital de Vida, Toolbook y CEO DE TU VIDA — noviembre 2026."
+   },
+   {
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+     {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Inicio",
+      "item": "https://alejandrocurcio.com/"
+     },
+     {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Libros"
+     }
+    ]
+   },
+   {
+    "@type": "Book",
+    "@id": "https://alejandrocurcio.com/#book-capital-de-vida",
+    "name": "Capital de Vida",
+    "author": {
+     "@id": "https://alejandrocurcio.com/#person"
+    },
+    "inLanguage": "es",
+    "url": "https://alejandrocurcio.com/capital-de-vida/",
+    "alternativeHeadline": "Legado de valores en la cultura empresarial y familiar",
+    "datePublished": "2018",
+    "publisher": {
+     "@type": "Organization",
+     "name": "Editorial Conecta"
+    },
+    "image": "https://alejandrocurcio.com/media/covers/capital-de-vida-front-1280.jpg"
+   },
+   {
+    "@type": "Book",
+    "@id": "https://alejandrocurcio.com/#book-toolbook",
+    "name": "Toolbook",
+    "author": {
+     "@id": "https://alejandrocurcio.com/#person"
+    },
+    "inLanguage": "es",
+    "url": "https://alejandrocurcio.com/libros/",
+    "alternativeHeadline": "Herramientas para comprender el mundo que viene",
+    "datePublished": "2023",
+    "publisher": {
+     "@type": "Organization",
+     "name": "Editorial Conecta"
+    },
+    "image": "https://alejandrocurcio.com/media/covers/toolbook-front-1280.jpg"
+   },
+   {
+    "@type": "Book",
+    "@id": "https://alejandrocurcio.com/#book-ceo-de-tu-vida",
+    "name": "CEO DE TU VIDA",
+    "author": {
+     "@id": "https://alejandrocurcio.com/#person"
+    },
+    "inLanguage": "es",
+    "url": "https://alejandrocurcio.com/ceo-de-tu-vida/",
+    "alternativeHeadline": "51 reglas para decidir mejor, liderar con claridad y construir una vida con intención",
+    "datePublished": "2026-11-17",
+    "publisher": {
+     "@type": "Organization",
+     "name": "Grijalbo"
+    },
+    "image": "https://alejandrocurcio.com/media/covers/ceo-de-tu-vida-front-1280.jpg"
+   }
+  ]
+ },
+ "/seguime/": {
+  "@context": "https://schema.org",
+  "@graph": [
+   {
+    "@type": "WebPage",
+    "@id": "https://alejandrocurcio.com/seguime/#webpage",
+    "url": "https://alejandrocurcio.com/seguime/",
+    "name": "Seguime — Alejandro Curcio",
+    "inLanguage": "es",
+    "isPartOf": {
+     "@id": "https://alejandrocurcio.com/#website"
+    },
+    "about": {
+     "@id": "https://alejandrocurcio.com/#person"
+    },
+    "description": "Instagram, YouTube, libros y charlas. Un solo lugar para cada cosa."
+   },
+   {
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+     {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Inicio",
+      "item": "https://alejandrocurcio.com/"
+     },
+     {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Seguime"
+     }
+    ]
+   }
+  ]
+ },
+ "/aventura/": {
+  "@context": "https://schema.org",
+  "@graph": [
+   {
+    "@type": "WebPage",
+    "@id": "https://alejandrocurcio.com/aventura/#webpage",
+    "url": "https://alejandrocurcio.com/aventura/",
+    "name": "Aventura — Alejandro Curcio",
+    "inLanguage": "es",
+    "isPartOf": {
+     "@id": "https://alejandrocurcio.com/#website"
+    },
+    "about": {
+     "@id": "https://alejandrocurcio.com/#person"
+    },
+    "description": "Monte Fuji, Japón: una subida compartida entre generaciones. La montaña y los negocios tienen mucho en común."
+   },
+   {
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+     {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Inicio",
+      "item": "https://alejandrocurcio.com/"
+     },
+     {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Aventura"
+     }
+    ]
+   }
+  ]
+ },
+ "/preguntale/": {
+  "@context": "https://schema.org",
+  "@graph": [
+   {
+    "@type": "WebPage",
+    "@id": "https://alejandrocurcio.com/preguntale/#webpage",
+    "url": "https://alejandrocurcio.com/preguntale/",
+    "name": "Preguntale a Ale — Alejandro Curcio",
+    "inLanguage": "es",
+    "isPartOf": {
+     "@id": "https://alejandrocurcio.com/#website"
+    },
+    "about": {
+     "@id": "https://alejandrocurcio.com/#person"
+    },
+    "description": "Un chat entrenado con sus libros y su prensa. Responde sólo con lo que Alejandro publicó."
+   },
+   {
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+     {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Inicio",
+      "item": "https://alejandrocurcio.com/"
+     },
+     {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Preguntale a Ale"
+     }
+    ]
+   }
+  ]
+ },
+ "/prensa/": {
+  "@context": "https://schema.org",
+  "@graph": [
+   {
+    "@type": "CollectionPage",
+    "@id": "https://alejandrocurcio.com/prensa/#webpage",
+    "url": "https://alejandrocurcio.com/prensa/",
+    "name": "Prensa — Alejandro Curcio",
+    "inLanguage": "es",
+    "isPartOf": {
+     "@id": "https://alejandrocurcio.com/#website"
+    },
+    "about": {
+     "@id": "https://alejandrocurcio.com/#person"
+    },
+    "description": "Más de 40 notas relevadas entre 2005 y 2026. Esto es lo que se dijo, y lo que se dijo importa."
+   },
+   {
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+     {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Inicio",
+      "item": "https://alejandrocurcio.com/"
+     },
+     {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Prensa"
+     }
+    ]
+   }
+  ]
+ },
+ "/ceo-de-tu-vida/": {
+  "@context": "https://schema.org",
+  "@graph": [
+   {
+    "@type": "WebPage",
+    "@id": "https://alejandrocurcio.com/ceo-de-tu-vida/#webpage",
+    "url": "https://alejandrocurcio.com/ceo-de-tu-vida/",
+    "name": "CEO DE TU VIDA — Alejandro Curcio",
+    "inLanguage": "es",
+    "isPartOf": {
+     "@id": "https://alejandrocurcio.com/#website"
+    },
+    "about": {
+     "@id": "https://alejandrocurcio.com/#person"
+    },
+    "description": "51 reglas para decidir mejor, liderar con claridad y construir una vida con intención. El tercer libro de Alejandro Curcio, por Grijalbo. Noviembre de 2026.",
+    "mainEntity": {
+     "@id": "https://alejandrocurcio.com/#book-ceo-de-tu-vida"
+    }
+   },
+   {
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+     {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Inicio",
+      "item": "https://alejandrocurcio.com/"
+     },
+     {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Libros",
+      "item": "https://alejandrocurcio.com/libros/"
+     },
+     {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "CEO DE TU VIDA"
+     }
+    ]
+   },
+   {
+    "@type": "Book",
+    "@id": "https://alejandrocurcio.com/#book-ceo-de-tu-vida",
+    "name": "CEO DE TU VIDA",
+    "author": {
+     "@id": "https://alejandrocurcio.com/#person"
+    },
+    "inLanguage": "es",
+    "url": "https://alejandrocurcio.com/ceo-de-tu-vida/",
+    "alternativeHeadline": "51 reglas para decidir mejor, liderar con claridad y construir una vida con intención",
+    "datePublished": "2026-11-17",
+    "publisher": {
+     "@type": "Organization",
+     "name": "Grijalbo"
+    },
+    "image": "https://alejandrocurcio.com/media/covers/ceo-de-tu-vida-front-1280.jpg"
+   }
+  ]
+ },
+ "/negocios/": {
+  "@context": "https://schema.org",
+  "@graph": [
+   {
+    "@type": "WebPage",
+    "@id": "https://alejandrocurcio.com/negocios/#webpage",
+    "url": "https://alejandrocurcio.com/negocios/",
+    "name": "Negocios — Alejandro Curcio",
+    "inLanguage": "es",
+    "isPartOf": {
+     "@id": "https://alejandrocurcio.com/#website"
+    },
+    "about": {
+     "@id": "https://alejandrocurcio.com/#person"
+    },
+    "description": "AYAX: ochenta años de una empresa que casi muere dos veces. Y tres frentes más que la extienden — Curcio Capital, El Nido y HY Project."
+   },
+   {
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+     {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Inicio",
+      "item": "https://alejandrocurcio.com/"
+     },
+     {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Negocios"
+     }
+    ]
+   },
+   {
+    "@type": "Organization",
+    "@id": "https://alejandrocurcio.com/#ayax",
+    "name": "Ayax S.A.",
+    "alternateName": "AYAX",
+    "url": "https://www.ayax.com.uy/",
+    "foundingDate": "1945",
+    "address": {
+     "@type": "PostalAddress",
+     "addressLocality": "Montevideo",
+     "addressCountry": "UY"
+    },
+    "sameAs": [
+     "https://www.wikidata.org/wiki/Q55692124"
+    ]
+   },
+   {
+    "@type": "Organization",
+    "@id": "https://alejandrocurcio.com/#curcio-capital",
+    "name": "Curcio Capital",
+    "url": "https://curciocapital.com/"
+   }
+  ]
+ },
+ "/deportista/": {
+  "@context": "https://schema.org",
+  "@graph": [
+   {
+    "@type": "WebPage",
+    "@id": "https://alejandrocurcio.com/deportista/#webpage",
+    "url": "https://alejandrocurcio.com/deportista/",
+    "name": "Deportista — Alejandro Curcio",
+    "inLanguage": "es",
+    "isPartOf": {
+     "@id": "https://alejandrocurcio.com/#website"
+    },
+    "about": {
+     "@id": "https://alejandrocurcio.com/#person"
+    },
+    "description": "No mira las carreras desde la tribuna: corre drift él mismo con Toyota Gazoo Racing Drift."
+   },
+   {
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+     {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Inicio",
+      "item": "https://alejandrocurcio.com/"
+     },
+     {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Deportista"
+     }
+    ]
+   }
+  ]
+ },
+ "/historia/": {
+  "@context": "https://schema.org",
+  "@graph": [
+   {
+    "@type": "WebPage",
+    "@id": "https://alejandrocurcio.com/historia/#webpage",
+    "url": "https://alejandrocurcio.com/historia/",
+    "name": "Historia — Alejandro Curcio",
+    "inLanguage": "es",
+    "isPartOf": {
+     "@id": "https://alejandrocurcio.com/#website"
+    },
+    "about": {
+     "@id": "https://alejandrocurcio.com/#person"
+    },
+    "description": "Ochenta años. Dos crisis. Una sola conducta. La historia de AYAX y de Alejandro Curcio, de 1945 a 2026."
+   },
+   {
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+     {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Inicio",
+      "item": "https://alejandrocurcio.com/"
+     },
+     {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Historia"
+     }
+    ]
+   }
+  ]
+ },
+ "/solidario/": {
+  "@context": "https://schema.org",
+  "@graph": [
+   {
+    "@type": "WebPage",
+    "@id": "https://alejandrocurcio.com/solidario/#webpage",
+    "url": "https://alejandrocurcio.com/solidario/",
+    "name": "Solidario — Alejandro Curcio",
+    "inLanguage": "es",
+    "isPartOf": {
+     "@id": "https://alejandrocurcio.com/#website"
+    },
+    "about": {
+     "@id": "https://alejandrocurcio.com/#person"
+    },
+    "description": "Récord Guinness Ice Challenge 2024: meterse al hielo con los demás. Esa es la diferencia entre auspiciar y participar."
+   },
+   {
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+     {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Inicio",
+      "item": "https://alejandrocurcio.com/"
+     },
+     {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Solidario"
+     }
+    ]
+   }
+  ]
+ }
+}

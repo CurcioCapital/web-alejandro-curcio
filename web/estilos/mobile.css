@@ -471,3 +471,7 @@
   html.lb-on .lb-tapa[data-lb-tapa].is-on{transform:none}
   html.lb-on .lb-tapa[data-lb-tapa].is-on.is-current{transform:translateY(-14px) scale(1.04)}
 }
+
+/* Global (SEO, 17/11/2026): la segunda copia de los efectos «roll» (menú, footer, títulos de Prensa)
+   se dibuja desde el atributo data-roll-text, así Google no lee el texto duplicado. */
+[data-roll-text]::before{content:attr(data-roll-text)}

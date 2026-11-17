@@ -13,6 +13,24 @@
       ]
     },
     {
+      "source": "/fonts/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
+      "source": "/(favicon.*|apple-touch-icon.*|site\\.webmanifest)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=604800"
+        }
+      ]
+    },
+    {
       "source": "/media/(.*)",
       "headers": [
         {
@@ -52,6 +70,16 @@
         }
       ],
       "destination": "https://alejandrocurcio.com/$1",
+      "permanent": true
+    },
+    {
+      "source": "/index.html",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/:path+/index.html",
+      "destination": "/:path+/",
       "permanent": true
     }
   ]

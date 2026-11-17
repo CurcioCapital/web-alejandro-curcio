@@ -10,7 +10,7 @@ def fix(text, prefix):
         if re.match(assets, p):
             return prefix + p
         name = p.rstrip('/')
-        return prefix + (name + '/index.html' if name else 'index.html')
+        return '/' + (name + '/' if name else '')  # URLs limpias (SEO 17/11/2026)
     return pat.sub(rep, text)
 
 for root, _, files in os.walk(D):

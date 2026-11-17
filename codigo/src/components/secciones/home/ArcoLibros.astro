@@ -76,7 +76,7 @@ const libros = [
             [...libros, { anio: '2026', titulo: 'CEO DE TU VIDA' }].map((l, i) => (
               <li class="lb-tapa" data-lb-tapa={i}>
                 {i < 2 ? (
-                  <MediaCard id={libros[i].coverId} kind="cover" ratio={libros[i].ratio} alt={libros[i].alt} eager />
+                  <MediaCard id={libros[i].coverId} kind="cover" ratio={libros[i].ratio} alt={libros[i].alt} />
                 ) : (
                   <MediaCard
                     id="ceo-de-tu-vida-front"

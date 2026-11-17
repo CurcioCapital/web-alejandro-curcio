@@ -68,7 +68,13 @@
     "sameAs": [
      "https://www.instagram.com/alecurcio_capitaldevida/",
      "https://www.youtube.com/@alejandrocurcio-capitaldev5482"
-    ]
+    ],
+    "contactPoint": {
+     "@type": "ContactPoint",
+     "contactType": "press",
+     "email": "info@ayaxonline.com",
+     "availableLanguage": "es"
+    }
    },
    {
     "@type": "Organization",
@@ -84,7 +90,11 @@
     },
     "sameAs": [
      "https://www.wikidata.org/wiki/Q55692124"
-    ]
+    ],
+    "founder": {
+     "@type": "Person",
+     "name": "Emilio J. Curcio"
+    }
    },
    {
     "@type": "Organization",
@@ -540,7 +550,11 @@
     },
     "sameAs": [
      "https://www.wikidata.org/wiki/Q55692124"
-    ]
+    ],
+    "founder": {
+     "@type": "Person",
+     "name": "Emilio J. Curcio"
+    }
    },
    {
     "@type": "Organization",

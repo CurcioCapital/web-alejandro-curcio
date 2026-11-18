@@ -63,7 +63,7 @@ const reglas = [
 	description="CEO DE TU VIDA, el nuevo libro de Alejandro Curcio por Grijalbo: 51 reglas para decidir mejor y liderar con claridad. Ya disponible."
 >
 	<!-- Marca del libro (negro y rojo; blanco y plateado): public/estilos/ceo-marca.css -->
-	<link rel="stylesheet" href="/estilos/ceo-marca.css" />
+	<link rel="stylesheet" href="/estilos/ceo-marca.css?v=2" />
 
 	<!-- ============ 1 · APERTURA ============ -->
 	<section class="ed-sec ed-grid ceo-hero">
@@ -111,7 +111,7 @@ const reglas = [
 	<!-- ============ 2 · EL ORIGEN ============
 	     La estética japonesa del libro no es una decisión de diseño: es de
 	     dónde salió el material. Por eso este bloque va antes que el índice. -->
-	<!-- 17/11/2026: transmisión del lanzamiento (YouTube embebido con carga a demanda). Textos según la hora: scripts/lanzamiento.js -->
+	<!-- 17/11/2026: transmisión del lanzamiento. 18/11/2026: el YouTube se reemplazó por el video resumen del evento (media/video/lanzamiento-ceo*.mp4), con el mismo póster-botón. Textos según la hora: scripts/lanzamiento.js -->
 	<section id="en-vivo" class="cev" aria-labelledby="cev-t">
 	<style is:inline>
 	.cev{position:relative;background:#0b0b0b;color:#f4f1ea;padding:clamp(56px,8vw,120px) var(--edge,20px);scroll-margin-top:90px;border-top:1px solid rgb(244 241 234/.08)}
@@ -130,7 +130,8 @@ const reglas = [
 	.cev-btn{position:absolute;left:8.4%;bottom:10%;width:clamp(52px,7vw,92px);height:clamp(52px,7vw,92px);border-radius:50%;background:#D21F1A;display:grid;place-items:center;box-shadow:0 12px 40px -8px rgb(0 0 0/.7);transition:transform .35s cubic-bezier(.2,.7,.2,1),background .25s}
 	.cev-btn svg{width:34%;height:34%;margin-left:8%}
 	.cev-play:hover .cev-btn,.cev-play:focus-visible .cev-btn{transform:scale(1.08);background:#e8261f}
-	.cev-player iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+	.cev-player iframe,.cev-player video{position:absolute;inset:0;width:100%;height:100%;border:0}
+	.cev-player video{display:block;object-fit:contain;background:#000}
 	</style>
 	<div class="cev-wrap">
 	<div class="cev-head">
@@ -138,19 +139,19 @@ const reglas = [
 	<h2 id="cev-t" class="cev-t">Presentación de <span>CEO DE TU VIDA</span></h2>
 	<p class="cev-sub">Alejandro Curcio presenta su nuevo libro.</p>
 	</div>
-	<div class="cev-player" data-yt="mkfWv6gaCFk">
+	<div class="cev-player" data-video="/media/video/lanzamiento-ceo.mp4" data-video-m="/media/video/lanzamiento-ceo-m.mp4">
 	<button class="cev-play" type="button" aria-label="Reproducir la presentación de CEO DE TU VIDA">
-	<picture><source srcset="/media/img/ceo-en-vivo-poster.webp" type="image/webp"><img src="/media/img/ceo-en-vivo-poster.jpg" alt="Lanzamiento en vivo de CEO DE TU VIDA, de Alejandro Curcio. 17 de noviembre, 20 h" width="1280" height="720" loading="lazy" decoding="async"></picture>
+	<picture><source srcset="/media/img/lanzamiento-ceo-poster.webp" type="image/webp"><img src="/media/img/lanzamiento-ceo-poster.jpg" alt="Alejandro Curcio en el escenario de la presentación de CEO DE TU VIDA, 17 de noviembre de 2026" width="1280" height="720" loading="lazy" decoding="async"></picture>
 	<span class="cev-btn" aria-hidden="true"><svg viewBox="0 0 24 24" fill="#fff"><path d="M6 3.5v17L20.5 12z"/></svg></span>
 	</button>
 	</div>
 	</div>
 	<script is:inline>
-	(()=>{const p=document.querySelector('#en-vivo [data-yt]');if(!p)return;const b=p.querySelector('.cev-play');
-	b.addEventListener('click',()=>{document.querySelectorAll('video').forEach(v=>{v.muted=true});
-	const f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/'+p.dataset.yt+'?autoplay=1&rel=0&playsinline=1&modestbranding=1';
-	f.title='Presentación de CEO DE TU VIDA (YouTube)';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.referrerPolicy='strict-origin-when-cross-origin';
-	b.replaceWith(f);});})();
+	(()=>{const p=document.querySelector('#en-vivo [data-video]');if(!p)return;const b=p.querySelector('.cev-play');
+	b.addEventListener('click',()=>{const m=matchMedia('(max-width: 860px)').matches;const v=document.createElement('video');
+	v.src=(m&&p.dataset.videoM)||p.dataset.video;v.poster='/media/img/lanzamiento-ceo-poster.jpg';v.controls=true;v.playsInline=true;v.setAttribute('playsinline','');v.preload='auto';
+	v.dataset.audio='manual';v.setAttribute('aria-label','Resumen de la presentación de CEO DE TU VIDA');
+	b.replaceWith(v);v.muted=false;v.volume=1;const r=v.play();if(r&&r.catch)r.catch(()=>{});});})();
 	</script>
 	</section>
 	
@@ -180,8 +181,9 @@ const reglas = [
 		</div>
 	</section>
 
-	<!-- ============ 3 · CUENTA REGRESIVA (la misma de /libros) ============ -->
-	<CeoClimax id="lanzamiento" kicker="Lanzamiento · 17 de noviembre de 2026" n="02" />
+	<!-- ============ 3 · CIERRE (el mismo clímax de /libros) ============
+	     18/11/2026: sin el bloque «YA DISPONIBLE» + compra, donde antes estaba la cuenta regresiva (pedido de Emi). -->
+	<CeoClimax id="lanzamiento" kicker="Lanzamiento · 17 de noviembre de 2026" n="02" sinCompra />
 </Base>
 
 <style>

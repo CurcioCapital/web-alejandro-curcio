@@ -69,6 +69,12 @@
 	background: var(--ceo-rojo);
 	color: #fff;
 }
+/* 18/11/2026: al pasar el mouse el relleno es blanco, así que el texto va en negro
+   (antes quedaba blanco sobre blanco y el botón «desaparecía»). */
+:root:root .pill.pill--accent:hover,
+:root:root .pill.pill--accent:focus-visible {
+	color: var(--ceo-negro);
+}
 :root:root .ed-btn {
 	background: var(--ceo-rojo);
 	color: #fff;

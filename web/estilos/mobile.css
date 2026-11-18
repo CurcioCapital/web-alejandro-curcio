@@ -513,3 +513,9 @@
 :root .cp-t {
   font-size: var(--titulo-seccion) !important;
 }
+
+/* 18/11/2026 · Sin el punto dorado que seguía al puntero (pedido de Emi). Queda el cursor del sistema;
+   la burbuja «Ver» / «Play» sobre fotos y videos se mantiene. */
+.mo-cursor__dot {
+  display: none !important;
+}

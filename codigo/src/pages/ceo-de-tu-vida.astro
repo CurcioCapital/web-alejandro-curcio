@@ -69,6 +69,49 @@ const reglas = [
 	     Lleva el id #en-vivo porque la franja y los links viejos apuntan ahí. -->
 	<section id="en-vivo" class="cp-hero" aria-labelledby="cp-t"><style is:inline>.cp-hero{position:relative;isolation:isolate;overflow:hidden;min-height:calc(100svh - var(--nav-h,74px) - 40px);display:flex;align-items:flex-end;background:#0f0f0f;color:#fff;scroll-margin-top:90px}.cp-media{position:absolute;inset:0;z-index:-2}.cp-media video{display:block;width:100%;height:100%;object-fit:cover;object-position:50% 42%}.cp-scrim{position:absolute;inset:0;z-index:-1;background:linear-gradient(0deg,rgb(12 12 12/.95),rgb(12 12 12/.5) 38%,rgb(12 12 12/.05) 70%,rgb(12 12 12/.35)),linear-gradient(90deg,rgb(12 12 12/.6) 0%,transparent 58%);pointer-events:none}.cp-copy{width:100%;max-width:1360px;margin:0 auto;padding:0 var(--edge,20px) clamp(48px,7vh,88px);display:grid;gap:clamp(16px,2vw,26px)}.cp-k{display:inline-flex;align-items:center;gap:12px;margin:0;font-family:"JetBrains Mono Variable","JetBrains Mono",ui-monospace,monospace;font-size:11.5px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:#F04A3E}.cp-k .cp-idx{color:rgb(255 255 255/.5)}.cp-k::after{content:"";width:40px;height:1px;background:currentColor;opacity:.5}.cp-t{margin:0;font-family:var(--font-display,"Geist Variable",system-ui,sans-serif);font-weight:var(--display-wght,560);font-size:var(--titulo-seccion,clamp(42px,min(6.6vw,11vh),120px));line-height:.98;letter-spacing:-.045em;color:#fff;text-wrap:balance}.cp-t span{color:#D21F1A;white-space:nowrap}.cp-sub{margin:0;max-width:52ch;color:rgb(255 255 255/.78);font-size:clamp(16px,1.25vw,19px);line-height:1.5}</style><div class="cp-media"><video data-audio="auto" data-lv data-lv-eager data-src="/media/video/lanzamiento-ceo.mp4" data-src-m="/media/video/lanzamiento-ceo-m.mp4" poster="/media/img/lanzamiento-ceo-poster.jpg" muted loop autoplay playsinline preload="none" aria-label="Resumen de la presentación de CEO DE TU VIDA"></video></div><span class="cp-scrim" aria-hidden="true"></span><div class="cp-copy"><h2 id="cp-t" class="cp-t">Presentación<br><span>CEO DE TU VIDA</span></h2><p class="cp-sub">Alejandro Curcio presenta su nuevo libro.</p></div></section>
 
+	<!-- 18/11/2026: vuelve la transmisión de YouTube (mkfWv6gaCFk), debajo del video resumen (pedido de Emi). Fachada: póster local + iframe youtube-nocookie al tocar play. -->
+	<section id="transmision" class="cev" aria-labelledby="cev-t">
+	<style is:inline>
+	.cev{position:relative;background:#0b0b0b;color:#f4f1ea;padding:clamp(56px,8vw,120px) var(--edge,20px);scroll-margin-top:90px;border-top:1px solid rgb(244 241 234/.08)}
+	.cev-wrap{max-width:1200px;margin:0 auto;display:flex;flex-direction:column;gap:clamp(22px,3vw,36px)}
+	.cev-head{display:flex;flex-direction:column;gap:14px}
+	.cev-k{display:inline-flex;align-items:center;gap:10px;font-family:var(--font-mono,ui-monospace,monospace);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:#F04A3E}
+	.cev-k i{display:none;width:9px;height:9px;border-radius:50%;background:#D21F1A;box-shadow:0 0 0 0 rgb(210 31 26/.7);animation:cev-pulse 1.6s infinite}
+	.cev.is-live .cev-k i{display:block}
+	@keyframes cev-pulse{70%{box-shadow:0 0 0 10px rgb(210 31 26/0)}100%{box-shadow:0 0 0 0 rgb(210 31 26/0)}}
+	.cev-t{margin:0;font-family:var(--font-display,inherit);font-weight:var(--display-wght,560);font-size:clamp(34px,5.2vw,76px);line-height:.98;letter-spacing:-.04em;color:#fff}
+	.cev-t span{color:#D21F1A}
+	.cev-sub{margin:0;max-width:52ch;color:rgb(244 241 234/.72);font-size:clamp(16px,1.25vw,19px);line-height:1.5}
+	.cev-player{position:relative;width:100%;aspect-ratio:16/9;border-radius:clamp(12px,1.4vw,20px);overflow:hidden;background:#000;box-shadow:0 30px 80px -30px rgb(210 31 26/.45),0 0 0 1px rgb(244 241 234/.10)}
+	.cev-play{position:absolute;inset:0;width:100%;height:100%;padding:0;border:0;background:#000;cursor:pointer;display:block}
+	.cev-play picture,.cev-play img{display:block;width:100%;height:100%;object-fit:cover}
+	.cev-btn{position:absolute;left:8.4%;bottom:10%;width:clamp(52px,7vw,92px);height:clamp(52px,7vw,92px);border-radius:50%;background:#D21F1A;display:grid;place-items:center;box-shadow:0 12px 40px -8px rgb(0 0 0/.7);transition:transform .35s cubic-bezier(.2,.7,.2,1),background .25s}
+	.cev-btn svg{width:34%;height:34%;margin-left:8%}
+	.cev-play:hover .cev-btn,.cev-play:focus-visible .cev-btn{transform:scale(1.08);background:#e8261f}
+	.cev-player iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+	</style>
+	<div class="cev-wrap">
+	<div class="cev-head">
+	<span class="cev-k">Transmisión en vivo · 17 de noviembre de 2026</span>
+	<h2 id="cev-t" class="cev-t">Mirá el evento completo</h2>
+	</div>
+	<div class="cev-player" data-yt="mkfWv6gaCFk">
+	<button class="cev-play" type="button" aria-label="Reproducir la transmisión de la presentación de CEO DE TU VIDA en YouTube">
+	<picture><source srcset="/media/img/ceo-en-vivo-poster.webp" type="image/webp"><img src="/media/img/ceo-en-vivo-poster.jpg" alt="Transmisión en vivo de la presentación de CEO DE TU VIDA, de Alejandro Curcio, el 17 de noviembre" width="1280" height="720" loading="lazy" decoding="async"></picture>
+	<span class="cev-btn" aria-hidden="true"><svg viewBox="0 0 24 24" fill="#fff"><path d="M6 3.5v17L20.5 12z"/></svg></span>
+	</button>
+	</div>
+	</div>
+	<script is:inline>
+	(()=>{const p=document.querySelector('#transmision [data-yt]');if(!p)return;const b=p.querySelector('.cev-play');
+	b.addEventListener('click',()=>{document.querySelectorAll('video').forEach(v=>{v.muted=true});
+	const f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/'+p.dataset.yt+'?autoplay=1&rel=0&playsinline=1&modestbranding=1';
+	f.title='Presentación de CEO DE TU VIDA (YouTube)';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.referrerPolicy='strict-origin-when-cross-origin';
+	b.replaceWith(f);});})();
+	</script>
+	</section>
+
+
 	<!-- ============ 1 · APERTURA ============ -->
 	<section class="ed-sec ed-grid ceo-hero">
 		<div class="ceo-hero-glow" aria-hidden="true"></div>

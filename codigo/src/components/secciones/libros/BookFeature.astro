@@ -20,8 +20,10 @@ interface Props {
   sheet?: boolean;
   /** 16/11/2026: link de compra (Mercado Libre) → botón «Lo quiero» */
   buy?: string;
+  /** 18/11/2026: tienda del link de compra (para el aria-label) */
+  store?: string;
 }
-const { id, n, kicker, title, lead, cover, ratio, alt, year, sheet = false, buy } = Astro.props;
+const { id, n, kicker, title, lead, cover, ratio, alt, year, sheet = false, buy, store = 'Mercado Libre' } = Astro.props;
 ---
 
 <section id={id} class:list={['ed-sec', 'ed-sec--light', sheet && 'ed-sec--sheet', 'ed-grid', 'bf']} data-bf>
@@ -39,7 +41,7 @@ const { id, n, kicker, title, lead, cover, ratio, alt, year, sheet = false, buy 
         <h2 class="ed-display bf-title" data-split="lines">{title}</h2>
         <p class="bf-lead" data-bf-words>{lead}</p>
         <div class="bf-body" data-bf-words><slot /></div>
-        {buy && <a class="pill pill--accent ml-buy" href={buy} target="_blank" rel="noopener" aria-label={`Comprar ${kicker.split(' · ')[0]} en Mercado Libre`}>Lo quiero <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9" /></svg></a>}
+        {buy && <a class="pill pill--accent ml-buy" href={buy} target="_blank" rel="noopener" aria-label={`Comprar ${kicker.split(' · ')[0]} en ${store}`}>Lo quiero <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9" /></svg></a>}
       </div>
     </div>
   </div>

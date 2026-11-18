@@ -495,3 +495,21 @@
 /* 17/11/2026 (Emi): sin el anillo alrededor del punto dorado al pasar por links y botones; el punto crece un poco. */
 .mo-cursor[data-state='hover'] .mo-cursor__ring,.mo-cursor[data-state='link'] .mo-cursor__ring{scale:0!important}
 .mo-cursor[data-state='hover'] .mo-cursor__dot,.mo-cursor[data-state='link'] .mo-cursor__dot{scale:1.5!important}
+
+/* ---------- 18/11/2026 · Titular de apertura estándar (pedido de Emi) ----------
+   Todas las secciones abren con el mismo tamaño de titular: 95 px en 1440×900 y 42 px en celular.
+   Quedan afuera el nombre del home, «En pista» (casco de Deportista) y el encabezado del chat. */
+:root {
+  --titulo-seccion: clamp(42px, min(6.6vw, 11vh), 120px);
+}
+:root h1.hh-title,
+:root h1.plate-title,
+:root h1.avf-title,
+:root h1.av-plate-title,
+:root h1.lh-title,
+:root h1.ed-display:not(.ceo-title),
+:root h1.sg-title,
+:root h1#pod-t,
+:root .cp-t {
+  font-size: var(--titulo-seccion) !important;
+}

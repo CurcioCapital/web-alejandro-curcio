@@ -216,8 +216,9 @@
   }
 
   /* ---------- HOME-04 · tarjeta flotante del libro más chica -------------- */
+  /* 18/11/2026: tarjeta horizontal (video del lanzamiento); el ancho final lo ajusta el script del hero para no pisar la foto. */
   .hh-book .hh-book-frame {
-    width: 84px !important;
+    width: 150px;
   }
   .hh-book {
     align-items: flex-end;

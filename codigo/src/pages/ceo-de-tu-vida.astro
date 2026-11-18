@@ -26,7 +26,6 @@
 import Base from '../layouts/Base.astro';
 import '../components/secciones/libros/ed.css';
 import MediaCard from '../components/MediaCard.astro';
-import CeoClimax from '../components/secciones/libros/CeoClimax.astro';
 
 
 // Los once interludios. El kanji es el ancla visual; el romaji, el nombre.
@@ -64,6 +63,11 @@ const reglas = [
 >
 	<!-- Marca del libro (negro y rojo; blanco y plateado): public/estilos/ceo-marca.css -->
 	<link rel="stylesheet" href="/estilos/ceo-marca.css?v=2" />
+
+	<!-- ============ 0 · PRESENTACIÓN (18/11/2026) ============
+	     Abre como las otras secciones: video a sangre (resumen del lanzamiento, con sonido) + etiqueta y titular.
+	     Lleva el id #en-vivo porque la franja y los links viejos apuntan ahí. -->
+	<section id="en-vivo" class="cp-hero" aria-labelledby="cp-t"><style is:inline>.cp-hero{position:relative;isolation:isolate;overflow:hidden;min-height:calc(100svh - var(--nav-h,74px) - 40px);display:flex;align-items:flex-end;background:#0f0f0f;color:#fff;scroll-margin-top:90px}.cp-media{position:absolute;inset:0;z-index:-2}.cp-media video{display:block;width:100%;height:100%;object-fit:cover;object-position:50% 42%}.cp-scrim{position:absolute;inset:0;z-index:-1;background:linear-gradient(0deg,rgb(12 12 12/.95),rgb(12 12 12/.5) 38%,rgb(12 12 12/.05) 70%,rgb(12 12 12/.35)),linear-gradient(90deg,rgb(12 12 12/.6) 0%,transparent 58%);pointer-events:none}.cp-copy{width:100%;max-width:1360px;margin:0 auto;padding:0 var(--edge,20px) clamp(48px,7vh,88px);display:grid;gap:clamp(16px,2vw,26px)}.cp-k{display:inline-flex;align-items:center;gap:12px;margin:0;font-family:"JetBrains Mono Variable","JetBrains Mono",ui-monospace,monospace;font-size:11.5px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:#F04A3E}.cp-k .cp-idx{color:rgb(255 255 255/.5);white-space:nowrap}@media (max-width:860px){.cp-k{gap:10px}.cp-k::after{display:none}}.cp-k::after{content:"";width:40px;height:1px;background:currentColor;opacity:.5}.cp-t{margin:0;font-family:var(--font-display,"Geist Variable",system-ui,sans-serif);font-weight:var(--display-wght,560);font-size:clamp(42px,min(7.8vw,14vh),156px);line-height:.98;letter-spacing:-.045em;color:#fff;text-wrap:balance}.cp-t span{color:#D21F1A;white-space:nowrap}.cp-sub{margin:0;max-width:52ch;color:rgb(255 255 255/.78);font-size:clamp(16px,1.25vw,19px);line-height:1.5}</style><div class="cp-media"><video data-audio="auto" data-lv data-lv-eager data-src="/media/video/lanzamiento-ceo.mp4" data-src-m="/media/video/lanzamiento-ceo-m.mp4" poster="/media/img/lanzamiento-ceo-poster.jpg" muted loop autoplay playsinline preload="none" aria-label="Resumen de la presentación de CEO DE TU VIDA"></video></div><span class="cp-scrim" aria-hidden="true"></span><div class="cp-copy"><p class="cp-k"><span class="cp-idx">[ 01 ]</span><span data-live-k>Presentación · 17 de noviembre de 2026</span></p><h2 id="cp-t" class="cp-t">Presentación de <span>CEO DE TU VIDA</span></h2><p class="cp-sub">Alejandro Curcio presenta su nuevo libro.</p></div></section>
 
 	<!-- ============ 1 · APERTURA ============ -->
 	<section class="ed-sec ed-grid ceo-hero">
@@ -108,82 +112,12 @@ const reglas = [
 		</div>
 	</section>
 
-	<!-- ============ 2 · EL ORIGEN ============
-	     La estética japonesa del libro no es una decisión de diseño: es de
-	     dónde salió el material. Por eso este bloque va antes que el índice. -->
-	<!-- 17/11/2026: transmisión del lanzamiento. 18/11/2026: el YouTube se reemplazó por el video resumen del evento (media/video/lanzamiento-ceo*.mp4), con el mismo póster-botón. Textos según la hora: scripts/lanzamiento.js -->
-	<section id="en-vivo" class="cev" aria-labelledby="cev-t">
-	<style is:inline>
-	.cev{position:relative;background:#0b0b0b;color:#f4f1ea;padding:clamp(56px,8vw,120px) var(--edge,20px);scroll-margin-top:90px;border-top:1px solid rgb(244 241 234/.08)}
-	.cev-wrap{max-width:1200px;margin:0 auto;display:flex;flex-direction:column;gap:clamp(22px,3vw,36px)}
-	.cev-head{display:flex;flex-direction:column;gap:14px}
-	.cev-k{display:inline-flex;align-items:center;gap:10px;font-family:var(--font-mono,ui-monospace,monospace);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:#F04A3E}
-	.cev-k i{display:none;width:9px;height:9px;border-radius:50%;background:#D21F1A;box-shadow:0 0 0 0 rgb(210 31 26/.7);animation:cev-pulse 1.6s infinite}
-	.cev.is-live .cev-k i{display:block}
-	@keyframes cev-pulse{70%{box-shadow:0 0 0 10px rgb(210 31 26/0)}100%{box-shadow:0 0 0 0 rgb(210 31 26/0)}}
-	.cev-t{margin:0;font-family:var(--font-display,inherit);font-weight:var(--display-wght,560);font-size:clamp(34px,5.2vw,76px);line-height:.98;letter-spacing:-.04em;color:#fff}
-	.cev-t span{color:#D21F1A}
-	.cev-sub{margin:0;max-width:52ch;color:rgb(244 241 234/.72);font-size:clamp(16px,1.25vw,19px);line-height:1.5}
-	.cev-player{position:relative;width:100%;aspect-ratio:16/9;border-radius:clamp(12px,1.4vw,20px);overflow:hidden;background:#000;box-shadow:0 30px 80px -30px rgb(210 31 26/.45),0 0 0 1px rgb(244 241 234/.10)}
-	.cev-play{position:absolute;inset:0;width:100%;height:100%;padding:0;border:0;background:#000;cursor:pointer;display:block}
-	.cev-play picture,.cev-play img{display:block;width:100%;height:100%;object-fit:cover}
-	.cev-btn{position:absolute;left:8.4%;bottom:10%;width:clamp(52px,7vw,92px);height:clamp(52px,7vw,92px);border-radius:50%;background:#D21F1A;display:grid;place-items:center;box-shadow:0 12px 40px -8px rgb(0 0 0/.7);transition:transform .35s cubic-bezier(.2,.7,.2,1),background .25s}
-	.cev-btn svg{width:34%;height:34%;margin-left:8%}
-	.cev-play:hover .cev-btn,.cev-play:focus-visible .cev-btn{transform:scale(1.08);background:#e8261f}
-	.cev-player iframe,.cev-player video{position:absolute;inset:0;width:100%;height:100%;border:0}
-	.cev-player video{display:block;object-fit:contain;background:#000}
-	</style>
-	<div class="cev-wrap">
-	<div class="cev-head">
-	<span class="cev-k"><i aria-hidden="true"></i><span data-live-k>Presentación · 17 de noviembre de 2026</span></span>
-	<h2 id="cev-t" class="cev-t">Presentación de <span>CEO DE TU VIDA</span></h2>
-	<p class="cev-sub">Alejandro Curcio presenta su nuevo libro.</p>
-	</div>
-	<div class="cev-player" data-video="/media/video/lanzamiento-ceo.mp4" data-video-m="/media/video/lanzamiento-ceo-m.mp4">
-	<button class="cev-play" type="button" aria-label="Reproducir la presentación de CEO DE TU VIDA">
-	<picture><source srcset="/media/img/lanzamiento-ceo-poster.webp" type="image/webp"><img src="/media/img/lanzamiento-ceo-poster.jpg" alt="Alejandro Curcio en el escenario de la presentación de CEO DE TU VIDA, 17 de noviembre de 2026" width="1280" height="720" loading="lazy" decoding="async"></picture>
-	<span class="cev-btn" aria-hidden="true"><svg viewBox="0 0 24 24" fill="#fff"><path d="M6 3.5v17L20.5 12z"/></svg></span>
-	</button>
-	</div>
-	</div>
-	<script is:inline>
-	(()=>{const p=document.querySelector('#en-vivo [data-video]');if(!p)return;const b=p.querySelector('.cev-play');
-	b.addEventListener('click',()=>{const m=matchMedia('(max-width: 860px)').matches;const v=document.createElement('video');
-	v.src=(m&&p.dataset.videoM)||p.dataset.video;v.poster='/media/img/lanzamiento-ceo-poster.jpg';v.controls=true;v.playsInline=true;v.setAttribute('playsinline','');v.preload='auto';
-	v.dataset.audio='manual';v.setAttribute('aria-label','Resumen de la presentación de CEO DE TU VIDA');
-	b.replaceWith(v);v.muted=false;v.volume=1;const r=v.play();if(r&&r.catch)r.catch(()=>{});});})();
-	</script>
-	</section>
-	
-	<section id="origen" class="ed-sec ed-sec--light ed-sec--sheet ed-grid ceo-origen">
-		<div class="ed-wrap ceo-split">
-			<div class="ceo-head">
-				<span class="ed-mono ceo-head-n" aria-hidden="true">[ 01 ]</span>
-				<span class="kicker ed-mono ceo-k">El origen</span>
-				<h2 class="section-title ed-display ceo-h2" data-split="lines">El libro empezó en una playa de Okinawa.</h2>
-			</div>
-			<div class="origen-cuerpo" data-pinta>
-				<p data-pinta-words>
-					Alejandro entró a la empresa familiar siendo casi adolescente. <strong>A los 25 ya dirigía
-					la compañía</strong>, con un padre que le llevaba más de cincuenta años.
-				</p>
-				<p data-pinta-words>
-					En 2023 viajó a Japón con su hijo Lucca. Toyota Motor Corporation había organizado un
-					encuentro de presidentes de distintos países <strong>junto a las segundas y terceras
-					generaciones</strong> de sus familias empresarias. El tema declarado era el negocio. El
-					tema real era el legado.
-				</p>
-				<p data-pinta-words>
-					Después de Tokio fueron a Okinawa. Una mañana caminó solo por la playa, con el mar calmo
-					y en silencio. De ahí salieron las preguntas que originaron este libro.
-				</p>
-			</div>
-		</div>
-	</section>
 
-	<!-- ============ 3 · CIERRE (el mismo clímax de /libros) ============
-	     18/11/2026: sin el bloque «YA DISPONIBLE» + compra, donde antes estaba la cuenta regresiva (pedido de Emi). -->
-	<CeoClimax id="lanzamiento" kicker="Lanzamiento · 17 de noviembre de 2026" n="02" sinCompra />
+	
+	<!-- ============ 2 · GALERÍA DEL EVENTO (18/11/2026) ============
+	     Referencia: landonorris.com. Sección fija; el scroll vertical mueve las fotos hacia la derecha.
+	     Fotos sin textos (pedido de Emi). Fotos: media/img/ceo-evento/ (Drive de Emi, 18/11). -->
+	<section class="gx" aria-label="Fotos de la presentación de CEO DE TU VIDA" data-gx><style is:inline>.gx{--u:1svh;position:relative;background:#0f0f0f;height:300vh}.gx-pin{position:sticky;top:0;height:100svh;overflow:hidden}.gx-track{position:absolute;top:0;left:0;height:100%;width:calc(716 * var(--u));will-change:transform}.gx-it{position:absolute;margin:0;left:calc(var(--x) * var(--u));top:calc(50% + (var(--y) - 50) * var(--u));width:calc(var(--w) * var(--u));aspect-ratio:var(--r);overflow:hidden;background:#181818;will-change:transform}.gx-it img{display:block;width:100%;height:100%;object-fit:cover;filter:grayscale(1) brightness(.6) contrast(1.06);transform:scale(1.05);transition:filter .8s cubic-bezier(.2,.7,.2,1),transform 1.2s cubic-bezier(.2,.7,.2,1),opacity .6s;opacity:0}.gx-it img.is-ld{opacity:1}.gx-it.is-on img,.gx-it:hover img{filter:none;transform:scale(1)}@media (max-width:860px){.gx{--u:.78svh}}.gx--static{height:auto}.gx--static .gx-pin{position:relative;overflow-x:auto;overflow-y:hidden}.gx--static .gx-track{position:relative;height:100%}.gx--static .gx-it img{filter:none;transform:none;transition:none}</style><div class="gx-pin"><div class="gx-track"><figure class="gx-it" style="--x:6;--y:18;--w:54;--r:1.5;--s:1.04"><img data-src="/media/img/ceo-evento/ceo-evento-01-1600.webp" data-srcset="/media/img/ceo-evento/ceo-evento-01-900.webp 900w, /media/img/ceo-evento/ceo-evento-01-1600.webp 1600w" sizes="(max-width: 860px) 42vh, 54vh" alt="Alejandro Curcio con invitados en la presentación de CEO DE TU VIDA" width="1600" height="1067" decoding="async"></figure><figure class="gx-it" style="--x:66;--y:40;--w:34;--r:0.8;--s:0.96"><img data-src="/media/img/ceo-evento/ceo-evento-02-1600.webp" data-srcset="/media/img/ceo-evento/ceo-evento-02-900.webp 900w, /media/img/ceo-evento/ceo-evento-02-1600.webp 1600w" sizes="(max-width: 860px) 27vh, 34vh" alt="Alejandro Curcio en el escenario, frente a la tapa de CEO DE TU VIDA" width="1600" height="2000" decoding="async"></figure><figure class="gx-it" style="--x:106;--y:16;--w:44;--r:1.5;--s:1.06"><img data-src="/media/img/ceo-evento/ceo-evento-03-1600.webp" data-srcset="/media/img/ceo-evento/ceo-evento-03-900.webp 900w, /media/img/ceo-evento/ceo-evento-03-1600.webp 1600w" sizes="(max-width: 860px) 34vh, 44vh" alt="El público en la presentación de CEO DE TU VIDA" width="1600" height="1067" decoding="async"></figure><figure class="gx-it" style="--x:120;--y:52;--w:30;--r:0.7999;--s:0.95"><img data-src="/media/img/ceo-evento/ceo-evento-04-1600.webp" data-srcset="/media/img/ceo-evento/ceo-evento-04-900.webp 900w, /media/img/ceo-evento/ceo-evento-04-1600.webp 1600w" sizes="(max-width: 860px) 23vh, 30vh" alt="Alejandro Curcio en el escenario de la presentación" width="1600" height="2000" decoding="async"></figure><figure class="gx-it" style="--x:160;--y:24;--w:70;--r:1.5;--s:1.02"><img data-src="/media/img/ceo-evento/ceo-evento-05-1600.webp" data-srcset="/media/img/ceo-evento/ceo-evento-05-900.webp 900w, /media/img/ceo-evento/ceo-evento-05-1600.webp 1600w" sizes="(max-width: 860px) 55vh, 70vh" alt="Alejandro Curcio en el escenario, junto a la pantalla con la tapa del libro" width="1600" height="1067" decoding="async"></figure><figure class="gx-it" style="--x:238;--y:58;--w:40;--r:1.5;--s:0.94"><img data-src="/media/img/ceo-evento/ceo-evento-06-1600.webp" data-srcset="/media/img/ceo-evento/ceo-evento-06-900.webp 900w, /media/img/ceo-evento/ceo-evento-06-1600.webp 1600w" sizes="(max-width: 860px) 31vh, 40vh" alt="Alejandro Curcio con invitados en la presentación" width="1600" height="1067" decoding="async"></figure><figure class="gx-it" style="--x:246;--y:13;--w:30;--r:0.7999;--s:1.06"><img data-src="/media/img/ceo-evento/ceo-evento-07-1600.webp" data-srcset="/media/img/ceo-evento/ceo-evento-07-900.webp 900w, /media/img/ceo-evento/ceo-evento-07-1600.webp 1600w" sizes="(max-width: 860px) 23vh, 30vh" alt="Alejandro Curcio con una invitada frente al panel de CEO DE TU VIDA" width="1600" height="2000" decoding="async"></figure><figure class="gx-it" style="--x:286;--y:30;--w:52;--r:1.4999;--s:1.0"><img data-src="/media/img/ceo-evento/ceo-evento-08-1600.webp" data-srcset="/media/img/ceo-evento/ceo-evento-08-900.webp 900w, /media/img/ceo-evento/ceo-evento-08-1600.webp 1600w" sizes="(max-width: 860px) 41vh, 52vh" alt="La sala llena en la presentación de CEO DE TU VIDA" width="1600" height="1067" decoding="async"></figure><figure class="gx-it" style="--x:346;--y:15;--w:40;--r:1.5;--s:1.05"><img data-src="/media/img/ceo-evento/ceo-evento-09-1600.webp" data-srcset="/media/img/ceo-evento/ceo-evento-09-900.webp 900w, /media/img/ceo-evento/ceo-evento-09-1600.webp 1600w" sizes="(max-width: 860px) 31vh, 40vh" alt="Ceremonia en el escenario durante la presentación" width="1600" height="1067" decoding="async"></figure><figure class="gx-it" style="--x:352;--y:50;--w:46;--r:1.5;--s:0.95"><img data-src="/media/img/ceo-evento/ceo-evento-10-1600.webp" data-srcset="/media/img/ceo-evento/ceo-evento-10-900.webp 900w, /media/img/ceo-evento/ceo-evento-10-1600.webp 1600w" sizes="(max-width: 860px) 36vh, 46vh" alt="Alejandro Curcio saluda a un invitado en la presentación" width="1600" height="1067" decoding="async"></figure><figure class="gx-it" style="--x:408;--y:22;--w:66;--r:1.5;--s:1.02"><img data-src="/media/img/ceo-evento/ceo-evento-11-1600.webp" data-srcset="/media/img/ceo-evento/ceo-evento-11-900.webp 900w, /media/img/ceo-evento/ceo-evento-11-1600.webp 1600w" sizes="(max-width: 860px) 51vh, 66vh" alt="Alejandro Curcio con invitados frente a la pantalla de CEO DE TU VIDA" width="1600" height="1067" decoding="async"></figure><figure class="gx-it" style="--x:482;--y:54;--w:38;--r:1.5;--s:0.94"><img data-src="/media/img/ceo-evento/ceo-evento-12-1600.webp" data-srcset="/media/img/ceo-evento/ceo-evento-12-900.webp 900w, /media/img/ceo-evento/ceo-evento-12-1600.webp 1600w" sizes="(max-width: 860px) 30vh, 38vh" alt="Alejandro Curcio con invitados en la sala" width="1600" height="1067" decoding="async"></figure><figure class="gx-it" style="--x:488;--y:14;--w:36;--r:1.5;--s:1.06"><img data-src="/media/img/ceo-evento/ceo-evento-13-1600.webp" data-srcset="/media/img/ceo-evento/ceo-evento-13-900.webp 900w, /media/img/ceo-evento/ceo-evento-13-1600.webp 1600w" sizes="(max-width: 860px) 28vh, 36vh" alt="El escenario de la presentación de CEO DE TU VIDA" width="1600" height="1067" decoding="async"></figure><figure class="gx-it" style="--x:532;--y:34;--w:50;--r:1.5;--s:1.0"><img data-src="/media/img/ceo-evento/ceo-evento-14-1600.webp" data-srcset="/media/img/ceo-evento/ceo-evento-14-900.webp 900w, /media/img/ceo-evento/ceo-evento-14-1600.webp 1600w" sizes="(max-width: 860px) 39vh, 50vh" alt="Brindis en el escenario de la presentación" width="1600" height="1067" decoding="async"></figure><figure class="gx-it" style="--x:592;--y:17;--w:40;--r:1.5;--s:1.05"><img data-src="/media/img/ceo-evento/ceo-evento-15-1600.webp" data-srcset="/media/img/ceo-evento/ceo-evento-15-900.webp 900w, /media/img/ceo-evento/ceo-evento-15-1600.webp 1600w" sizes="(max-width: 860px) 31vh, 40vh" alt="Alejandro Curcio con invitados en la presentación" width="1600" height="1067" decoding="async"></figure><figure class="gx-it" style="--x:598;--y:52;--w:44;--r:1.5;--s:0.95"><img data-src="/media/img/ceo-evento/ceo-evento-16-1600.webp" data-srcset="/media/img/ceo-evento/ceo-evento-16-900.webp 900w, /media/img/ceo-evento/ceo-evento-16-1600.webp 1600w" sizes="(max-width: 860px) 34vh, 44vh" alt="Grupo de taiko junto a Alejandro Curcio en la presentación" width="1600" height="1067" decoding="async"></figure><figure class="gx-it" style="--x:652;--y:28;--w:58;--r:1.4999;--s:1.02"><img data-src="/media/img/ceo-evento/ceo-evento-17-1600.webp" data-srcset="/media/img/ceo-evento/ceo-evento-17-900.webp 900w, /media/img/ceo-evento/ceo-evento-17-1600.webp 1600w" sizes="(max-width: 860px) 45vh, 58vh" alt="Alejandro Curcio con invitados en el escenario de la presentación" width="1600" height="1067" decoding="async"></figure></div></div><script is:inline>(()=>{const s=document.querySelector("[data-gx]");if(!s)return;const t=s.querySelector(".gx-track"),its=[...s.querySelectorAll(".gx-it")];const ld=it=>{if(it.dataset.ld)return;it.dataset.ld="1";const i=it.querySelector("img");i.onload=()=>i.classList.add("is-ld");i.srcset=i.dataset.srcset;i.src=i.dataset.src;if(i.complete)i.classList.add("is-ld")};if(matchMedia("(prefers-reduced-motion: reduce)").matches){s.classList.add("gx--static");its.forEach(it=>{it.querySelector("img").loading="lazy";ld(it)});return}let W=0,V=0,H=0,D=0,raf=0;const size=()=>{V=innerWidth;H=innerHeight;W=t.offsetWidth;D=Math.max(0,W-V);s.style.height=(H+D)+"px";tick()};const tick=()=>{raf=0;const r=s.getBoundingClientRect();if(r.top>H*2.5||r.bottom<-H)return;const p=D?Math.min(1,Math.max(0,-r.top/D)):0,x=-p*D;t.style.transform="translate3d("+x.toFixed(1)+"px,0,0)";for(const it of its){const L=it.offsetLeft+x,R=L+it.offsetWidth,c=(L+R)/2;if(R>-V*.5&&L<V*1.8)ld(it);it.classList.toggle("is-on",c>V*.2&&c<V*.8);const sp=parseFloat(it.style.getPropertyValue("--s"))||1;it.style.transform="translate3d("+((c-V/2)*(sp-1)).toFixed(1)+"px,0,0)"}};const on=()=>{raf||(raf=requestAnimationFrame(tick))};addEventListener("scroll",on,{passive:true});addEventListener("resize",size);size();addEventListener("load",size)})();</script></section>
 </Base>
 
 <style>

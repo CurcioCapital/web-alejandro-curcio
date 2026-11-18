@@ -1,7 +1,7 @@
 /* Lanzamiento de CEO DE TU VIDA (17/11/2026, pedidos de Emi). Hora de Montevideo.
  * Antes de las 20:00  → franja «— en vivo hoy, 20:00», tarjeta del home «En vivo · 20:00», ambas llevan a /ceo-de-tu-vida/#en-vivo.
  * 20:00 a 22:00       → «— en vivo ahora» / «En vivo ahora». Contador del clímax → «YA DISPONIBLE» + botón de compra.
- * Desde las 22:00     → franja «— ya disponible», tarjeta «Nuevo libro», el bloque #en-vivo queda como «Presentación · 17 de noviembre de 2026».
+ * Desde las 22:00     → franja «— YA DISPONIBLE» (mayúsculas y sin flecha desde el 18/11), tarjeta «Nuevo libro», el bloque #en-vivo queda como «Presentación · 17 de noviembre de 2026».
  * Cambia solo, sin recargar. Fuente: codigo/public/scripts/lanzamiento.js.
  */
 (() => {
@@ -12,7 +12,7 @@
 	const apply = () => {
 		const now = Date.now();
 		const st = now < T1 ? 'pre' : now < T2 ? 'live' : 'post';
-		set('.ribbon-label', (e) => { e.textContent = st === 'pre' ? '— en vivo hoy, 20:00' : st === 'live' ? '— en vivo ahora' : '— ya disponible'; });
+		set('.ribbon-label', (e) => { e.textContent = st === 'pre' ? '— en vivo hoy, 20:00' : st === 'live' ? '— en vivo ahora' : '— YA DISPONIBLE'; });
 		set('a.ribbon', (a) => { a.setAttribute('href', st === 'post' ? '/ceo-de-tu-vida/' : LIVE); });
 		set('[data-live-label]', (e) => {
 			e.textContent = st === 'pre' ? 'En vivo · 20:00' : st === 'live' ? 'En vivo ahora' : 'Nuevo libro';
